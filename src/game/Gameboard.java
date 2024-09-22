@@ -118,9 +118,10 @@ public class Gameboard {
     public Square get_square_at(int position){
         if(position < 20 && position >= 0)
             return this.squares[position];
+        else return null;
     }
     public Player next_player(){
-        if(current_player_index == players.size() - 1):
+        if(current_player_index == players.size() - 1)
             round++;
         current_player_index = ++current_player_index%players.size();
         return players.get(current_player_index);
@@ -129,11 +130,10 @@ public class Gameboard {
 
     public void new_game(){
         /*
-        load board or default
+        load board or default code here ...
          */
-        int[] dft = new int[20];
-        for(int i = 0; i < 20; i++) dft[i] = i;
 
+        start_game();
     }
     public void save_game(String filename){
         /*
@@ -168,7 +168,11 @@ public class Gameboard {
 
     }
     public void load_game(String filename){
+        /*
+        load game code here ...
+         */
 
+        start_game();
 
     }
 
