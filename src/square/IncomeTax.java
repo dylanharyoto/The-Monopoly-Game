@@ -3,7 +3,7 @@ import player.Player;
 
 public class IncomeTax extends Square {
     public IncomeTax(String name, int position) {
-        super(name, position);
+        super(position);
     }
     @Override
     public void takeEffect(Player player) {

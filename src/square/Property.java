@@ -2,13 +2,18 @@ package square;
 import player.Player;
 import java.util.Scanner;
 public class Property extends Square {
+    private String name;
     private int price;
     private int rent;
     private Player owner;
-    public Property(String name, int position, int price, int rent) {
-        super(name, position);
+    public Property(int position, String name, int price, int rent) {
+        super(position);
+        this.name = name;
         this.price = price;
         this.rent = rent;
+    }
+    public String getName() {
+        return this.name;
     }
     public int getPrice() {
         return this.price;

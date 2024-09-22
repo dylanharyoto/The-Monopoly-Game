@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class Player {
+    private int id;
     //name: String type, for recording player name or identification
     private String name;
 
@@ -25,10 +26,10 @@ public class Player {
     private ArrayList<Property> properties;
 
     //Player initialization
-    public Player(String name, int money, int current_position){
+    public Player(String name, int money, int currentPosition){
         this.name = name;
         this.money = money;
-        this.currentPosition = current_position;
+        this.currentPosition = currentPosition;
     }
 
     //Player information, print all the attributes of the players
@@ -59,7 +60,9 @@ public class Player {
         this.currentPosition += rollDice()[3];
         if(this.currentPosition > 20){currentPosition -= 20;}
     }
-
+    public int getId() {
+        return this.id;
+    }
     public String getName() {
         return this.name;
     }
