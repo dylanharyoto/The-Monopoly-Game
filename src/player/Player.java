@@ -88,4 +88,6 @@ public class Player {
     public ArrayList<Property> getProperties() {
         return this.properties;
     }
+
+    public int getCurrentPosition() {return this.currentPosition;}
 }
