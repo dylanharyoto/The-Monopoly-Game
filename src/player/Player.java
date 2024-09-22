@@ -54,6 +54,10 @@ public class Player {
         return res;
     }
 
+    public int getCurrentPosition(){
+        return this.currentPosition;
+    }
+
     //move: moves the player around the board
     public void move(){
         this.currentPosition += rollDice()[3];
