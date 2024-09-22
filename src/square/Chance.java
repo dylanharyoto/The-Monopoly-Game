@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class Chance extends Square {
     private Random random = new Random();
-    public Chance(String name, int position) {
-        super(name, position);
+    public Chance(int position) {
+        super(position);
     }
     @Override
     public void takeEffect(Player player) {
