@@ -62,5 +62,9 @@
     }
   },
   "GO": 1,
-
+  "Chance": "9,13,19",
+  "Income Tax": 4,
+  "Free Parking": 11,
+  "Go To Jail": 16,
+  "In Jail": 6
 }

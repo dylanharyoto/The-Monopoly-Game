@@ -7,9 +7,8 @@ import square.Square;
 import java.util.*;
 
 import java.io.FileWriter;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.BufferedReader;
+
 
 
 public class Gameboard {
@@ -29,8 +28,36 @@ public class Gameboard {
     }
 
     public void start_game(){
+        System.out.println("The game is started");
         while(round < 100 && players.size() != 1){
             Player current_player = next_player();
+            while(true){
+                try{
+                    System.out.println("Now it's "+current_player.getName()+"'s turn.\nDo you want to 1. roll dice  2. check player's status  3. print board");
+                    int choice = scanner.nextInt();
+                    if(choice == 2){
+                        System.out.println("Do you want to 1. check all  2. check single player");
+                        choice = scanner.nextInt();
+                        /*
+
+                         */
+                    }
+                    else if(choice == 3){
+                        display_board();
+                    }
+                    else{
+                        break;
+                    }
+                }
+                catch (InputMismatchException e){
+                    System.out.println("The answer is not a valid number");
+                }
+                catch (NumberFormatException e){
+                    System.out.println("The answer has to be a number");
+                }
+            }
+
+
             int start_posistion = current_player.getCurrentPosition();
             if (current_player.getInJailDuration() > 0){
                 while(true){
@@ -55,8 +82,19 @@ public class Gameboard {
 
             current_player.move();
             int end_position = current_player.getCurrentPosition();
+            if(end_position > start_posistion){
+                if(go_square_position <= end_position && go_square_position > start_posistion)
+                    get_square_at(go_square_position).takeEffect(current_player);
+            }
+            else{
+                if (go_square_position<=end_position || go_square_position > start_posistion)
+                    get_square_at(go_square_position).takeEffect(current_player);
+            }
             get_square_at(end_position).takeEffect(current_player);
             if(current_player.getMoney() < 0){
+                for(Property property : current_player.getProperties()){
+                    property.setOwner(null);
+                }
                 System.out.println(current_player.getName() + " Out!");
                 players.remove(current_player);
                 current_player_index = -1;
@@ -82,11 +120,23 @@ public class Gameboard {
             return this.squares[position];
     }
     public Player next_player(){
+        if(current_player_index == players.size() - 1):
+            round++;
         current_player_index = ++current_player_index%players.size();
         return players.get(current_player_index);
 
     }
+
+    public void new_game(){
+        /*
+        load board or default
+         */
+        int[] dft = new int[20];
+        for(int i = 0; i < 20; i++) dft[i] = i;
+
+    }
     public void save_game(String filename){
+        /*
         Map<String, Object> json_object = new HashMap<>();
 
         Map<String, Object> all_players_json_object = new HashMap<>();
@@ -103,12 +153,10 @@ public class Gameboard {
             player_json_object.put("property", property_positions);
             all_players_json_object.put(player.getName(), player_json_object);
         }
-        Map<String, Object> all_squares_json_object = new HashMap<>();
 
         json_object.put("round", round);
         json_object.put("current_player_index", current_player_index);
         json_object.put("players", all_players_json_object);
-        json_object.put("squares", all_squares_json_object);
 
         try (FileWriter fileWriter = new FileWriter(filename)) {
             String json = map_to_json(json_object);
@@ -116,21 +164,17 @@ public class Gameboard {
             System.out.println("JSON data has been written to " + filename);
         } catch (IOException e) {
             System.out.println("An IO Error Occurred");
-        }
+        }*/
 
     }
     public void load_game(String filename){
-        StringBuilder json = new StringBuilder();
-        String jsonString = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                json.append(line);
-            }
-            jsonString = json.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
+    }
+
+    public void display_board(){
+        String empty_board = "                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                        MONOPOLY                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     ";
+        System.out.println(empty_board);
     }
 
     private String map_to_json(Map<String, Object> map) {
