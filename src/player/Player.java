@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class Player {
+    private int id;
     //name: String type, for recording player name or identification
     private String name;
 
@@ -25,10 +26,11 @@ public class Player {
     private ArrayList<Property> properties;
 
     //Player initialization
-    public Player(String name, int money, int current_position){
+    public Player(int id, String name, int money, int currentPosition){
+        this.id = id;
         this.name = name;
         this.money = money;
-        this.currentPosition = current_position;
+        this.currentPosition = currentPosition;
     }
 
     //Player information, print all the attributes of the players
@@ -45,19 +47,20 @@ public class Player {
     }
 
     //roll_dice: simulates rolling the dice (two 4-sided dice)
-    public int[] rollDice(){
-        Random rand = new Random();
-        int[] res = new int[3];
-        res[0] = rand.nextInt(4) + 1;
-        res[1] = rand.nextInt(4) + 1;
-        res[2] = res[0] + res[1];
-        return res;
+    public void rollDice() {
+        Random random = new Random();
+        int dice1 = random.nextInt(4) + 1;
+        int dice2 = random.nextInt(4) + 1;
+        int total = dice1 + dice2;
+        if(this.inJailDuration > 0 && dice1 != dice2) {
+            this.inJailDuration -= 1;
+            return;
+        };
+        this.currentPosition = (this.currentPosition + total - 1) % 20 + 1;
     }
 
-    //move: moves the player around the board
-    public void move(){
-        this.currentPosition += rollDice()[3];
-        if(this.currentPosition > 20){currentPosition -= 20;}
+    public int getId() {
+        return this.id;
     }
 
     public String getName() {
@@ -67,6 +70,7 @@ public class Player {
     public void decreaseMoney(int amount) {
         this.money -= amount;
     }
+    
     public void increaseMoney(int amount) {
         this.money += amount;
     }
