@@ -54,20 +54,6 @@ public class Gameboard {
             return null;
     }
 
-
-    /*
-    private int getPositionBySquareName (String name) {
-        for (Square square : this.squares) {
-            if (square.getName().equals(name)){
-                return square.getPosition();
-            }
-            else return -1; // -1 denotes that the given name of square is not defined or added to the current gameboard
-        }
-    }
-    */
-
-
-
     public boolean checkGameStatus() {
         return this.round < 100 && (players.size() > 1 && players.size() < 7);
     }
