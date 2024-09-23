@@ -81,8 +81,50 @@ public class Gameboard {
                         proceed = true;
                         break;
                     case 2:
-                        System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
-                        System.out.print("> ");
+                        while (!proceed) {
+                            System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
+                            System.out.print("> ");
+                            try {
+                                choice = scanner.nextInt();
+                            } catch (InputMismatchException | NumberFormatException e) {
+                                System.out.println("Your input is not a valid number!");
+                                scanner.next();
+                                continue;
+                            }
+                            switch (choice) {
+                                case 1:
+                                    for(Player player : players) {
+                                        player.getPlayer();
+                                    }
+                                    proceed = true;
+                                    break;
+                                case 2:
+                                    while (!proceed) {
+                                        System.out.print("Would you like to check");
+                                        for(int i=0;i<players.size();i++) {
+                                            System.out.print(" "+(i+1)+". "+players.get(i).getName()+" ");
+                                        }
+                                        System.out.println("\n> ");
+                                        try {
+                                            choice = scanner.nextInt();
+                                        } catch (InputMismatchException | NumberFormatException e) {
+                                            System.out.println("Your input is not a valid number!");
+                                            scanner.next();
+                                            continue;
+                                        }
+                                        if(choice>=1 && choice<=players.size()) {
+                                            players.get(choice-1).getPlayer();
+                                            proceed = true;
+                                        }
+                                        else {
+                                            System.out.println("Your choice is out of range!");
+                                        }
+                                    }
+                                    proceed = false;
+                                    break;
+                            }
+                        }
+                        proceed = false;
                         break;
                     case 3:
                         this.display_board();
