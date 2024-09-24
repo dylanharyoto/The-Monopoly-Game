@@ -277,7 +277,7 @@ public class Gameboard {
         for(int i = 0; i<names.size();i++) {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
-
+    }
     public void saveGame(String filename) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
