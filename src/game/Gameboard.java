@@ -4,197 +4,375 @@ import player.Player;
 import square.Property;
 import square.Square;
 
-import java.util.*;
-
 import java.io.FileWriter;
 import java.io.IOException;
-
-
+import java.util.*;
 
 public class Gameboard {
-    private ArrayList<Player> players;
-    private Square[] squares;
-    private int round;
-    private int current_player_index;
     private Scanner scanner;
-    private int go_square_position;
+    private ArrayList<Player> players;
+    private ArrayList<Square> squares;
+    private int round;
+    private int currentPlayerId;
+    private int goPosition;
+    private String emptyBoard;
+    private int[] blockIndex = {0,22,44,66,88,110,902,1694,2486,3278,4070,4048,4026,4004,3982,3960,3168,2376,1594,792};
+    private static int count = 0;
+
     public Gameboard() {
-        players = new ArrayList<>();
-        squares = new Square[20];
-        round = 0;
-        current_player_index = -1;
-        scanner = new Scanner(System.in);
-        go_square_position = -1;
+        this.scanner = new Scanner(System.in);
+        this.players = new ArrayList<Player>(6);
+        this.squares = new ArrayList<Square>(20);
+        this.round = 1;
+        this.currentPlayerId = -1;
+
+        this.goPosition = -1;
+        Gameboard.count += 1;
     }
 
-    public void start_game(){
-        System.out.println("The game is started");
-        while(round < 100 && players.size() != 1){
-            Player current_player = next_player();
-            while(true){
-                try{
-                    System.out.println("Now it's "+current_player.getName()+"'s turn.\nDo you want to 1. roll dice  2. check player's status  3. print board");
-                    int choice = scanner.nextInt();
-                    if(choice == 2){
-                        System.out.println("Do you want to 1. check all  2. check single player");
-                        choice = scanner.nextInt();
-                        /*
+    public void joinPlayer(Player player){
+        this.players.add(player);
+    }
 
-                         */
-                    }
-                    else if(choice == 3){
-                        display_board();
-                    }
-                    else{
-                        break;
-                    }
-                }
-                catch (InputMismatchException e){
-                    System.out.println("The answer is not a valid number");
-                }
-                catch (NumberFormatException e){
-                    System.out.println("The answer has to be a number");
-                }
-            }
+    public ArrayList<Player> getAllPlayers() {
+        return this.players;
+    }
 
-
-            int start_posistion = current_player.getCurrentPosition();
-            if (current_player.getInJailDuration() > 0){
-                while(true){
-                    try {
-                        System.out.println("Are you willing to pay 150 fine to get out(1 or 2)?");
-                        System.out.print("1. yes   2. no\nYour answer>>");
-                        int choice = scanner.nextInt();
-                        if(choice == 1){
-                            current_player.decreaseMoney(150);
-                            current_player.setInJailDuration(0);
-                        }
-                        break;
-                    }
-                    catch (InputMismatchException e){
-                        System.out.println("The answer is not a valid number");
-                    }
-                    catch (NumberFormatException e){
-                        System.out.println("The answer has to be a number");
-                    }
-                }
-            }
-
-            current_player.move();
-            int end_position = current_player.getCurrentPosition();
-            if(end_position > start_posistion){
-                if(go_square_position <= end_position && go_square_position > start_posistion)
-                    get_square_at(go_square_position).takeEffect(current_player);
-            }
-            else{
-                if (go_square_position<=end_position || go_square_position > start_posistion)
-                    get_square_at(go_square_position).takeEffect(current_player);
-            }
-            get_square_at(end_position).takeEffect(current_player);
-            if(current_player.getMoney() < 0){
-                for(Property property : current_player.getProperties()){
-                    property.setOwner(null);
-                }
-                System.out.println(current_player.getName() + " Out!");
-                players.remove(current_player);
-                current_player_index = -1;
+    public Player getPlayerById(int playerId) {
+        for (Player player : players) {
+            if (player.getId() == playerId) {
+                return player;
             }
         }
-        end_game();
+        return null;
     }
-    public void end_game(){
-        if(players.size() == 1)
+
+    private Player getNextPlayer() {
+        if (this.round == 0) {
+            return players.get(1);
+        }
+        if (currentPlayerId == players.size())
+            round++;
+        currentPlayerId = ++currentPlayerId % players.size();
+        return players.get(currentPlayerId);
+    }
+
+    private Square getSquareByPosition(int position) {
+        if (position < 20 && position >= 0)
+            return this.squares.get(position);
+        else
+            return null;
+    }
+
+
+    /*
+    private int getPositionBySquareName (String name) {
+        for (Square square : this.squares) {
+            if (square.getName().equals(name)){
+                return square.getPosition();
+            }
+            else return -1; // -1 denotes that the given name of square is not defined or added to the current gameboard
+        }
+    }
+    */
+
+
+
+    public boolean checkGameStatus() {
+        return this.round < 100 && (players.size() > 1 && players.size() < 7);
+    }
+
+    public void startGame() {
+        System.out.println("Welcome to MonoPolyU, the game is starting...");
+        while (checkGameStatus()) {
+            Player currentPlayer = getNextPlayer();
+            boolean proceed = false;
+            int initialPosition = currentPlayer.getCurrentPosition();
+            while (!proceed) {
+                System.out.println("Now, it's " + currentPlayer.getName()
+                        + "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board");
+                System.out.print("> ");
+                int choice = -1;
+                try {
+                    choice = scanner.nextInt();
+                } catch (InputMismatchException | NumberFormatException e) {
+                    System.out.println("Your input is not a valid number!");
+                    scanner.next();
+                    continue;
+                }
+                switch (choice) {
+                    case 1:
+                        currentPlayer.rollDice();
+                        proceed = true;
+                        break;
+                    case 2:
+                        while (!proceed) {
+                            System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
+                            System.out.print("> ");
+                            try {
+                                choice = scanner.nextInt();
+                            } catch (InputMismatchException | NumberFormatException e) {
+                                System.out.println("Your input is not a valid number!");
+                                scanner.next();
+                                continue;
+                            }
+                            switch (choice) {
+                                case 1:
+                                    for(Player player : players) {
+                                        player.getPlayer();
+                                    }
+                                    proceed = true;
+                                    break;
+                                case 2:
+                                    while (!proceed) {
+                                        System.out.print("Would you like to check");
+                                        for(int i=0;i<players.size();i++) {
+                                            System.out.print(" "+(i+1)+"."+players.get(i).getName()+" ");
+                                        }
+                                        System.out.println("\n> ");
+                                        try {
+                                            choice = scanner.nextInt();
+                                        } catch (InputMismatchException | NumberFormatException e) {
+                                            System.out.println("Your input is not a valid number!");
+                                            scanner.next();
+                                            continue;
+                                        }
+                                        if(choice>=1 && choice<=players.size()) {
+                                            players.get(choice-1).getPlayer();
+                                            proceed = true;
+                                        }
+                                        else {
+                                            System.out.println("Your choice is out of range!");
+                                        }
+                                    }
+                                    proceed = false;
+                                    break;
+                            }
+                        }
+                        proceed = false;
+                        break;
+                    case 3:
+                        this.display_board();
+                        break;
+                }
+            }
+            int currentPosition = currentPlayer.getCurrentPosition();
+            if (initialPosition == currentPosition) {
+                proceed = false;
+                while (!proceed) {
+                    try {
+                        System.out.println("Would you like to \n1. Pay HKD$150 to get out\n2. Stay in jail");
+                        System.out.print("> ");
+                        int choice = scanner.nextInt();
+                        if (choice == 1) {
+                            currentPlayer.decreaseMoney(150);
+                            currentPlayer.setInJailDuration(0);
+                        }
+                        proceed = true;
+                    } catch (InputMismatchException | NumberFormatException e) {
+                        System.out.println("Your input is not a valid number!");
+                        scanner.next();
+                    }
+                }
+            } else if (initialPosition < currentPosition) {
+                if (goPosition <= currentPosition && goPosition > initialPosition) {
+                    getSquareByPosition(goPosition).takeEffect(currentPlayer);
+                }
+            } else {
+                if (goPosition <= currentPosition || goPosition > initialPosition) {
+                    getSquareByPosition(goPosition).takeEffect(currentPlayer);
+                }
+            }
+            getSquareByPosition(currentPosition).takeEffect(currentPlayer);
+            if (currentPlayer.getMoney() < 0) {
+                for (Property property : currentPlayer.getProperties()) {
+                    property.setOwner(null);
+                }
+                System.out.println(currentPlayer.getName() + " Out!");
+                players.remove(currentPlayer);
+                currentPlayerId = -1;
+            }
+        }
+        endGame();
+    }
+
+    public void endGame() {
+        if (players.size() == 1)
             System.out.println("Game Finished! The winner is " + players.get(0).getName());
-        else{
+        else {
             System.out.print("Game Finished! The winners are ");
-            for (int i = 0; i < players.size(); i++){
+            for (int i = 0; i < players.size(); i++) {
                 System.out.print(players.get(i).getName());
-                if(i != players.size() - 1)
+                if (i != players.size() - 1)
                     System.out.print(", ");
             }
             System.out.println(".");
         }
     }
-    public Square get_square_at(int position){
-        if(position < 20 && position >= 0)
-            return this.squares[position];
-        else return null;
-    }
-    public Player next_player(){
-        if(current_player_index == players.size() - 1)
-            round++;
-        current_player_index = ++current_player_index%players.size();
-        return players.get(current_player_index);
 
-    }
-
-    public void new_game(){
-        /*
-        load board or default code here ...
-         */
-
-        start_game();
-    }
-    public void save_game(String filename){
-        /*
-        Map<String, Object> json_object = new HashMap<>();
-
-        Map<String, Object> all_players_json_object = new HashMap<>();
-        for(Player player : players){
-            List<Integer> property_positions = new ArrayList<>();
-            for(Property property : player.getProperties()){
-                property_positions.add(property.getPosition());
+    public void newGame(){
+        boolean proceed = false;
+        ArrayList<String> names = new ArrayList<String>(0);
+        while (!proceed) {
+            System.out.println("The first step of starting a new game is to choose 2~6 players, please enter number of players below");
+            System.out.print("> ");
+            int choice = -1;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException | NumberFormatException e) {
+                System.out.println("Your input is not a valid number!");
+                scanner.next();
+                continue;
             }
-            Map<String, Object> player_json_object = new HashMap<>();
-            player_json_object.put("name", player.getName());
-            player_json_object.put("money", player.getMoney());
-            player_json_object.put("inJailDuration", player.getInJailDuration());
-            player_json_object.put("currentPosition", player.getCurrentPosition());
-            player_json_object.put("property", property_positions);
-            all_players_json_object.put(player.getName(), player_json_object);
+            if(choice >= 2 && choice <= 6) {
+                names = new ArrayList<String>(choice);
+                System.out.println("""
+                        Now you can type in the names of the players.
+                        You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
+                        Or type '!d #' where # is the id of the name you want to delete. (for example '!d 2')
+                        If you like to resize the number of player, type '!r'.""");
+                while(!proceed) {
+                    System.out.println("When players are ready, type '!p' to proceed. Current players:");
+                    if(names.isEmpty()) System.out.println("None");
+                    for (int i=0; i < names.size(); i++) {
+                        System.out.println((i+1)+". "+names.get(i));
+                    }
+                    System.out.print("> ");
+                    String nameInput = scanner.nextLine();
+                    if (nameInput.length() == 4 && nameInput.startsWith("!d ")){
+                        int deleteChoice = -1;
+                        try {
+                            deleteChoice = Integer.parseInt(nameInput.substring(3,4));
+                            if(deleteChoice<1 || deleteChoice > names.size()) throw new NumberFormatException();
+                        } catch (InputMismatchException | NumberFormatException e) {
+                            System.out.println("Your input is invalid!");
+                            scanner.next();
+                        }
+                        names.remove(deleteChoice-1);
+                    }
+                    else if(nameInput.equals("!r")){
+                        break;
+                    }
+                    else if(nameInput.equals("!p")){
+                        if(names.size() != choice){
+                            System.out.println("Oops...There's still empty slot");
+                            continue;
+                        }
+                        proceed = true;
+                    }
+                    else {
+                        for(String substringName : nameInput.split(";")){
+                            System.out.println(names.size());
+                            if(names.size() == choice) System.out.println("Slots are taken, player " + substringName.trim() + " is ignored");
+                            else names.add(substringName.trim());
+                        }
+                    }
+                }
+            }
+            else{
+                System.out.println("This is not a valid number of players!");
+            }
+        }
+        for(int i = 0; i<names.size();i++) {
+            joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
 
-        json_object.put("round", round);
-        json_object.put("current_player_index", current_player_index);
-        json_object.put("players", all_players_json_object);
+    public void saveGame(String filename) {
+        StringBuilder json = new StringBuilder();
+        json.append("{\n");
 
-        try (FileWriter fileWriter = new FileWriter(filename)) {
-            String json = map_to_json(json_object);
-            fileWriter.write(json);
-            System.out.println("JSON data has been written to " + filename);
-        } catch (IOException e) {
-            System.out.println("An IO Error Occurred");
-        }*/
+        json.append("\"id\":" + Gameboard.count);
 
-    }
-    public void load_game(String filename){
-        /*
-        load game code here ...
-         */
+        json.append("\"players\": [\n");
+        for (int i = 0; i < players.size(); ++i) {
+            Player player = players.get(i);
+            ArrayList<Property> properties = player.getProperties();
 
-        start_game();
+            json.append("{\n");
+            json.append("\"id\": " + player.getId() + ",\n");
+            json.append("\"name\": \"" + player.getName() + "\",\n");
+            json.append("\"money\": " + player.getMoney() + ",\n");
+            json.append("\"currentPosition\": " + player.getCurrentPosition() + ",\n");
 
-    }
-
-    public void display_board(){
-        String empty_board = "                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                        MONOPOLY                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     ";
-        System.out.println(empty_board);
-    }
-
-    private String map_to_json(Map<String, Object> map) {
-        StringBuilder json = new StringBuilder("{");
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            json.append("\"").append(entry.getKey()).append("\":");
-            if (entry.getValue() instanceof Map) {
-                json.append(map_to_json((Map<String, Object>) entry.getValue()));
-            } else {
-                json.append("\"").append(entry.getValue()).append("\"");
+            json.append("\"properties\": [");
+            for (int j = 0; j < properties.size(); ++j) {
+                json.append(properties.get(j).getPosition());
+                if (j < properties.size() - 1) {
+                    json.append(", ");
+                }
             }
-            json.append(",");
+            json.append("]\n");
+            json.append("}");
+            if (i < players.size() - 1) {
+                json.append(",\n");
+            }
         }
-        json.deleteCharAt(json.length() - 1); // Remove the trailing comma
+        json.append("\n],\n");
+        json.append("\"properties\": [\n");
+        for (int i = 0; i < squares.size(); ++i) {
+            if (squares.get(i) instanceof Property) {
+                Property property = (Property) squares.get(i);
+                json.append("{\n");
+                json.append("\"position\": ").append(property.getPosition()).append(",\n");
+                json.append("\"name\": \"").append(property.getName()).append("\",\n");
+                json.append("\"price\": ").append(property.getPrice()).append(",\n");
+                json.append("\"rent\": ").append(property.getRent()).append("\n");
+                json.append("}");
+                if (i < squares.size() - 1) {
+                    json.append(",\n");
+                }
+            }
+        }
+        json.append("\n],\n");
+        // Add "go" position
+        json.append("\"go\": {\n");
+        json.append("\"position\": ").append(this.goPosition).append("\n");
+        json.append("},\n");
+
+        // Add other elements like "chance", "incomeTax", etc.
+        json.append("\"chance\": {\n");
+        json.append("\"positions\": [9, 13, 19]\n");
+        json.append("},\n");
+
+        json.append("\"incomeTax\": {\n");
+        json.append("\"position\": 4\n");
+        json.append("},\n");
+
+        json.append("\"freeParking\": {\n");
+        json.append("\"position\": 11\n");
+        json.append("}\n");
+
         json.append("}");
-        return json.toString();
+
+        try (FileWriter writer = new FileWriter(filename + ".json")) {
+            writer.write(json.toString());
+            System.out.println("Game saved successfully to " + filename + ".json");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to save game.");
+        }
     }
-        
+
+    public void display_board() {
+        //21*5
+        System.out.println(emptyBoard);
+    }
+
+    // private String map_to_json(Map<String, Object> map) {
+    // StringBuilder json = new StringBuilder("{");
+    // for (Map.Entry<String, Object> entry : map.entrySet()) {
+    // json.append("\"").append(entry.getKey()).append("\":");
+    // if (entry.getValue() instanceof Map) {
+    // json.append(map_to_json((Map<String, Object>) entry.getValue()));
+    // } else {
+    // json.append("\"").append(entry.getValue()).append("\"");
+    // }
+    // json.append(",");
+    // }
+    // json.deleteCharAt(json.length() - 1); // Remove the trailing comma
+    // json.append("}");
+    // return json.toString();
+    // }
+
 }

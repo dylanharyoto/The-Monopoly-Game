@@ -94,8 +94,4 @@ public class Player {
     }
 
     public int getCurrentPosition() {return this.currentPosition;}
-
-    public void setPosition (int position){
-        this.currentPosition = position;
-    }
 }
