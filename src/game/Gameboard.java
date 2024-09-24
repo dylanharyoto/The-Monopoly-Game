@@ -4,8 +4,9 @@ import player.Player;
 import square.Property;
 import square.Square;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
-
 
 public class Gameboard {
     private Scanner scanner;
@@ -16,6 +17,7 @@ public class Gameboard {
     private int goPosition;
     private String emptyBoard;
     private int[] blockIndex = {0,22,44,66,88,110,902,1694,2486,3278,4070,4048,4026,4004,3982,3960,3168,2376,1594,792};
+    private static int count = 0;
 
     public Gameboard() {
         this.scanner = new Scanner(System.in);
@@ -24,7 +26,8 @@ public class Gameboard {
         this.round = 1;
         this.currentPlayerId = -1;
 
-        goPosition = -1;
+        this.goPosition = -1;
+        Gameboard.count += 1;
     }
 
     public void joinPlayer(Player player){
@@ -53,7 +56,7 @@ public class Gameboard {
         currentPlayerId = ++currentPlayerId % players.size();
         return players.get(currentPlayerId);
     }
-    
+
     private Square getSquareByPosition(int position) {
         if (position < 20 && position >= 0)
             return this.squares.get(position);
@@ -61,10 +64,24 @@ public class Gameboard {
             return null;
     }
 
+
+    /*
+    private int getPositionBySquareName (String name) {
+        for (Square square : this.squares) {
+            if (square.getName().equals(name)){
+                return square.getPosition();
+            }
+            else return -1; // -1 denotes that the given name of square is not defined or added to the current gameboard
+        }
+    }
+    */
+
+
+
     public boolean checkGameStatus() {
         return this.round < 100 && (players.size() > 1 && players.size() < 7);
     }
-    
+
     public void startGame() {
         System.out.println("Welcome to MonoPolyU, the game is starting...");
         while (checkGameStatus()) {
@@ -72,7 +89,8 @@ public class Gameboard {
             boolean proceed = false;
             int initialPosition = currentPlayer.getCurrentPosition();
             while (!proceed) {
-                System.out.println("Now, it's " + currentPlayer.getName() + "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board");
+                System.out.println("Now, it's " + currentPlayer.getName()
+                        + "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board");
                 System.out.print("> ");
                 int choice = -1;
                 try {
@@ -156,12 +174,12 @@ public class Gameboard {
                         scanner.next();
                     }
                 }
-            } else if(initialPosition < currentPosition) {
-                if(goPosition <= currentPosition && goPosition > initialPosition) {
+            } else if (initialPosition < currentPosition) {
+                if (goPosition <= currentPosition && goPosition > initialPosition) {
                     getSquareByPosition(goPosition).takeEffect(currentPlayer);
                 }
             } else {
-                if(goPosition <= currentPosition || goPosition > initialPosition) {
+                if (goPosition <= currentPosition || goPosition > initialPosition) {
                     getSquareByPosition(goPosition).takeEffect(currentPlayer);
                 }
             }
@@ -260,6 +278,80 @@ public class Gameboard {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
 
+    public void saveGame(String filename) {
+        StringBuilder json = new StringBuilder();
+        json.append("{\n");
+
+        json.append("\"id\":" + Gameboard.count);
+
+        json.append("\"players\": [\n");
+        for (int i = 0; i < players.size(); ++i) {
+            Player player = players.get(i);
+            ArrayList<Property> properties = player.getProperties();
+
+            json.append("{\n");
+            json.append("\"id\": " + player.getId() + ",\n");
+            json.append("\"name\": \"" + player.getName() + "\",\n");
+            json.append("\"money\": " + player.getMoney() + ",\n");
+            json.append("\"currentPosition\": " + player.getCurrentPosition() + ",\n");
+
+            json.append("\"properties\": [");
+            for (int j = 0; j < properties.size(); ++j) {
+                json.append(properties.get(j).getPosition());
+                if (j < properties.size() - 1) {
+                    json.append(", ");
+                }
+            }
+            json.append("]\n");
+            json.append("}");
+            if (i < players.size() - 1) {
+                json.append(",\n");
+            }
+        }
+        json.append("\n],\n");
+        json.append("\"properties\": [\n");
+        for (int i = 0; i < squares.size(); ++i) {
+            if (squares.get(i) instanceof Property) {
+                Property property = (Property) squares.get(i);
+                json.append("{\n");
+                json.append("\"position\": ").append(property.getPosition()).append(",\n");
+                json.append("\"name\": \"").append(property.getName()).append("\",\n");
+                json.append("\"price\": ").append(property.getPrice()).append(",\n");
+                json.append("\"rent\": ").append(property.getRent()).append("\n");
+                json.append("}");
+                if (i < squares.size() - 1) {
+                    json.append(",\n");
+                }
+            }
+        }
+        json.append("\n],\n");
+        // Add "go" position
+        json.append("\"go\": {\n");
+        json.append("\"position\": ").append(this.goPosition).append("\n");
+        json.append("},\n");
+
+        // Add other elements like "chance", "incomeTax", etc.
+        json.append("\"chance\": {\n");
+        json.append("\"positions\": [9, 13, 19]\n");
+        json.append("},\n");
+
+        json.append("\"incomeTax\": {\n");
+        json.append("\"position\": 4\n");
+        json.append("},\n");
+
+        json.append("\"freeParking\": {\n");
+        json.append("\"position\": 11\n");
+        json.append("}\n");
+
+        json.append("}");
+
+        try (FileWriter writer = new FileWriter(filename + ".json")) {
+            writer.write(json.toString());
+            System.out.println("Game saved successfully to " + filename + ".json");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to save game.");
+        }
     }
 
     public void display_board() {
@@ -268,19 +360,19 @@ public class Gameboard {
     }
 
     // private String map_to_json(Map<String, Object> map) {
-    //     StringBuilder json = new StringBuilder("{");
-    //     for (Map.Entry<String, Object> entry : map.entrySet()) {
-    //         json.append("\"").append(entry.getKey()).append("\":");
-    //         if (entry.getValue() instanceof Map) {
-    //             json.append(map_to_json((Map<String, Object>) entry.getValue()));
-    //         } else {
-    //             json.append("\"").append(entry.getValue()).append("\"");
-    //         }
-    //         json.append(",");
-    //     }
-    //     json.deleteCharAt(json.length() - 1); // Remove the trailing comma
-    //     json.append("}");
-    //     return json.toString();
+    // StringBuilder json = new StringBuilder("{");
+    // for (Map.Entry<String, Object> entry : map.entrySet()) {
+    // json.append("\"").append(entry.getKey()).append("\":");
+    // if (entry.getValue() instanceof Map) {
+    // json.append(map_to_json((Map<String, Object>) entry.getValue()));
+    // } else {
+    // json.append("\"").append(entry.getValue()).append("\"");
+    // }
+    // json.append(",");
+    // }
+    // json.deleteCharAt(json.length() - 1); // Remove the trailing comma
+    // json.append("}");
+    // return json.toString();
     // }
 
 }
