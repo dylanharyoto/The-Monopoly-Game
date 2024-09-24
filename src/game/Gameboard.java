@@ -15,6 +15,8 @@ public class Gameboard {
     private int round;
     private int currentPlayerId;
     private int goPosition;
+    private String emptyBoard;
+    private int[] blockIndex = {0,22,44,66,88,110,902,1694,2486,3278,4070,4048,4026,4004,3982,3960,3168,2376,1594,792};
     private static int count = 0;
 
     public Gameboard() {
@@ -23,8 +25,13 @@ public class Gameboard {
         this.squares = new ArrayList<Square>(20);
         this.round = 1;
         this.currentPlayerId = -1;
+
         this.goPosition = -1;
         Gameboard.count += 1;
+    }
+
+    public void joinPlayer(Player player){
+        this.players.add(player);
     }
 
     public ArrayList<Player> getAllPlayers() {
@@ -99,8 +106,50 @@ public class Gameboard {
                         proceed = true;
                         break;
                     case 2:
-                        System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
-                        System.out.print("> ");
+                        while (!proceed) {
+                            System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
+                            System.out.print("> ");
+                            try {
+                                choice = scanner.nextInt();
+                            } catch (InputMismatchException | NumberFormatException e) {
+                                System.out.println("Your input is not a valid number!");
+                                scanner.next();
+                                continue;
+                            }
+                            switch (choice) {
+                                case 1:
+                                    for(Player player : players) {
+                                        player.getPlayer();
+                                    }
+                                    proceed = true;
+                                    break;
+                                case 2:
+                                    while (!proceed) {
+                                        System.out.print("Would you like to check");
+                                        for(int i=0;i<players.size();i++) {
+                                            System.out.print(" "+(i+1)+"."+players.get(i).getName()+" ");
+                                        }
+                                        System.out.println("\n> ");
+                                        try {
+                                            choice = scanner.nextInt();
+                                        } catch (InputMismatchException | NumberFormatException e) {
+                                            System.out.println("Your input is not a valid number!");
+                                            scanner.next();
+                                            continue;
+                                        }
+                                        if(choice>=1 && choice<=players.size()) {
+                                            players.get(choice-1).getPlayer();
+                                            proceed = true;
+                                        }
+                                        else {
+                                            System.out.println("Your choice is out of range!");
+                                        }
+                                    }
+                                    proceed = false;
+                                    break;
+                            }
+                        }
+                        proceed = false;
                         break;
                     case 3:
                         this.display_board();
@@ -160,6 +209,74 @@ public class Gameboard {
             System.out.println(".");
         }
     }
+
+    public void newGame(){
+        boolean proceed = false;
+        ArrayList<String> names = new ArrayList<String>(0);
+        while (!proceed) {
+            System.out.println("The first step of starting a new game is to choose 2~6 players, please enter number of players below");
+            System.out.print("> ");
+            int choice = -1;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException | NumberFormatException e) {
+                System.out.println("Your input is not a valid number!");
+                scanner.next();
+                continue;
+            }
+            if(choice >= 2 && choice <= 6) {
+                names = new ArrayList<String>(choice);
+                System.out.println("""
+                        Now you can type in the names of the players.
+                        You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
+                        Or type '!d #' where # is the id of the name you want to delete. (for example '!d 2')
+                        If you like to resize the number of player, type '!r'.""");
+                while(!proceed) {
+                    System.out.println("When players are ready, type '!p' to proceed. Current players:");
+                    if(names.isEmpty()) System.out.println("None");
+                    for (int i=0; i < names.size(); i++) {
+                        System.out.println((i+1)+". "+names.get(i));
+                    }
+                    System.out.print("> ");
+                    String nameInput = scanner.nextLine();
+                    if (nameInput.length() == 4 && nameInput.startsWith("!d ")){
+                        int deleteChoice = -1;
+                        try {
+                            deleteChoice = Integer.parseInt(nameInput.substring(3,4));
+                            if(deleteChoice<1 || deleteChoice > names.size()) throw new NumberFormatException();
+                        } catch (InputMismatchException | NumberFormatException e) {
+                            System.out.println("Your input is invalid!");
+                            scanner.next();
+                        }
+                        names.remove(deleteChoice-1);
+                    }
+                    else if(nameInput.equals("!r")){
+                        break;
+                    }
+                    else if(nameInput.equals("!p")){
+                        if(names.size() != choice){
+                            System.out.println("Oops...There's still empty slot");
+                            continue;
+                        }
+                        proceed = true;
+                    }
+                    else {
+                        for(String substringName : nameInput.split(";")){
+                            System.out.println(names.size());
+                            if(names.size() == choice) System.out.println("Slots are taken, player " + substringName.trim() + " is ignored");
+                            else names.add(substringName.trim());
+                        }
+                    }
+                }
+            }
+            else{
+                System.out.println("This is not a valid number of players!");
+            }
+        }
+        for(int i = 0; i<names.size();i++) {
+            joinPlayer(new Player(i, names.get(i), 1500, 1));
+        }
 
     public void saveGame(String filename) {
         StringBuilder json = new StringBuilder();
@@ -238,8 +355,8 @@ public class Gameboard {
     }
 
     public void display_board() {
-        String empty_board = "                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                        MONOPOLY                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+                                                                                       +---------------------\n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n                     |                                                                                       |                     \n---------------------+---------------------+---------------------+---------------------+---------------------+---------------------\n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     \n                     |                     |                     |                     |                     |                     ";
-        System.out.println(empty_board);
+        //21*5
+        System.out.println(emptyBoard);
     }
 
     // private String map_to_json(Map<String, Object> map) {
