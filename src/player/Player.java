@@ -59,10 +59,15 @@ public class Player {
         this.currentPosition = (this.currentPosition + total - 1) % 20 + 1;
     }
 
+
+    //move: moves the player around the board
+    public void move(){
+        this.currentPosition += rollDice()[3];
+        if(this.currentPosition > 20){currentPosition -= 20;}
+    }
     public int getId() {
         return this.id;
     }
-
     public String getName() {
         return this.name;
     }

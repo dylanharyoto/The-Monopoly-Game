@@ -4,8 +4,8 @@ import player.Player;
 
 public class Go extends Square {
     private static final int BONUS = 1500;
-    public Go(String name, int position) {
-        super(name, position);
+    public Go(int position) {
+        super(position);
     }
     @Override
     public void takeEffect(Player player) {
