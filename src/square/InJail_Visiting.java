@@ -6,7 +6,7 @@ import player.Player;
 
 public class Injail_Visiting extends Square {
 
-    public GoJail(String name, int position) {
+    public Injail_Visiting(String name, int position) {
         super(name, position);
     }
 
