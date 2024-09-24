@@ -60,11 +60,6 @@ public class Player {
     }
 
 
-    //move: moves the player around the board
-    public void move(){
-        this.currentPosition += rollDice()[3];
-        if(this.currentPosition > 20){currentPosition -= 20;}
-    }
     public int getId() {
         return this.id;
     }
