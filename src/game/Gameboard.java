@@ -1,8 +1,7 @@
 package game;
 
 import player.Player;
-import square.Property;
-import square.Square;
+import square.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class Gameboard {
     private int round;
     private int currentPlayerId;
     private int goPosition;
-    private String emptyBoard;
+    private String boardString;
     private int[] blockIndex = {0,22,44,66,88,110,902,1694,2486,3278,4070,4048,4026,4004,3982,3960,3168,2376,1594,792};
     private static int count = 0;
 
@@ -28,6 +27,42 @@ public class Gameboard {
 
         this.goPosition = -1;
         Gameboard.count += 1;
+        boardString = """
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                ---------------------+---------------------+---------------------+---------------------+---------------------+---------------------
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                ---------------------+                                                                                       +---------------------
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                ---------------------+                                        MONOPOLY                                       +---------------------
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                ---------------------+                                                                                       +---------------------
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                                     |                                                                                       |                    \s
+                ---------------------+---------------------+---------------------+---------------------+---------------------+---------------------
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s
+                                     |                     |                     |                     |                     |                    \s""";
     }
 
     public void joinPlayer(Player player){
@@ -247,7 +282,7 @@ public class Gameboard {
                             if(deleteChoice<1 || deleteChoice > names.size()) throw new NumberFormatException();
                         } catch (InputMismatchException | NumberFormatException e) {
                             System.out.println("Your input is invalid!");
-                            scanner.next();
+                            continue;
                         }
                         names.remove(deleteChoice-1);
                     }
@@ -263,8 +298,8 @@ public class Gameboard {
                     }
                     else {
                         for(String substringName : nameInput.split(";")){
-                            System.out.println(names.size());
-                            if(names.size() == choice) System.out.println("Slots are taken, player " + substringName.trim() + " is ignored");
+                            if(substringName.length()>10 || substringName.isEmpty()) System.out.println("One of the name length isn't permitted.");
+                            else if(names.size() == choice) System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
                             else names.add(substringName.trim());
                         }
                     }
@@ -278,6 +313,7 @@ public class Gameboard {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
     }
+
     public void saveGame(String filename) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
@@ -355,8 +391,52 @@ public class Gameboard {
     }
 
     public void display_board() {
-        //21*5
-        System.out.println(emptyBoard);
+        System.out.println(boardString);
+    }
+
+    public void replaceBlockBySquare(Square square) {
+        int position = blockIndex[square.getPosition()];
+        int rowLength = 132;
+        if(square instanceof Property) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem(((Property) square).getName()) + boardString.substring(position+21);
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("HKD "+((Property) square).getPrice()) + boardString.substring(position+21);
+        }
+        else if(square instanceof Go) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("GO!") + boardString.substring(position+21);
+        }
+        else if(square instanceof Chance) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("?CHANCE?") + boardString.substring(position+21);
+        }
+        else if(square instanceof GoJail) {
+            position += 2*rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("GO TO JAIL") + boardString.substring(position+21);
+        }
+        else if(square instanceof IncomeTax) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("INCOME TAX") + boardString.substring(position+21);
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("PAY 10%") + boardString.substring(position+21);
+        }
+        else if(square instanceof FreeParking) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("FREE PARKING") + boardString.substring(position+21);
+        }
+        else if(square instanceof InJailOrJustVisiting) {
+            position += rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("IN JAIL") + boardString.substring(position+21);
+            position += 2*rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("JUST VISITING") + boardString.substring(position+21);
+        }
+    }
+
+    private String replaceLineByItem(String item){
+        int itemLength = item.length();
+        String emptyLine = "                     ";
+        return(emptyLine.substring(0, 10-itemLength/2) + item + emptyLine.substring(10+(itemLength+1)/2));
     }
 
     // private String map_to_json(Map<String, Object> map) {
