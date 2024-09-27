@@ -1,13 +1,12 @@
 package square;
-import java.util.*;
 import player.Player;
 
 
 
 public class InJailOrJustVisiting extends Square {
 
-    public InJailOrJustVisiting(int position) {
-        super(position);
+    public InJailOrJustVisiting(int position, int id) {
+        super(position, id);
     }
 
 

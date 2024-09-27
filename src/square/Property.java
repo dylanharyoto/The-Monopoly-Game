@@ -6,8 +6,8 @@ public class Property extends Square {
     private int price;
     private int rent;
     private Player owner;
-    public Property(int position, String name, int price, int rent) {
-        super(position);
+    public Property(int position, int id, String name, int price, int rent) {
+        super(position, id);
         this.name = name;
         this.price = price;
         this.rent = rent;
@@ -33,20 +33,21 @@ public class Property extends Square {
             player.decreaseMoney(this.rent);
             owner.increaseMoney(this.rent);
         } else if (owner == null) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?\n1. Yes\n2. No");
-            System.out.print("> ");
-            String answer = scanner.next();
-            while (!answer.equals("1") && !answer.equals("2")) {
-                System.out.println("Invalid answer! Please type \"y\" for yes and \"n\" for no.");
+            try (Scanner scanner = new Scanner(System.in)) {
+                System.out.println("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?\n1. Yes\n2. No");
                 System.out.print("> ");
-                answer = scanner.next();
-            }
-            if (answer.equals("y")) {
-                player.decreaseMoney(this.price);
-                player.addProperties(this);
-                this.setOwner(player);
-                System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+                String answer = scanner.next();
+                while (!answer.equals("1") && !answer.equals("2")) {
+                    System.out.println("Invalid answer! Please type \"y\" for yes and \"n\" for no.");
+                    System.out.print("> ");
+                    answer = scanner.next();
+                }
+                if (answer.equals("y")) {
+                    player.decreaseMoney(this.price);
+                    player.addProperties(this);
+                    this.setOwner(player);
+                    System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+                }
             }
         }
     }

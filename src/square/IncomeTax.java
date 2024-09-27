@@ -2,8 +2,8 @@ package square;
 import player.Player;
 
 public class IncomeTax extends Square {
-    public IncomeTax(String name, int position) {
-        super(position);
+    public IncomeTax(int position, int id) {
+        super(position, id);
     }
     @Override
     public void takeEffect(Player player) {

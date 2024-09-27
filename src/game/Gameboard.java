@@ -3,8 +3,7 @@ package game;
 import player.Player;
 import square.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Gameboard {
@@ -15,7 +14,8 @@ public class Gameboard {
     private int currentPlayerId;
     private int goPosition;
     private String boardString;
-    private int[] blockIndex = {0,22,44,66,88,110,902,1694,2486,3278,4070,4048,4026,4004,3982,3960,3168,2376,1594,792};
+    private int[] blockIndex = { 0, 22, 44, 66, 88, 110, 902, 1694, 2486, 3278, 4070, 4048, 4026, 4004, 3982, 3960,
+            3168, 2376, 1594, 792 };
     private static int count = 0;
 
     public Gameboard() {
@@ -65,7 +65,7 @@ public class Gameboard {
                                      |                     |                     |                     |                     |                    \s""";
     }
 
-    public void joinPlayer(Player player){
+    public void joinPlayer(Player player) {
         this.players.add(player);
     }
 
@@ -99,19 +99,17 @@ public class Gameboard {
             return null;
     }
 
-
     /*
-    private int getPositionBySquareName (String name) {
-        for (Square square : this.squares) {
-            if (square.getName().equals(name)){
-                return square.getPosition();
-            }
-            else return -1; // -1 denotes that the given name of square is not defined or added to the current gameboard
-        }
-    }
-    */
-
-
+     * private int getPositionBySquareName (String name) {
+     * for (Square square : this.squares) {
+     * if (square.getName().equals(name)){
+     * return square.getPosition();
+     * }
+     * else return -1; // -1 denotes that the given name of square is not defined or
+     * added to the current gameboard
+     * }
+     * }
+     */
 
     public boolean checkGameStatus() {
         return this.round < 100 && (players.size() > 1 && players.size() < 7);
@@ -153,7 +151,7 @@ public class Gameboard {
                             }
                             switch (choice) {
                                 case 1:
-                                    for(Player player : players) {
+                                    for (Player player : players) {
                                         player.getPlayer();
                                     }
                                     proceed = true;
@@ -161,8 +159,8 @@ public class Gameboard {
                                 case 2:
                                     while (!proceed) {
                                         System.out.print("Would you like to check");
-                                        for(int i=0;i<players.size();i++) {
-                                            System.out.print(" "+(i+1)+"."+players.get(i).getName()+" ");
+                                        for (int i = 0; i < players.size(); i++) {
+                                            System.out.print(" " + (i + 1) + "." + players.get(i).getName() + " ");
                                         }
                                         System.out.println("\n> ");
                                         try {
@@ -172,11 +170,10 @@ public class Gameboard {
                                             scanner.next();
                                             continue;
                                         }
-                                        if(choice>=1 && choice<=players.size()) {
-                                            players.get(choice-1).getPlayer();
+                                        if (choice >= 1 && choice <= players.size()) {
+                                            players.get(choice - 1).getPlayer();
                                             proceed = true;
-                                        }
-                                        else {
+                                        } else {
                                             System.out.println("Your choice is out of range!");
                                         }
                                     }
@@ -245,11 +242,12 @@ public class Gameboard {
         }
     }
 
-    public void newGame(){
+    public void newGame() {
         boolean proceed = false;
         ArrayList<String> names = new ArrayList<String>(0);
         while (!proceed) {
-            System.out.println("The first step of starting a new game is to choose 2~6 players, please enter number of players below");
+            System.out.println(
+                    "The first step of starting a new game is to choose 2~6 players, please enter number of players below");
             System.out.print("> ");
             int choice = -1;
             try {
@@ -260,56 +258,57 @@ public class Gameboard {
                 scanner.next();
                 continue;
             }
-            if(choice >= 2 && choice <= 6) {
+            if (choice >= 2 && choice <= 6) {
                 names = new ArrayList<String>(choice);
                 System.out.println("""
                         Now you can type in the names of the players.
                         You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
                         Or type '!d #' where # is the id of the name you want to delete. (for example '!d 2')
                         If you like to resize the number of player, type '!r'.""");
-                while(!proceed) {
+                while (!proceed) {
                     System.out.println("When players are ready, type '!p' to proceed. Current players:");
-                    if(names.isEmpty()) System.out.println("None");
-                    for (int i=0; i < names.size(); i++) {
-                        System.out.println((i+1)+". "+names.get(i));
+                    if (names.isEmpty())
+                        System.out.println("None");
+                    for (int i = 0; i < names.size(); i++) {
+                        System.out.println((i + 1) + ". " + names.get(i));
                     }
                     System.out.print("> ");
                     String nameInput = scanner.nextLine();
-                    if (nameInput.length() == 4 && nameInput.startsWith("!d ")){
+                    if (nameInput.length() == 4 && nameInput.startsWith("!d ")) {
                         int deleteChoice = -1;
                         try {
-                            deleteChoice = Integer.parseInt(nameInput.substring(3,4));
-                            if(deleteChoice<1 || deleteChoice > names.size()) throw new NumberFormatException();
+                            deleteChoice = Integer.parseInt(nameInput.substring(3, 4));
+                            if (deleteChoice < 1 || deleteChoice > names.size())
+                                throw new NumberFormatException();
                         } catch (InputMismatchException | NumberFormatException e) {
                             System.out.println("Your input is invalid!");
                             continue;
                         }
-                        names.remove(deleteChoice-1);
-                    }
-                    else if(nameInput.equals("!r")){
+                        names.remove(deleteChoice - 1);
+                    } else if (nameInput.equals("!r")) {
                         break;
-                    }
-                    else if(nameInput.equals("!p")){
-                        if(names.size() != choice){
+                    } else if (nameInput.equals("!p")) {
+                        if (names.size() != choice) {
                             System.out.println("Oops...There's still empty slot");
                             continue;
                         }
                         proceed = true;
-                    }
-                    else {
-                        for(String substringName : nameInput.split(";")){
-                            if(substringName.length()>10 || substringName.isEmpty()) System.out.println("One of the name length isn't permitted.");
-                            else if(names.size() == choice) System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
-                            else names.add(substringName.trim());
+                    } else {
+                        for (String substringName : nameInput.split(";")) {
+                            if (substringName.length() > 10 || substringName.isEmpty())
+                                System.out.println("One of the name length isn't permitted.");
+                            else if (names.size() == choice)
+                                System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
+                            else
+                                names.add(substringName.trim());
                         }
                     }
                 }
-            }
-            else{
+            } else {
                 System.out.println("This is not a valid number of players!");
             }
         }
-        for(int i = 0; i<names.size();i++) {
+        for (int i = 0; i < names.size(); i++) {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
     }
@@ -318,7 +317,7 @@ public class Gameboard {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
 
-        json.append("\"id\":" + Gameboard.count);
+        json.append("\"id\": ").append(Gameboard.count).append(",\n");
 
         json.append("\"players\": [\n");
         for (int i = 0; i < players.size(); ++i) {
@@ -345,40 +344,44 @@ public class Gameboard {
             }
         }
         json.append("\n],\n");
-        json.append("\"properties\": [\n");
+
+        json.append("\"squares\": [\n");
         for (int i = 0; i < squares.size(); ++i) {
-            if (squares.get(i) instanceof Property) {
-                Property property = (Property) squares.get(i);
-                json.append("{\n");
-                json.append("\"position\": ").append(property.getPosition()).append(",\n");
-                json.append("\"name\": \"").append(property.getName()).append("\",\n");
-                json.append("\"price\": ").append(property.getPrice()).append(",\n");
-                json.append("\"rent\": ").append(property.getRent()).append("\n");
-                json.append("}");
-                if (i < squares.size() - 1) {
-                    json.append(",\n");
-                }
+            Square square = squares.get(i);
+            json.append("{\n");
+            json.append("\"id\": " + square.getId() + ",\n");
+            String type = null;
+            String details = "{}";
+            if (square instanceof Property) {
+                Property property = (Property) square;
+                type = "P";
+                details = String.format("{\n\"name\": \"%s\",\n\"price\": %f,\n\"rent\": %f\n}", property.getName(), property.getPrice(), property.getRent());
+            } else if (square instanceof Go) {
+                type = "G";
+            } else if (square instanceof Chance) {
+                type = "C";
+            } else if (square instanceof IncomeTax) {
+                type = "I";
+            } else if (square instanceof FreeParking) {
+                type = "F";
+            } else if (square instanceof GoJail) {
+                type = "J";
+            } else if (square instanceof InJailOrJustVisiting) {
+                type = "V";
+            }
+            
+            json.append("\"type\": \"" + type + "\",\n");
+            json.append("\"details\": " + details + "\n");
+
+            json.append("}");
+            if (i < squares.size() - 1) {
+                json.append(",\n");
             }
         }
-        json.append("\n],\n");
-        // Add "go" position
-        json.append("\"go\": {\n");
-        json.append("\"position\": ").append(this.goPosition).append("\n");
-        json.append("},\n");
+        json.append("\n]\n");
 
-        // Add other elements like "chance", "incomeTax", etc.
-        json.append("\"chance\": {\n");
-        json.append("\"positions\": [9, 13, 19]\n");
-        json.append("},\n");
-
-        json.append("\"incomeTax\": {\n");
-        json.append("\"position\": 4\n");
-        json.append("},\n");
-
-        json.append("\"freeParking\": {\n");
-        json.append("\"position\": 11\n");
-        json.append("}\n");
-
+        // Add additional elements if necessary
+        // Example entries for non-property squares
         json.append("}");
 
         try (FileWriter writer = new FileWriter(filename + ".json")) {
@@ -397,62 +400,49 @@ public class Gameboard {
     public void replaceBlockBySquare(Square square) {
         int position = blockIndex[square.getPosition()];
         int rowLength = 132;
-        if(square instanceof Property) {
+        if (square instanceof Property) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem(((Property) square).getName()) + boardString.substring(position+21);
+            boardString = boardString.substring(0, position) + replaceLineByItem(((Property) square).getName())
+                    + boardString.substring(position + 21);
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("HKD "+((Property) square).getPrice()) + boardString.substring(position+21);
-        }
-        else if(square instanceof Go) {
+            boardString = boardString.substring(0, position)
+                    + replaceLineByItem("HKD " + ((Property) square).getPrice()) + boardString.substring(position + 21);
+        } else if (square instanceof Go) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("GO!") + boardString.substring(position+21);
-        }
-        else if(square instanceof Chance) {
+            boardString = boardString.substring(0, position) + replaceLineByItem("GO!")
+                    + boardString.substring(position + 21);
+        } else if (square instanceof Chance) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("?CHANCE?") + boardString.substring(position+21);
-        }
-        else if(square instanceof GoJail) {
-            position += 2*rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("GO TO JAIL") + boardString.substring(position+21);
-        }
-        else if(square instanceof IncomeTax) {
+            boardString = boardString.substring(0, position) + replaceLineByItem("?CHANCE?")
+                    + boardString.substring(position + 21);
+        } else if (square instanceof GoJail) {
+            position += 2 * rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("GO TO JAIL")
+                    + boardString.substring(position + 21);
+        } else if (square instanceof IncomeTax) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("INCOME TAX") + boardString.substring(position+21);
+            boardString = boardString.substring(0, position) + replaceLineByItem("INCOME TAX")
+                    + boardString.substring(position + 21);
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("PAY 10%") + boardString.substring(position+21);
-        }
-        else if(square instanceof FreeParking) {
+            boardString = boardString.substring(0, position) + replaceLineByItem("PAY 10%")
+                    + boardString.substring(position + 21);
+        } else if (square instanceof FreeParking) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("FREE PARKING") + boardString.substring(position+21);
-        }
-        else if(square instanceof InJailOrJustVisiting) {
+            boardString = boardString.substring(0, position) + replaceLineByItem("FREE PARKING")
+                    + boardString.substring(position + 21);
+        } else if (square instanceof InJailOrJustVisiting) {
             position += rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("IN JAIL") + boardString.substring(position+21);
-            position += 2*rowLength;
-            boardString = boardString.substring(0, position) + replaceLineByItem("JUST VISITING") + boardString.substring(position+21);
+            boardString = boardString.substring(0, position) + replaceLineByItem("IN JAIL")
+                    + boardString.substring(position + 21);
+            position += 2 * rowLength;
+            boardString = boardString.substring(0, position) + replaceLineByItem("JUST VISITING")
+                    + boardString.substring(position + 21);
         }
     }
 
-    private String replaceLineByItem(String item){
+    private String replaceLineByItem(String item) {
         int itemLength = item.length();
         String emptyLine = "                     ";
-        return(emptyLine.substring(0, 10-itemLength/2) + item + emptyLine.substring(10+(itemLength+1)/2));
+        return (emptyLine.substring(0, 10 - itemLength / 2) + item + emptyLine.substring(10 + (itemLength + 1) / 2));
     }
-
-    // private String map_to_json(Map<String, Object> map) {
-    // StringBuilder json = new StringBuilder("{");
-    // for (Map.Entry<String, Object> entry : map.entrySet()) {
-    // json.append("\"").append(entry.getKey()).append("\":");
-    // if (entry.getValue() instanceof Map) {
-    // json.append(map_to_json((Map<String, Object>) entry.getValue()));
-    // } else {
-    // json.append("\"").append(entry.getValue()).append("\"");
-    // }
-    // json.append(",");
-    // }
-    // json.deleteCharAt(json.length() - 1); // Remove the trailing comma
-    // json.append("}");
-    // return json.toString();
-    // }
-
 }
