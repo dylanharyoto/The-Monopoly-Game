@@ -390,7 +390,7 @@ public class Gameboard {
         }
     }
 
-    public void display_board() {
+    public void displayBoard() {
         System.out.println(boardString);
     }
 
