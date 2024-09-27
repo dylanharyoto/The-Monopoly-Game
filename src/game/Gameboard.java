@@ -187,7 +187,7 @@ public class Gameboard {
                         proceed = false;
                         break;
                     case 3:
-                        this.display_board();
+                        this.displayBoard();
                         break;
                 }
             }
