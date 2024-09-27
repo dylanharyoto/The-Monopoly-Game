@@ -355,7 +355,8 @@ public class Gameboard {
             if (square instanceof Property) {
                 Property property = (Property) square;
                 type = "P";
-                details = String.format("{\n\"name\": \"%s\",\n\"price\": %f,\n\"rent\": %f\n}", property.getName(), property.getPrice(), property.getRent());
+                details = String.format("{\n\"name\": \"%s\",\n\"price\": %f,\n\"rent\": %f\n}", property.getName(),
+                        property.getPrice(), property.getRent());
             } else if (square instanceof Go) {
                 type = "G";
             } else if (square instanceof Chance) {
@@ -369,7 +370,7 @@ public class Gameboard {
             } else if (square instanceof InJailOrJustVisiting) {
                 type = "V";
             }
-            
+
             json.append("\"type\": \"" + type + "\",\n");
             json.append("\"details\": " + details + "\n");
 
@@ -390,6 +391,101 @@ public class Gameboard {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to save game.");
+        }
+    }
+
+    public void loadGame(String filename) {
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename + ".json"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load game.");
+            return;
+        }
+    
+        String jsonContent = contentBuilder.toString();
+        jsonContent = jsonContent.replaceAll("\\s+", "");
+    
+        try {
+            String gameIdStr = jsonContent.split("\"id\":")[1].split(",")[0];
+            int gameId = Integer.parseInt(gameIdStr);
+            Gameboard.count = gameId; 
+    
+            String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
+            String[] playerObjects = playersStr.split("\\},\\{");
+            players.clear(); 
+    
+            for (String playerObjStr : playerObjects) {
+                playerObjStr = playerObjStr.replaceAll("\\{|\\}", ""); 
+    
+                int playerId = Integer.parseInt(playerObjStr.split("\"id\":")[1].split(",")[0]);
+                String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
+                int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
+                int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
+    
+                Player player = new Player(playerId, playerName, playerMoney, currentPosition);
+    
+                String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
+                String[] propertyPositions = propertiesStr.split(",");
+                for (String propPos : propertyPositions) {
+                    int propertyPosition = Integer.parseInt(propPos.trim());
+                    Property property = (Property) squares.get(propertyPosition); 
+                    player.addProperty(property);
+                }
+    
+                players.add(player);
+            }
+    
+            String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
+            String[] squareObjects = squaresStr.split("\\},\\{");
+            squares.clear(); 
+    
+            for (String squareObjStr : squareObjects) {
+                squareObjStr = squareObjStr.replaceAll("\\{|\\}", ""); 
+    
+                int squareId = Integer.parseInt(squareObjStr.split("\"id\":")[1].split(",")[0]);
+                String type = squareObjStr.split("\"type\":\"")[1].split("\"")[0];
+    
+                Square square = null;
+    
+                switch (type) {
+                    case "P": 
+                        String detailsStr = squareObjStr.split("\"details\":\\{")[1].split("\\}")[0];
+                        String propertyName = detailsStr.split("\"name\":\"")[1].split("\"")[0];
+                        int price = Integer.parseInt(detailsStr.split("\"price\":")[1].split(",")[0]);
+                        int rent = Integer.parseInt(detailsStr.split("\"rent\":")[1].split(",")[0]);
+                        square = new Property(squareId, propertyName, price, rent);
+                        break;
+                    case "G":  
+                        square = new Go(squareId);
+                        break;
+                    case "C":  
+                        square = new Chance(squareId);
+                        break;
+                    case "I":  
+                        square = new IncomeTax(squareId);
+                        break;
+                    case "F":  
+                        square = new FreeParking(squareId);
+                        break;
+                    case "J":  
+                        square = new GoJail(squareId);
+                        break;
+                    case "V":  
+                        square = new InJailOrJustVisiting(squareId);
+                        break;
+                }
+                squares.add(square);
+            }
+    
+            System.out.println("Game loaded successfully from " + filename + ".json");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to load game.");
         }
     }
 

@@ -6,6 +6,9 @@ import java.util.Random;
 
 public class Chance extends Square {
     private Random random = new Random();
+    public Chance(int id) {
+        super(id);
+    }
     public Chance(int position, int id) {
         super(position, id);
     }

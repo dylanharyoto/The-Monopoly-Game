@@ -86,7 +86,7 @@ public class Player {
     public int getInJailDuration() {
         return this.inJailDuration;
     }
-    public void addProperties(Property property) {
+    public void addProperty(Property property) {
         this.properties.add(property);
     }
     public ArrayList<Property> getProperties() {

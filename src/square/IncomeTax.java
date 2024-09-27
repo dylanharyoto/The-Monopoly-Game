@@ -2,6 +2,9 @@ package square;
 import player.Player;
 
 public class IncomeTax extends Square {
+    public IncomeTax(int id) {
+        super(id);
+    }
     public IncomeTax(int position, int id) {
         super(position, id);
     }

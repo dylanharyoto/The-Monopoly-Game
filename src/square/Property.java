@@ -6,6 +6,12 @@ public class Property extends Square {
     private int price;
     private int rent;
     private Player owner;
+    public Property(int id, String name, int price, int rent) {
+        super(id);
+        this.name = name;
+        this.price = price;
+        this.rent = rent;
+    }
     public Property(int position, int id, String name, int price, int rent) {
         super(position, id);
         this.name = name;
@@ -44,7 +50,7 @@ public class Property extends Square {
                 }
                 if (answer.equals("y")) {
                     player.decreaseMoney(this.price);
-                    player.addProperties(this);
+                    player.addProperty(this);
                     this.setOwner(player);
                     System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
                 }

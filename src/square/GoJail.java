@@ -2,6 +2,9 @@ package square;
 import player.Player;
 
 public class GoJail extends Square {
+    public GoJail(int id) {
+        super(id);
+    }
     public GoJail(int position, int id) {
         super(position, id);
     }
