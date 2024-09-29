@@ -63,6 +63,32 @@ public class Gameboard {
                                      |                     |                     |                     |                     |                    \s
                                      |                     |                     |                     |                     |                    \s
                                      |                     |                     |                     |                     |                    \s""";
+        boolean proceed = false;
+        while(!proceed) {
+            System.out.println("Would you like to start a new game or load from an existing game?\n1. new game\n2.load game\n>");
+            int choice = -1;
+            try{
+                choice = scanner.nextInt();
+            } catch (InputMismatchException | NumberFormatException e) {
+                System.out.println("Your input is not a valid number!");
+                scanner.next();
+                continue;
+            }
+            if(choice == 1) {
+                if(newGame()) proceed = true;
+            }else if(choice == 2) {
+                while(!proceed){
+                    System.out.println("Please input the json filename here>");
+                    String filename = scanner.next();
+                    filename = filename.endsWith(".json") ? filename : filename + ".json";
+                    if(loadGame(filename, 1)) proceed = true;
+                    startGame();
+                }
+            }else{
+                System.out.println("Your input is not a valid number!");
+            }
+        }
+        System.out.println("Thanks for playing!");
     }
 
     public void joinPlayer(Player player) {
@@ -242,16 +268,20 @@ public class Gameboard {
         }
     }
 
-    public void newGame() {
+    private boolean newGame() {
         boolean proceed = false;
         ArrayList<String> names = new ArrayList<String>(0);
         while (!proceed) {
             System.out.println(
-                    "The first step of starting a new game is to choose 2~6 players, please enter number of players below");
+                    "The first step of starting a new game is to choose 2~6 players, please enter number of players below, or enter '!r' to return to last step");
             System.out.print("> ");
             int choice = -1;
             try {
-                choice = scanner.nextInt();
+                String returnSignal = scanner.next();
+                if (returnSignal.equals("!r")) {
+                    return false;
+                }
+                choice = Integer.parseInt(returnSignal);
                 scanner.nextLine();
             } catch (InputMismatchException | NumberFormatException e) {
                 System.out.println("Your input is not a valid number!");
@@ -292,7 +322,38 @@ public class Gameboard {
                             System.out.println("Oops...There's still empty slot");
                             continue;
                         }
-                        proceed = true;
+                        while(!proceed){
+                            System.out.println("Would you like to\n1. start with default map\n2. start by loading map\n3. return\n>");
+                            try {
+                                choice = scanner.nextInt();
+                            } catch (InputMismatchException | NumberFormatException e) {
+                                System.out.println("Your input is not a valid number!");
+                                scanner.next();
+                                continue;
+                            }
+                            if(choice == 1) {
+                                if(!loadGame("game/default_board.json", 0))continue;
+                                proceed = true;
+                                break;
+                            }
+                            else if(choice == 2){
+                                while(!proceed){
+                                    System.out.println("Please input the json filename or type '!r' to return here>");
+                                    String filename = scanner.next();
+                                    if (filename.equals("!r")) break;
+                                    if(loadGame(filename, 0))continue;
+                                    proceed = true;
+                                }
+                            }
+                            else if(choice == 3){
+                                break;
+                            }
+                            else {
+                                System.out.println("Your input is not a valid number!");
+                            }
+
+                        }
+                        choice = names.size();
                     } else {
                         for (String substringName : nameInput.split(";")) {
                             if (substringName.length() > 10 || substringName.isEmpty())
@@ -311,6 +372,8 @@ public class Gameboard {
         for (int i = 0; i < names.size(); i++) {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }
+        startGame();
+        return true;
     }
 
     public void saveGame(String filename) {
@@ -394,9 +457,9 @@ public class Gameboard {
         }
     }
 
-    public void loadGame(String filename) {
+    public boolean loadGame(String filename, int mode) {
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename + ".json"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename.endsWith(".json")?filename:filename + ".json"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
@@ -404,42 +467,14 @@ public class Gameboard {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to load game.");
-            return;
+            return false;
         }
     
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
+        if(mode==0 && jsonContent.startsWith("{\"id\"") || mode==1 && !jsonContent.startsWith("{\"id\"")) return false;
     
         try {
-            String gameIdStr = jsonContent.split("\"id\":")[1].split(",")[0];
-            int gameId = Integer.parseInt(gameIdStr);
-            Gameboard.count = gameId; 
-    
-            String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
-            String[] playerObjects = playersStr.split("\\},\\{");
-            players.clear(); 
-    
-            for (String playerObjStr : playerObjects) {
-                playerObjStr = playerObjStr.replaceAll("\\{|\\}", ""); 
-    
-                int playerId = Integer.parseInt(playerObjStr.split("\"id\":")[1].split(",")[0]);
-                String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
-                int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
-                int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
-    
-                Player player = new Player(playerId, playerName, playerMoney, currentPosition);
-    
-                String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
-                String[] propertyPositions = propertiesStr.split(",");
-                for (String propPos : propertyPositions) {
-                    int propertyPosition = Integer.parseInt(propPos.trim());
-                    Property property = (Property) squares.get(propertyPosition); 
-                    player.addProperty(property);
-                }
-    
-                players.add(player);
-            }
-    
             String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
             String[] squareObjects = squaresStr.split("\\},\\{");
             squares.clear(); 
@@ -453,8 +488,8 @@ public class Gameboard {
                 Square square = null;
     
                 switch (type) {
-                    case "P": 
-                        String detailsStr = squareObjStr.split("\"details\":\\{")[1].split("\\}")[0];
+                    case "P":
+                        String detailsStr = squareObjStr.split("\"details\":")[1];
                         String propertyName = detailsStr.split("\"name\":\"")[1].split("\"")[0];
                         int price = Integer.parseInt(detailsStr.split("\"price\":")[1].split(",")[0]);
                         int rent = Integer.parseInt(detailsStr.split("\"rent\":")[1].split(",")[0]);
@@ -481,12 +516,45 @@ public class Gameboard {
                 }
                 squares.add(square);
             }
+
+
+            if(mode == 1) {
+                String gameIdStr = jsonContent.split("\"id\":")[1].split(",")[0];
+
+                String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
+                String[] playerObjects = playersStr.split("\\},\\{");
+
+                int gameId = Integer.parseInt(gameIdStr);
+                Gameboard.count = gameId;
+                players.clear();
+                for (String playerObjStr : playerObjects) {
+                    playerObjStr = playerObjStr.replaceAll("\\{|\\}", "");
+
+                    int playerId = Integer.parseInt(playerObjStr.split("\"id\":")[1].split(",")[0]);
+                    String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
+                    int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
+                    int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
+
+                    Player player = new Player(playerId, playerName, playerMoney, currentPosition);
+
+                    String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
+                    String[] propertyPositions = propertiesStr.split(",");
+                    for (String propPos : propertyPositions) {
+                        int propertyPosition = Integer.parseInt(propPos.trim());
+                        Property property = (Property) squares.get(propertyPosition);
+                        player.addProperty(property);
+                    }
+
+                    players.add(player);
+                }
+            }
     
             System.out.println("Game loaded successfully from " + filename + ".json");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to load game.");
         }
+        return true;
     }
 
     public void displayBoard() {

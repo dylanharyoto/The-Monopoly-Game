@@ -1,70 +1,92 @@
 {
-  "property": {
-    "Central": {
-      "Pos": 2,
-      "Price": 800,
-      "Rent": 90
+  "properties": [
+    {
+      "position": 2,
+      "name": "Central",
+      "price": 800,
+      "rent": 90
     },
-    "Wan Chai": {
-      "Pos": 3,
-      "Price": 700,
-      "Rent": 65
+    {
+      "position": 3,
+      "name": "Wan Chai",
+      "price": 700,
+      "rent": 65
     },
-    "Stanley": {
-      "Pos": 5,
-      "Price": 600,
-      "Rent": 60
+    {
+      "position": 5,
+      "name": "Stanley",
+      "price": 600,
+      "rent": 60
     },
-    "Shek O": {
-      "Pos": 7,
-      "Price": 400,
-      "Rent": 10
+    {
+      "position": 7,
+      "name": "Shek O",
+      "price": 400,
+      "rent": 10
     },
-    "Mong Kok": {
-      "Pos": 8,
-      "Price": 500,
-      "Rent": 40
+    {
+      "position": 8,
+      "name": "Mong Kok",
+      "price": 500,
+      "rent": 40
     },
-    "Tsing Yi": {
-      "Pos": 10,
-      "Price": 400,
-      "Rent": 15
+    {
+      "position": 10,
+      "name": "Tsing Yi",
+      "price": 400,
+      "rent": 15
     },
-    "Shatin": {
-      "Pos": 12,
-      "Price": 700,
-      "Rent": 75
+    {
+      "position": 12,
+      "name": "Shatin",
+      "price": 700,
+      "rent": 75
     },
-    "Tuen Mun": {
-      "Pos": 14,
-      "Price": 400,
-      "Rent": 20
+    {
+      "position": 14,
+      "name": "Tuen Mun",
+      "price": 400,
+      "rent": 20
     },
-    "Tai Po": {
-      "Pos": 15,
-      "Price": 500,
-      "Rent": 25
+    {
+      "position": 15,
+      "name": "Tai Po",
+      "price": 500,
+      "rent": 25
     },
-    "Sai Kung": {
-      "Pos": 17,
-      "Price": 400,
-      "Rent": 10
+    {
+      "position": 17,
+      "name": "Sai Kung",
+      "price": 400,
+      "rent": 10
     },
-    "Yuen Long": {
-      "Pos": 18,
-      "Price": 400,
-      "Rent": 25
+    {
+      "position": 18,
+      "name": "Yuen Long",
+      "price": 400,
+      "rent": 25
     },
-    "Tai O": {
-      "Pos": 20,
-      "Price": 600,
-      "Rent": 25
+    {
+      "position": 20,
+      "name": "Tai O",
+      "price": 600,
+      "rent": 25
     }
+  ],
+  "go": {
+    "position": 1
   },
-  "GO": 1,
-  "Chance": "9,13,19",
-  "Income Tax": 4,
-  "Free Parking": 11,
-  "Go To Jail": 16,
-  "In Jail": 6
+  "chance": {
+    "positions": [
+      9,
+      13,
+      19
+    ]
+  },
+  "incomeTax": {
+    "position": 4
+  },
+  "freeParking": {
+    "position": 11
+  }
 }

@@ -31,6 +31,7 @@ public class Player {
         this.name = name;
         this.money = money;
         this.currentPosition = currentPosition;
+        this.properties = new ArrayList<>();
     }
 
     //Player information, print all the attributes of the players
@@ -40,9 +41,8 @@ public class Player {
         System.out.println("Player money " + this.money + "\n");
         System.out.println("Player current position " + this.currentPosition + "\n");
         System.out.println("Player remaining jail turn " + this.inJailDuration + "\n");
-        while(this.properties.get(i) != null && i < 20) {
-            System.out.println("Player property occupation " + this.properties.get(i) +"\n");
-            i++;
+        for(Property p : this.properties){
+            System.out.println("Player property occupation " + p.getName() +"\n");
         }
     }
 
