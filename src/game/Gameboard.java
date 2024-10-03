@@ -6,6 +6,8 @@ import square.*;
 import java.io.*;
 import java.util.*;
 
+import controller.Main;
+
 public class Gameboard {
     private Scanner scanner;
     private ArrayList<Player> players;
@@ -65,15 +67,7 @@ public class Gameboard {
                                      |                     |                     |                     |                     |                    \s""";
         boolean proceed = false;
         while(!proceed) {
-            System.out.println("Would you like to start a new game or load from an existing game?\n1. new game\n2.load game\n>");
-            int choice = -1;
-            try{
-                choice = scanner.nextInt();
-            } catch (InputMismatchException | NumberFormatException e) {
-                System.out.println("Your input is not a valid number!");
-                scanner.next();
-                continue;
-            }
+            int choice = Integer.parseInt(Main.inputPromptTwo("Would you like to start a new game or load from an existing game?\n1. new game\n2.load game","1,2"));
             if(choice == 1) {
                 if(newGame()) proceed = true;
             }else if(choice == 2) {
@@ -84,8 +78,6 @@ public class Gameboard {
                     if(loadGame(filename, 1)) proceed = true;
                     startGame();
                 }
-            }else{
-                System.out.println("Your input is not a valid number!");
             }
         }
         System.out.println("Thanks for playing!");
@@ -166,15 +158,20 @@ public class Gameboard {
                         break;
                     case 2:
                         while (!proceed) {
-                            System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
-                            System.out.print("> ");
-                            try {
-                                choice = scanner.nextInt();
-                            } catch (InputMismatchException | NumberFormatException e) {
-                                System.out.println("Your input is not a valid number!");
-                                scanner.next();
-                                continue;
+                            choice = -1;
+                            while (choice!=1 && choice !=2) {
+                                System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
+                                System.out.print("> ");
+                                try {
+                                    choice = scanner.nextInt();
+                                } catch (InputMismatchException | NumberFormatException e) {
+                                    System.out.println("Your input is not a valid number!");
+                                    scanner.next();
+                                    continue;
+                                }
                             }
+
+
                             switch (choice) {
                                 case 1:
                                     for (Player player : players) {
@@ -332,7 +329,7 @@ public class Gameboard {
                                 continue;
                             }
                             if(choice == 1) {
-                                if(!loadGame("game/default_board.json", 0))continue;
+                                if(!loadGame("", 0))continue;
                                 proceed = true;
                                 break;
                             }
@@ -609,4 +606,5 @@ public class Gameboard {
         String emptyLine = "                     ";
         return (emptyLine.substring(0, 10 - itemLength / 2) + item + emptyLine.substring(10 + (itemLength + 1) / 2));
     }
+
 }
