@@ -1,5 +1,4 @@
-package square;
-import player.Player;
+package model;
 
 public class GoJail extends Square {
     public GoJail(int id) {

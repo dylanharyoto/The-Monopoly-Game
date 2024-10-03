@@ -1,5 +1,4 @@
-package square;
-import player.Player;
+package model;
 
 public class IncomeTax extends Square {
     public IncomeTax(int id) {

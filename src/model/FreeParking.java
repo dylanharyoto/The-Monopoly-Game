@@ -1,6 +1,4 @@
-package square;
-
-import player.Player;
+package model;
 
 public class FreeParking extends Square {
     public FreeParking(int id) {

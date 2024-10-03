@@ -1,6 +1,4 @@
-package square;
-
-import player.Player;
+package model;
 
 public class Go extends Square {
     private static final int BONUS = 1500;

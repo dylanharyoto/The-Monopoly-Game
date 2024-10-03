@@ -1,5 +1,6 @@
-package square;
-import player.Player;
+package model;
+import controller.Main;
+
 import java.util.Scanner;
 public class Property extends Square {
     private String name;
@@ -40,15 +41,11 @@ public class Property extends Square {
             owner.increaseMoney(this.rent);
         } else if (owner == null) {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?\n1. Yes\n2. No");
-            System.out.print("> ");
-            String answer = scanner.next();
-            while (!answer.equals("1") && !answer.equals("2")) {
-                System.out.println("Invalid answer! Please type \"y\" for yes and \"n\" for no.");
-                System.out.print("> ");
-                answer = scanner.next();
-            }
-            if (answer.equals("y")) {
+            System.out.println("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?");
+
+            String answer = Main.inputPrompt("Please type \"1\" for yes and \"2\" for no.","1,2",scanner);
+
+            if (answer.equals("1")) {
                 player.decreaseMoney(this.price);
                 player.addProperty(this);
                 this.setOwner(player);

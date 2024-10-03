@@ -1,7 +1,4 @@
-package game;
-
-import player.Player;
-import square.*;
+package model;
 
 import java.io.*;
 import java.util.*;
@@ -67,20 +64,18 @@ public class Gameboard {
                                      |                     |                     |                     |                     |                    \s""";
         boolean proceed = false;
         while(!proceed) {
-            int choice = Integer.parseInt(Main.inputPromptTwo("Would you like to start a new game or load from an existing game?\n1. new game\n2.load game","1,2"));
+            int choice = Integer.parseInt(Main.inputPrompt("Would you like to start a new game or load from an existing game?\n1. new game\n2.load game","1,2",scanner));
             if(choice == 1) {
                 if(newGame()) proceed = true;
             }else if(choice == 2) {
                 while(!proceed){
-                    System.out.println("Please input the json filename here>");
-                    String filename = scanner.next();
+                    String filename = Main.inputPrompt("Please enter your file name here",",",scanner);
                     filename = filename.endsWith(".json") ? filename : filename + ".json";
                     if(loadGame(filename, 1)) proceed = true;
                     startGame();
                 }
             }
         }
-        System.out.println("Thanks for playing!");
     }
 
     public void joinPlayer(Player player) {
@@ -139,95 +134,48 @@ public class Gameboard {
             Player currentPlayer = getNextPlayer();
             boolean proceed = false;
             int initialPosition = currentPlayer.getCurrentPosition();
-            while (!proceed) {
-                System.out.println("Now, it's " + currentPlayer.getName()
-                        + "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board");
-                System.out.print("> ");
-                int choice = -1;
-                try {
-                    choice = scanner.nextInt();
-                } catch (InputMismatchException | NumberFormatException e) {
-                    System.out.println("Your input is not a valid number!");
-                    scanner.next();
-                    continue;
-                }
-                switch (choice) {
-                    case 1:
-                        currentPlayer.rollDice();
-                        proceed = true;
-                        break;
-                    case 2:
-                        while (!proceed) {
-                            choice = -1;
-                            while (choice!=1 && choice !=2) {
-                                System.out.println("Would you like to\n1. Check all players\n2. Check a single player");
-                                System.out.print("> ");
-                                try {
-                                    choice = scanner.nextInt();
-                                } catch (InputMismatchException | NumberFormatException e) {
-                                    System.out.println("Your input is not a valid number!");
-                                    scanner.next();
-                                    continue;
-                                }
-                            }
+            String choice = Main.inputPrompt("Now, it's " + currentPlayer.getName()+ "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board\n4. Save game", "1,2,3,4",scanner);
+            switch (choice) {
+                case "1":
+                    currentPlayer.rollDice();
+                    proceed = true;
+                    break;
+                case "2":
+                    choice = Main.inputPrompt("Would you like to\n1. Check all players\n2. Check a single player", "1,2",scanner);
 
-
-                            switch (choice) {
-                                case 1:
-                                    for (Player player : players) {
-                                        player.getPlayer();
-                                    }
-                                    proceed = true;
-                                    break;
-                                case 2:
-                                    while (!proceed) {
-                                        System.out.print("Would you like to check");
-                                        for (int i = 0; i < players.size(); i++) {
-                                            System.out.print(" " + (i + 1) + "." + players.get(i).getName() + " ");
-                                        }
-                                        System.out.println("\n> ");
-                                        try {
-                                            choice = scanner.nextInt();
-                                        } catch (InputMismatchException | NumberFormatException e) {
-                                            System.out.println("Your input is not a valid number!");
-                                            scanner.next();
-                                            continue;
-                                        }
-                                        if (choice >= 1 && choice <= players.size()) {
-                                            players.get(choice - 1).getPlayer();
-                                            proceed = true;
-                                        } else {
-                                            System.out.println("Your choice is out of range!");
-                                        }
-                                    }
-                                    proceed = false;
-                                    break;
-                            }
+                    if(choice.equals("1")) {
+                        for (Player player : players) {
+                            player.getPlayer();
                         }
-                        proceed = false;
-                        break;
-                    case 3:
-                        this.displayBoard();
-                        break;
-                }
+                        proceed = true;
+                    }
+                    else{
+                        choice = "";
+                        String player_display = "";
+                        for(int i=0;i<players.size();i++) {
+                            choice += i+1 + ",";
+                            player_display += ("\n" + (i + 1) + "." + players.get(i).getName());
+                        }
+                        choice = choice.substring(0, choice.length()-1);
+                        choice = Main.inputPrompt("Would you like to check"+player_display, choice,scanner);
+                        players.get(Integer.parseInt(choice) - 1).getPlayer();
+                    }
+                    break;
+                case "3":
+                    this.displayBoard();
+                    break;
+                case "4":
+                    String filename = Main.inputPrompt("Please input filename here",",",scanner);
+                    saveGame(filename);
+                    break;
             }
+
             int currentPosition = currentPlayer.getCurrentPosition();
             if (initialPosition == currentPosition) {
-                proceed = false;
-                while (!proceed) {
-                    try {
-                        System.out.println("Would you like to \n1. Pay HKD$150 to get out\n2. Stay in jail");
-                        System.out.print("> ");
-                        int choice = scanner.nextInt();
-                        if (choice == 1) {
-                            currentPlayer.decreaseMoney(150);
-                            currentPlayer.setInJailDuration(0);
-                        }
-                        proceed = true;
-                    } catch (InputMismatchException | NumberFormatException e) {
-                        System.out.println("Your input is not a valid number!");
-                        scanner.next();
-                    }
+                choice = Main.inputPrompt("Would you like to \n1. Pay HKD$150 to get out\n2. Stay in jail", "1,2",scanner);
+                if (choice.equals("1")) {
+                    currentPlayer.decreaseMoney(150);
+                    currentPlayer.setInJailDuration(0);
                 }
             } else if (initialPosition < currentPosition) {
                 if (goPosition <= currentPosition && goPosition > initialPosition) {
@@ -268,104 +216,80 @@ public class Gameboard {
     private boolean newGame() {
         boolean proceed = false;
         ArrayList<String> names = new ArrayList<String>(0);
-        while (!proceed) {
-            System.out.println(
-                    "The first step of starting a new game is to choose 2~6 players, please enter number of players below, or enter '!r' to return to last step");
-            System.out.print("> ");
-            int choice = -1;
-            try {
-                String returnSignal = scanner.next();
-                if (returnSignal.equals("!r")) {
-                    return false;
-                }
-                choice = Integer.parseInt(returnSignal);
-                scanner.nextLine();
-            } catch (InputMismatchException | NumberFormatException e) {
-                System.out.println("Your input is not a valid number!");
-                scanner.next();
-                continue;
-            }
-            if (choice >= 2 && choice <= 6) {
-                names = new ArrayList<String>(choice);
-                System.out.println("""
-                        Now you can type in the names of the players.
-                        You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
-                        Or type '!d #' where # is the id of the name you want to delete. (for example '!d 2')
-                        If you like to resize the number of player, type '!r'.""");
-                while (!proceed) {
-                    System.out.println("When players are ready, type '!p' to proceed. Current players:");
-                    if (names.isEmpty())
-                        System.out.println("None");
-                    for (int i = 0; i < names.size(); i++) {
-                        System.out.println((i + 1) + ". " + names.get(i));
-                    }
-                    System.out.print("> ");
-                    String nameInput = scanner.nextLine();
-                    if (nameInput.length() == 4 && nameInput.startsWith("!d ")) {
-                        int deleteChoice = -1;
-                        try {
-                            deleteChoice = Integer.parseInt(nameInput.substring(3, 4));
-                            if (deleteChoice < 1 || deleteChoice > names.size())
-                                throw new NumberFormatException();
-                        } catch (InputMismatchException | NumberFormatException e) {
-                            System.out.println("Your input is invalid!");
-                            continue;
-                        }
-                        names.remove(deleteChoice - 1);
-                    } else if (nameInput.equals("!r")) {
-                        break;
-                    } else if (nameInput.equals("!p")) {
-                        if (names.size() != choice) {
-                            System.out.println("Oops...There's still empty slot");
-                            continue;
-                        }
-                        while(!proceed){
-                            System.out.println("Would you like to\n1. start with default map\n2. start by loading map\n3. return\n>");
-                            try {
-                                choice = scanner.nextInt();
-                            } catch (InputMismatchException | NumberFormatException e) {
-                                System.out.println("Your input is not a valid number!");
-                                scanner.next();
-                                continue;
-                            }
-                            if(choice == 1) {
-                                if(!loadGame("", 0))continue;
-                                proceed = true;
-                                break;
-                            }
-                            else if(choice == 2){
-                                while(!proceed){
-                                    System.out.println("Please input the json filename or type '!r' to return here>");
-                                    String filename = scanner.next();
-                                    if (filename.equals("!r")) break;
-                                    if(loadGame(filename, 0))continue;
-                                    proceed = true;
-                                }
-                            }
-                            else if(choice == 3){
-                                break;
-                            }
-                            else {
-                                System.out.println("Your input is not a valid number!");
-                            }
+        String choice = Main.inputPrompt("The first step of starting a new game is to choose 2~6 players, please enter number of players below","2,3,4,5,6",scanner);
 
-                        }
-                        choice = names.size();
-                    } else {
-                        for (String substringName : nameInput.split(";")) {
-                            if (substringName.length() > 10 || substringName.isEmpty())
-                                System.out.println("One of the name length isn't permitted.");
-                            else if (names.size() == choice)
-                                System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
-                            else
-                                names.add(substringName.trim());
-                        }
+        int playerNumber = Integer.parseInt(choice);
+        if (playerNumber >= 2 && playerNumber <= 6) {
+            names = new ArrayList<String>(playerNumber);
+            System.out.println("""
+                    Now you can type in the names of the players.
+                    You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
+                    Or type '!d#' where # is the id of the name you want to delete. (for example '!d2')
+                    If you like to resize the number of player, type '!r'.""");
+
+            while (!proceed) {
+                System.out.println("When players are ready, type '!p' to proceed. Current players:");
+                if (names.isEmpty())
+                    System.out.println("None");
+                for (int i = 0; i < names.size(); i++) {
+                    System.out.println((i + 1) + ". " + names.get(i));
+                }
+                System.out.print("> ");
+                String nameInput = scanner.next();
+                if (nameInput.startsWith("!d")) {
+                    int deleteChoice = -1;
+                    try {
+                        deleteChoice = Integer.parseInt(nameInput.substring(2, 3));
+                        if (deleteChoice < 1 || deleteChoice > names.size())
+                            throw new NumberFormatException();
+                    } catch (InputMismatchException | NumberFormatException e) {
+                        System.out.println("Your input is invalid!");
+                        continue;
+                    }
+                    names.remove(deleteChoice - 1);
+                } else if (nameInput.equals("!r")) {
+                    break;
+                } else if (nameInput.equals("!p")) {
+                    if (names.size() != playerNumber) {
+                        System.out.println("Oops...There's still empty slot");
+                        continue;
+                    }
+                    break;
+                }else {
+                    for (String substringName : nameInput.split(";")) {
+                        if (substringName.length() > 10 || substringName.isEmpty())
+                            System.out.println("One of the name length isn't permitted.");
+                        else if (names.size() == playerNumber)
+                            System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
+                        else
+                            names.add(substringName.trim());
                     }
                 }
-            } else {
-                System.out.println("This is not a valid number of players!");
+
             }
+            while(!proceed){
+                choice = Main.inputPrompt("Would you like to\n1. start with default map\n2. start by loading map", "1,2",scanner);
+
+                if(choice.equals("1")) {
+                    String curdir = System.getProperty("user.dir");
+                    if(!loadGame(curdir+"/src/map1", 0))continue;
+                    proceed = true;
+                }
+                else{
+                    String filename = Main.inputPrompt("Please input the json filename", ",",scanner);
+                    if(loadGame(filename, 0)){
+                        System.out.println("File not exist!");
+                        continue;
+                    }
+                    proceed = true;
+                }
+
+            }
+            playerNumber = names.size();
+        } else {
+            System.out.println("This is not a valid number of players!");
         }
+
         for (int i = 0; i < names.size(); i++) {
             joinPlayer(new Player(i, names.get(i), 1500, 1));
         }

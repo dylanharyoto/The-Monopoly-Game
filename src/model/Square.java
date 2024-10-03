@@ -1,6 +1,5 @@
-package square;
+package model;
 
-import player.Player;
 public abstract class Square {
     private int position;
     private int id;
