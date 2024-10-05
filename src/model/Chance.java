@@ -1,13 +1,14 @@
-package square;
-
-import player.Player;
+package model;
 
 import java.util.Random;
 
 public class Chance extends Square {
     private Random random = new Random();
-    public Chance(int position) {
-        super(position);
+    public Chance(int id) {
+        super(id);
+    }
+    public Chance(int position, int id) {
+        super(position, id);
     }
     @Override
     public void takeEffect(Player player) {

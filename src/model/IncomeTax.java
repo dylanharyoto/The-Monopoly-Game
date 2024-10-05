@@ -1,9 +1,11 @@
-package square;
-import player.Player;
+package model;
 
 public class IncomeTax extends Square {
-    public IncomeTax(String name, int position) {
-        super(position);
+    public IncomeTax(int id) {
+        super(id);
+    }
+    public IncomeTax(int position, int id) {
+        super(position, id);
     }
     @Override
     public void takeEffect(Player player) {

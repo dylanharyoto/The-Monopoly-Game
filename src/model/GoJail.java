@@ -1,13 +1,11 @@
-package square;
-import java.util.*;
-import player.Player;
-
-
+package model;
 
 public class GoJail extends Square {
-    private static final int BONUS = 1500;
-    public GoJail(int position) {
-        super(position);
+    public GoJail(int id) {
+        super(id);
+    }
+    public GoJail(int position, int id) {
+        super(position, id);
     }
 
     @Override
