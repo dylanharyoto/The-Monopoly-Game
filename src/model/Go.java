@@ -1,5 +1,4 @@
 package model;
-
 public class Go extends Square {
     private static final int BONUS = 1500;
     public Go(int id) {
@@ -10,6 +9,9 @@ public class Go extends Square {
     }
     @Override
     public void takeEffect(Player player) {
+        if(player == null) {
+            throw new IllegalArgumentException("Player cannot be null.");
+        }
         player.increaseMoney(BONUS);
     }
 }

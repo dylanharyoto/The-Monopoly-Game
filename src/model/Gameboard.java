@@ -133,7 +133,7 @@ public class Gameboard {
         while (checkGameStatus()) {
             Player currentPlayer = getNextPlayer();
             boolean proceed = false;
-            int initialPosition = currentPlayer.getCurrentPosition();
+            int initialPosition = currentPlayer.getPosition();
             String choice = Main.inputPrompt("Now, it's " + currentPlayer.getName()+ "'s turn.\nWould you like to\n1. Roll the dice\n2. Check player's status\n3. Print current board\n4. Save game", "1,2,3,4",scanner);
             switch (choice) {
                 case "1":
@@ -145,7 +145,7 @@ public class Gameboard {
 
                     if(choice.equals("1")) {
                         for (Player player : players) {
-                            player.getPlayer();
+                            // player.getPlayer();
                         }
                         proceed = true;
                     }
@@ -158,7 +158,7 @@ public class Gameboard {
                         }
                         choice = choice.substring(0, choice.length()-1);
                         choice = Main.inputPrompt("Would you like to check"+player_display, choice,scanner);
-                        players.get(Integer.parseInt(choice) - 1).getPlayer();
+                        // players.get(Integer.parseInt(choice) - 1).getPlayer();
                     }
                     break;
                 case "3":
@@ -170,7 +170,7 @@ public class Gameboard {
                     break;
             }
 
-            int currentPosition = currentPlayer.getCurrentPosition();
+            int currentPosition = currentPlayer.getPosition();
             if (initialPosition == currentPosition) {
                 choice = Main.inputPrompt("Would you like to \n1. Pay HKD$150 to get out\n2. Stay in jail", "1,2",scanner);
                 if (choice.equals("1")) {
@@ -312,7 +312,7 @@ public class Gameboard {
             json.append("\"id\": " + player.getId() + ",\n");
             json.append("\"name\": \"" + player.getName() + "\",\n");
             json.append("\"money\": " + player.getMoney() + ",\n");
-            json.append("\"currentPosition\": " + player.getCurrentPosition() + ",\n");
+            json.append("\"currentPosition\": " + player.getPosition() + ",\n");
 
             json.append("\"properties\": [");
             for (int j = 0; j < properties.size(); ++j) {

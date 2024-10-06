@@ -1,5 +1,4 @@
 package model;
-
 public class FreeParking extends Square {
     public FreeParking(int id) {
         super(id);

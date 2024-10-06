@@ -1,7 +1,5 @@
 package model;
-
 import java.util.Random;
-
 public class Chance extends Square {
     private Random random = new Random();
     public Chance(int id) {
