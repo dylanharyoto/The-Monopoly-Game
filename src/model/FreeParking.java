@@ -1,5 +1,4 @@
 package model;
-
 public class FreeParking extends Square {
     public FreeParking(int id) {
         super(id);
@@ -10,5 +9,9 @@ public class FreeParking extends Square {
     @Override
     public void takeEffect(Player player) {
         return;
+    }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"F\",\n\"details\": {}\n";
     }
 }

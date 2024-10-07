@@ -1,7 +1,5 @@
 package model;
-
 import java.util.Random;
-
 public class Chance extends Square {
     private Random random = new Random();
     public Chance(int id) {
@@ -18,5 +16,9 @@ public class Chance extends Square {
         } else {
             player.decreaseMoney(Math.min(player.getMoney(), amount));
         }
+    }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"C\",\n\"details\": {}\n";
     }
 }
