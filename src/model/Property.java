@@ -52,6 +52,11 @@ public class Property extends Square {
 //            }
 //        }
     }
+    @Override
+    public String typeDetailsJson() {
+        return String.format("\"type\": \"P\",\n\"details\": {\n\"name\": \"%s\",\n\"price\": %d,\n\"rent\": %d\n}",
+                this.name, this.price, this.rent);
+    }
     public boolean isAvailable() {
         return this.owner == null;
     }

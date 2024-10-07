@@ -1,5 +1,4 @@
 package view;
-
 import model.Property;
 import model.Player;
 public class PlayerView {

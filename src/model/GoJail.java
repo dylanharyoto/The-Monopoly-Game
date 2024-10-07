@@ -10,4 +10,8 @@ public class GoJail extends Square {
     public void takeEffect(Player player) {
         // player.setPosition();
     }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"J\",\n\"details\": {}\n";
+    }
 }

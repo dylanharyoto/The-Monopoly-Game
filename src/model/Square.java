@@ -11,6 +11,7 @@ public abstract class Square {
         this.id = id;
     }
     public abstract void takeEffect(Player player);
+    public abstract String typeDetailsJson();
     public void setPosition(int position) {
         if(position < 1 || position > 20) {
             throw new IllegalArgumentException("Position must be between 1 and 20");

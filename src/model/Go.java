@@ -14,4 +14,8 @@ public class Go extends Square {
         }
         player.increaseMoney(BONUS);
     }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"G\",\n\"details\": {}\n";
+    }
 }

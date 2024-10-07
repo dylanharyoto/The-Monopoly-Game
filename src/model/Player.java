@@ -7,12 +7,14 @@ public class Player {
     private int money;
     private int position;
     private int inJailDuration = 0;
+    private boolean status;
     private final ArrayList<Property> properties;
     public Player(int id, String name, int money, int position){
         this.id = id;
         this.name = name;
         this.money = money;
         this.position = position;
+        this.status = true;
         this.properties = new ArrayList<>();
     }
     public void rollDice() {
@@ -74,5 +76,11 @@ public class Player {
             throw new IllegalArgumentException("Position must be between 1 and 20");
         }
         this.position = position;
+    }
+    public boolean getStatus() {
+        return status;
+    }
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

@@ -19,4 +19,9 @@ public class IncomeTax extends Square {
         tax = (tax / 10) * 10;
         player.decreaseMoney(tax);
     }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"I\",\n\"details\": {}\n";
+    }
+
 }

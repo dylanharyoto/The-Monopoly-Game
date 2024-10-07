@@ -10,4 +10,8 @@ public class FreeParking extends Square {
     public void takeEffect(Player player) {
         return;
     }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"F\",\n\"details\": {}\n";
+    }
 }

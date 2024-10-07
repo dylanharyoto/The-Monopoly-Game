@@ -17,4 +17,8 @@ public class Chance extends Square {
             player.decreaseMoney(Math.min(player.getMoney(), amount));
         }
     }
+    @Override
+    public String typeDetailsJson() {
+        return "\"type\": \"C\",\n\"details\": {}\n";
+    }
 }
