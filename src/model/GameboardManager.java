@@ -70,17 +70,24 @@ public class GameboardManager {
     }
 
 
-
-    public static boolean loadMap (String mapFileName, Gameboard gameboard) {
+    /**
+     * load game and players to the passed reference of gameboard
+     * @param filepath filepath is the absolute path of the map file
+     * @param gameboard gameboard is the instance of gameboard "template" without specified map and players
+     * @return true if the loading is successful, otherwise return false
+     */
+    public static boolean loadMap (String filepath, Gameboard gameboard) {
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(mapFileName.endsWith(".json")?mapFileName:mapFileName + ".json"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
+        {
             String line;
             while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line);
+                    contentBuilder.append(line);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to load the map file: " + mapFileName);
+            System.out.println("Failed to load the map file: " + filepath);
             return false;
         }
         String jsonContent = contentBuilder.toString();
@@ -129,31 +136,32 @@ public class GameboardManager {
                 gameboard.addSquare(square);
             }
 
-            System.out.println("Map loaded successfully from " + mapFileName + ".json");
+            System.out.println("Map loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to interpret the map: " + mapFileName);
+            System.out.println("Failed to interpret the map: " + filepath);
         }
 
         return true;
     }
 
     /**
-     * @param filename filename is in the format "<>timestamp</>_game.json"
+     * load game and players to the passed reference of gameboard
+     * @param filepath filepath is the absolute path of the game file, the filename is in the format "<>timestamp</>_game.json"
      * @param gameboard gameboard is the instance of gameboard "template" without specified map and players
      * @return true if the loading is successful, otherwise return false
      */
-    public static boolean loadGame(String filename, Gameboard gameboard) {
-        // mode == 0 means only loadMap
-        // mode == 1 means load both map and players from the saved files.
+    public static boolean loadGame(String filepath, Gameboard gameboard) {
 
 
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename.endsWith(".json")?filename:filename + ".json"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
+        {
             String line;
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to load game.");
@@ -170,8 +178,8 @@ public class GameboardManager {
 
             gameboard.setId(gameId);
 
-
-            if (!loadMap(mapId, gameboard)) return false;
+            String curdir = System.getProperty("user.dir");
+            if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) return false;
 
             String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
             String[] playerObjects = playersStr.split("\\},\\{");
@@ -198,10 +206,10 @@ public class GameboardManager {
             }
 
 
-            System.out.println("Game loaded successfully from " + filename + ".json");
+            System.out.println("Game loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to load game.");
+            System.out.println("Failed to load game from" + filepath);
         }
 
         return true;

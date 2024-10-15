@@ -73,15 +73,14 @@ public class GameboardController {
             }
             while(!proceed){
                 choice = gameboardView.inputPrompt("Would you like to\n1. start with default map\n2. start by loading map", new String[]{"1", "2"});
-
+                String curdir = System.getProperty("user.dir");
                 if(choice.equals("1")) {
-                    String curdir = System.getProperty("user.dir");
-                    if(!GameboardManager.loadMap(curdir+"/src/map1", gameboard))continue;
-
+                    if(!GameboardManager.loadMap(curdir + "/assets/maps/map1", gameboard))
+                        continue;
                 }
                 else{
                     String filename = gameboardView.promptFilename("Please input the json filename");
-                    if(!GameboardManager.loadMap(filename, gameboard)){
+                    if(!GameboardManager.loadMap(curdir + "/assets/maps/" + filename, gameboard)){
                         System.out.println("File not exist!");
                         continue;
                     }
