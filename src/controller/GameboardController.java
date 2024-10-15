@@ -17,7 +17,7 @@ public class GameboardController {
         this.gameboard = gameboard;
         this.gameboardView = gameboardView;
     }
-    private boolean newGame() {
+    public boolean newGame() {
         boolean proceed = false;
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> names = new ArrayList<String>(0);
@@ -76,18 +76,18 @@ public class GameboardController {
 
                 if(choice.equals("1")) {
                     String curdir = System.getProperty("user.dir");
-                    if(!GameboardManager.loadGame(curdir+"/src/map1", 0))continue;
-                    proceed = true;
+                    if(!GameboardManager.loadMap(curdir+"/src/map1", gameboard))continue;
+
                 }
                 else{
                     String filename = gameboardView.promptFilename("Please input the json filename");
-                    if(GameboardManager.loadGame(filename, 0)){
+                    if(!GameboardManager.loadMap(filename, gameboard)){
                         System.out.println("File not exist!");
                         continue;
                     }
-                    proceed = true;
-                }
 
+                }
+                proceed = true;
             }
             playerNumber = names.size();
         } else {
