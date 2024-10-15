@@ -14,7 +14,7 @@ public class GameboardManager {
     public static void saveGame(Gameboard gameboard, String filename) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
-        if (gameboard.getId() != 0) {
+        if (!gameboard.getId().equals("0") ) {
             json.append("\"id\": ").append(gameboard.getId()).append(",\n");
         } else {
             json.append("\"id\": ").append(Gameboard.generateId()).append(",\n");
@@ -73,7 +73,7 @@ public class GameboardManager {
 
     public static boolean loadMap (String mapFileName, Gameboard gameboard) {
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(mapFileName.endsWith(".json")?filename:filename + ".json"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(mapFileName.endsWith(".json")?mapFileName:mapFileName + ".json"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
