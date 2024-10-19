@@ -14,7 +14,7 @@ public class GameboardManager {
     public static void saveGame(Gameboard gameboard, String filename) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
-        if (gameboard.getId() != 0) {
+        if (!gameboard.getId().equals("0") ) {
             json.append("\"id\": ").append(gameboard.getId()).append(",\n");
         } else {
             json.append("\"id\": ").append(Gameboard.generateId()).append(",\n");
@@ -68,26 +68,32 @@ public class GameboardManager {
             System.out.println("Failed to save game.");
         }
     }
-    public static boolean loadGame(String filename, int mode) {
+
+
+    /**
+     * load game and players to the passed reference of gameboard
+     * @param filepath filepath is the absolute path of the map file
+     * @param gameboard gameboard is the instance of gameboard "template" without specified map and players
+     * @return true if the loading is successful, otherwise return false
+     */
+    public static boolean loadMap (String filepath, Gameboard gameboard) {
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename.endsWith(".json")?filename:filename + ".json"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
+        {
             String line;
             while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line);
+                    contentBuilder.append(line);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to load game.");
+            System.out.println("Failed to load the map file: " + filepath);
             return false;
         }
-
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
-        if(mode == 0 && jsonContent.startsWith("{\"id\"") || mode==1 && !jsonContent.startsWith("{\"id\"")) return false;
 
         try {
-            int gameId = Integer.parseInt(jsonContent.split("\"id\":")[1].split(",")[0]);
-            Gameboard gameboard = new Gameboard(gameId);
             String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
             String[] squareObjects = squaresStr.split("\\},\\{");
             gameboard.getAllSquares().clear();
@@ -129,37 +135,83 @@ public class GameboardManager {
                 }
                 gameboard.addSquare(square);
             }
-            if(mode == 1) {
-                String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
-                String[] playerObjects = playersStr.split("\\},\\{");
-                gameboard.getAllPlayers().clear();
-                for (String playerObjStr : playerObjects) {
-                    playerObjStr = playerObjStr.replaceAll("\\{|\\}", "");
 
-                    int playerId = Integer.parseInt(playerObjStr.split("\"id\":")[1].split(",")[0]);
-                    String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
-                    int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
-                    int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
-
-                    Player player = new Player(playerId, playerName, playerMoney, currentPosition);
-
-                    String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
-                    String[] propertyIds = propertiesStr.split(",");
-                    for (String propPos : propertyIds) {
-                        int propertyPosition = Integer.parseInt(propPos.trim());
-                        Property property = (Property) gameboard.getSquareByPosition(propertyPosition);
-                        player.addProperty(property);
-                    }
-
-                    gameboard.addPlayer(player);
-                }
-            }
-
-            System.out.println("Game loaded successfully from " + filename + ".json");
+            System.out.println("Map loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to load game.");
+            System.out.println("Failed to interpret the map: " + filepath);
         }
+
+        return true;
+    }
+
+    /**
+     * load game and players to the passed reference of gameboard
+     * @param filepath filepath is the absolute path of the game file, the filename is in the format "<>timestamp</>_game.json"
+     * @param gameboard gameboard is the instance of gameboard "template" without specified map and players
+     * @return true if the loading is successful, otherwise return false
+     */
+    public static boolean loadGame(String filepath, Gameboard gameboard) {
+
+
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
+        {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load game.");
+            return false;
+        }
+
+        String jsonContent = contentBuilder.toString();
+        jsonContent = jsonContent.replaceAll("\\s+", "");
+        if(!jsonContent.startsWith("{\"gameid\"")) return false;
+
+        try {
+            String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
+            String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
+
+            gameboard.setId(gameId);
+
+            String curdir = System.getProperty("user.dir");
+            if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) return false;
+
+            String playersStr = jsonContent.split("\"players\":\\[")[1].split("\\],")[0];
+            String[] playerObjects = playersStr.split("\\},\\{");
+            gameboard.getAllPlayers().clear();
+            for (String playerObjStr : playerObjects) {
+                playerObjStr = playerObjStr.replaceAll("\\{|\\}", "");
+
+                int playerId = Integer.parseInt(playerObjStr.split("\"id\":")[1].split(",")[0]);
+                String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
+                int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
+                int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
+
+                Player player = new Player(playerId, playerName, playerMoney, currentPosition);
+
+                String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
+                String[] propertyIds = propertiesStr.split(",");
+                for (String propPos : propertyIds) {
+                    int propertyPosition = Integer.parseInt(propPos.trim());
+                    Property property = (Property) gameboard.getSquareByPosition(propertyPosition);
+                    player.addProperty(property);
+                }
+
+                gameboard.addPlayer(player);
+            }
+
+
+            System.out.println("Game loaded successfully from " + filepath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to load game from" + filepath);
+        }
+
         return true;
     }
 

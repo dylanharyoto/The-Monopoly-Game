@@ -1,0 +1,27 @@
+{
+    "id": 1,
+    "players": [
+      {
+        "id": 1,
+        "name": "Dylan",
+        "money": 0,
+        "currentPosition": 1,
+        "properties": [
+          1,
+          5
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Joseph",
+        "money": 0,
+        "currentPosition": 1,
+        "properties": [
+          2,
+          7
+        ]
+      }
+    ],
+    "mapid": "map1"
+
+  }

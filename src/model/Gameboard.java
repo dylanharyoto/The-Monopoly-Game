@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 import controller.Main;
 public class Gameboard {
-    private int id;
+    private String id;
     private static int count = 0;
     private ArrayList<Player> players;
     private ArrayList<Square> squares;
@@ -11,6 +11,7 @@ public class Gameboard {
     private int round;
     private int currentPlayerId;
     private final int goPosition;
+/*
     public Gameboard(int id) {
         this.id = id;
         this.players = new ArrayList<Player>(6);
@@ -19,7 +20,8 @@ public class Gameboard {
         this.currentPlayerId = -1;
         this.goPosition = -1;
     }
-    public Gameboard() {
+*/
+public Gameboard() {
         this.players = new ArrayList<Player>(6);
         this.squares = new ArrayList<Square>(20);
         this.round = 1;
@@ -30,10 +32,10 @@ public class Gameboard {
         count += 1;
         return count;
     }
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     public void addPlayer(Player player) {
