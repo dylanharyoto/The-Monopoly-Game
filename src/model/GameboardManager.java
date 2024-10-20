@@ -152,8 +152,6 @@ public class GameboardManager {
      * @return true if the loading is successful, otherwise return false
      */
     public static boolean loadGame(String filepath, Gameboard gameboard) {
-
-
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
         {
@@ -161,7 +159,6 @@ public class GameboardManager {
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to load game.");
