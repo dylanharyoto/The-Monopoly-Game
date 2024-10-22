@@ -4,39 +4,39 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Gameboard {
-    private String id;
-    private static int count = 0;
+    private String gameID = ""; // null means this is a new game without loading process
+    private String mapID = "";  // null means this is a new map without loading process
     private ArrayList<Player> players;
     private ArrayList<Square> squares;
     private int round;
-    private int currentPlayerId;
-    private final int goPosition;
-    public Gameboard(String id) {
-        this.id = id;
-        this.players = new ArrayList<Player>(6);
-        this.squares = new ArrayList<Square>(20);
-        this.round = 1;
-        this.currentPlayerId = -1;
-        this.goPosition = -1;
-    }
+    private int currentPlayerId; // when we load from / save to a gamefile, we should load from / save to this attribute to record the current player
+    private int goPosition;
     public Gameboard() {
         this.players = new ArrayList<Player>(6);
         this.squares = new ArrayList<Square>(20);
         this.round = 1;
-        this.currentPlayerId = -1;
-        this.goPosition = -1;
+        this.currentPlayerId = 1;
     }
-    public static String generateId() {
+    // Game ID
+    public static String generateGameID() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         return now.format(formatter);
     }
-    public String getId() {
-        return id;
+    public String getGameID() {
+        return gameID;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setGameID(String gameID) {
+        this.gameID = gameID;
     }
+    // Map ID
+    public void setMapID(String mapID) {
+        this.mapID = mapID;
+    }
+    public String getMapID() {
+        return mapID;
+    }
+    // Player
     public void addPlayer(Player player) {
         this.players.add(player);
     }
@@ -44,20 +44,11 @@ public class Gameboard {
         player.setStatus(false);
         return player;
     }
-    public void addSquare(Square square) {
-        this.squares.add(square);
-    }
     public ArrayList<Player> getAllPlayers() {
         return this.players;
     }
-    public ArrayList<Square> getAllSquares() {
-        return this.squares;
-    }
     public int getTotalPlayers() {
         return this.players.size();
-    }
-    public int getTotalSquares() {
-        return this.squares.size();
     }
     public Player getPlayerById(int playerId) {
         for (Player player : players) {
@@ -72,8 +63,9 @@ public class Gameboard {
             return -1;
         }
         int totalPlayers = this.players.size();
-        int nextPlayerId = (this.currentPlayerId + 1) % (totalPlayers + 1);
+        int nextPlayerId;
         do {
+            nextPlayerId = (this.currentPlayerId + 1) % (totalPlayers + 1);
             if (nextPlayerId == 0) {
                 nextPlayerId = 1;
             }
@@ -86,12 +78,20 @@ public class Gameboard {
         }
         this.currentPlayerId = this.getNextPlayerId();
     }
+    // Square
+    public void addSquare(Square square) {
+        this.squares.add(square);
+    }
+    public ArrayList<Square> getAllSquares() {
+        return this.squares;
+    }
     public Square getSquareByPosition(int position) {
         if (position <= squares.size() && position >= 0)
             return this.squares.get(position);
         else
             return null;
     }
+    // Additional
     public boolean checkGameStatus() {
         return this.round < 100 && (players.size() > 1 && players.size() < 7);
     }
@@ -100,6 +100,9 @@ public class Gameboard {
     }
     public int getCurrentPlayerId() {
         return this.currentPlayerId;
+    }
+    public void setGoPosition(int position) {
+        this.goPosition = position;
     }
     public int getGoPosition() {
         return this.goPosition;

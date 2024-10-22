@@ -80,7 +80,7 @@ public class GameboardView {
             return;
         }
         for (Player player : players) {
-            System.out.println(player.getName() + " - Money: HKD " + player.getMoney());
+            displayPlayer(player);
         }
     }
     public void displayPlayer(Player player) {
@@ -88,6 +88,9 @@ public class GameboardView {
             System.out.println("No player to display.");
             return;
         }
+        System.out.println(player.getName());
+        System.out.println("    Money: HKD " + player.getMoney());
+        System.out.println("    Position: " + player.getPosition());
     }
     public void displayMessage(String message) {
         System.out.println(message);

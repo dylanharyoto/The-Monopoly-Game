@@ -2,8 +2,7 @@
   "mapid": "map1",
   "squares": [
     {
-      "id": 1,
-      "type": "P",
+      "id": "P1",
       "details": {
         "name": "Central",
         "price": 800,
@@ -11,8 +10,7 @@
       }
     },
     {
-      "id": 2,
-      "type": "P",
+      "id": "P2",
       "details": {
         "name": "Wan Chai",
         "price": 700,
@@ -20,8 +18,7 @@
       }
     },
     {
-      "id": 3,
-      "type": "P",
+      "id": "P3",
       "details": {
         "name": "Stanley",
         "price": 600,
@@ -29,8 +26,7 @@
       }
     },
     {
-      "id": 4,
-      "type": "P",
+      "id": "P4",
       "details": {
         "name": "Shek O",
         "price": 400,
@@ -38,8 +34,7 @@
       }
     },
     {
-      "id": 5,
-      "type": "P",
+      "id": "P5",
       "details": {
         "name": "Mong Kok",
         "price": 500,
@@ -47,8 +42,7 @@
       }
     },
     {
-      "id": 6,
-      "type": "P",
+      "id": "P6",
       "details": {
         "name": "Tsing Yi",
         "price": 400,
@@ -56,8 +50,7 @@
       }
     },
     {
-      "id": 7,
-      "type": "P",
+      "id": "P7",
       "details": {
         "name": "Shatin",
         "price": 700,
@@ -65,8 +58,7 @@
       }
     },
     {
-      "id": 8,
-      "type": "P",
+      "id": "P8",
       "details": {
         "name": "Tuen Mun",
         "price": 400,
@@ -74,8 +66,7 @@
       }
     },
     {
-      "id": 9,
-      "type": "P",
+      "id": "P9",
       "details": {
         "name": "Tai Po",
         "price": 500,
@@ -83,8 +74,7 @@
       }
     },
     {
-      "id": 10,
-      "type": "P",
+      "id": "P10",
       "details": {
         "name": "Sai Kung",
         "price": 400,
@@ -92,8 +82,7 @@
       }
     },
     {
-      "id": 11,
-      "type": "P",
+      "id": "P11",
       "details": {
         "name": "Yuen Long",
         "price": 400,
@@ -101,8 +90,7 @@
       }
     },
     {
-      "id": 12,
-      "type": "P",
+      "id": "P12",
       "details": {
         "name": "Tai O",
         "price": 600,
@@ -110,43 +98,35 @@
       }
     },
     {
-      "id": 13,
-      "type": "G",
+      "id": "G",
       "details": {}
     },
     {
-      "id": 14,
-      "type": "C",
+      "id": "C1",
       "details": {}
     },
     {
-      "id": 15,
-      "type": "C",
+      "id": "C2",
       "details": {}
     },
     {
-      "id": 16,
-      "type": "C",
+      "id": "C3",
       "details": {}
     },
     {
-      "id": 17,
-      "type": "I",
+      "id": "I",
       "details": {}
     },
     {
-      "id": 18,
-      "type": "F",
+      "id": "F",
       "details": {}
     },
     {
-      "id": 19,
-      "type": "J",
+      "id": "J",
       "details": {}
     },
     {
-      "id": 20,
-      "type": "V",
+      "id": "V",
       "details": {}
     }
   ]

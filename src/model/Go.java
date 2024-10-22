@@ -1,10 +1,7 @@
 package model;
 public class Go extends Square {
     private static final int BONUS = 1500;
-    public Go(int id) {
-        super(id);
-    }
-    public Go(int position, int id) {
+    public Go(int position, String id) {
         super(position, id);
     }
     @Override
