@@ -1,5 +1,6 @@
 {
-    "id": 1,
+    "gameid": 1,
+    "currentPlayerId": 1,
     "players": [
       {
         "id": 1,

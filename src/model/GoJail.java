@@ -1,9 +1,6 @@
 package model;
 public class GoJail extends Square {
-    public GoJail(int id) {
-        super(id);
-    }
-    public GoJail(int position, int id) {
+    public GoJail(int position, String id) {
         super(position, id);
     }
     @Override

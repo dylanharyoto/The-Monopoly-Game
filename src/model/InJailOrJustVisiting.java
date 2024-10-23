@@ -1,9 +1,6 @@
 package model;
 public class InJailOrJustVisiting extends Square {
-    public InJailOrJustVisiting(int id) {
-        super(id);
-    }
-    public InJailOrJustVisiting(int position, int id) {
+    public InJailOrJustVisiting(int position, String id) {
         super(position, id);
     }
     @Override

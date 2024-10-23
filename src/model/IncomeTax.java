@@ -1,9 +1,6 @@
 package model;
 public class IncomeTax extends Square {
-    public IncomeTax(int id) {
-        super(id);
-    }
-    public IncomeTax(int position, int id) {
+    public IncomeTax(int position, String id) {
         super(position, id);
     }
     @Override

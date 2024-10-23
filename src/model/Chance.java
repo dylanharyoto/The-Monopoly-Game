@@ -2,10 +2,7 @@ package model;
 import java.util.Random;
 public class Chance extends Square {
     private Random random = new Random();
-    public Chance(int id) {
-        super(id);
-    }
-    public Chance(int position, int id) {
+    public Chance(int position, String id) {
         super(position, id);
     }
     @Override

@@ -21,24 +21,21 @@ public class GameboardController {
         boolean proceed = false;
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> names = new ArrayList<String>(0);
-        String choice = gameboardView.inputPrompt("The first step of starting a new game is to choose 2~6 players, please enter number of players below",new String[]{"2", "3", "4", "5", "6"});
+        String choice = gameboardView.inputPrompt("Please enter the number of players (minimum 2, maximum 6)", new String[]{"2", "3", "4", "5", "6"});
         int playerNumber = Integer.parseInt(choice);
         if (playerNumber >= 2 && playerNumber <= 6) {
             names = new ArrayList<String>(playerNumber);
-            System.out.println("""
-                    Now you can type in the names of the players.
-                    You can type multiple names at a time seperated by ';' symbol (max name length is 10 characters)
-                    Or type '!d#' where # is the id of the name you want to delete. (for example '!d2')
-                    If you like to resize the number of player, type '!r'.""");
-
+            gameboardView.inputPrompt("""
+            Enter player names separated by ';' (max 10 characters each).
+            To delete a name, type '!d#' (e.g., '!d2').
+            To change the number of players, type '!r'.""", new String[]{});
             while (!proceed) {
-                System.out.println("When players are ready, type '!p' to proceed. Current players:");
+                gameboardView.inputPrompt("When players are ready, type '!p' to proceed. Current players:", new String[]{});
                 if (names.isEmpty())
-                    System.out.println("None");
+                    gameboardView.inputPrompt("None", new String[]{});
                 for (int i = 0; i < names.size(); i++) {
-                    System.out.println((i + 1) + ". " + names.get(i));
+                    gameboardView.inputPrompt((i + 1) + ". " + names.get(i), new String[]{});
                 }
-                System.out.print("> ");
                 String nameInput = scanner.next();
                 if (nameInput.startsWith("!d")) {
                     int deleteChoice = -1;
@@ -47,7 +44,7 @@ public class GameboardController {
                         if (deleteChoice < 1 || deleteChoice > names.size())
                             throw new NumberFormatException();
                     } catch (InputMismatchException | NumberFormatException e) {
-                        System.out.println("Your input is invalid!");
+                        // System.out.println("Your input is invalid!");
                         continue;
                     }
                     names.remove(deleteChoice - 1);
@@ -55,11 +52,11 @@ public class GameboardController {
                     break;
                 } else if (nameInput.equals("!p")) {
                     if (names.size() != playerNumber) {
-                        System.out.println("Oops...There's still empty slot");
+                        // System.out.println("Oops...There's still empty slot");
                         continue;
                     }
                     break;
-                }else {
+                } else {
                     for (String substringName : nameInput.split(";")) {
                         if (substringName.length() > 10 || substringName.isEmpty())
                             System.out.println("One of the name length isn't permitted.");
@@ -75,10 +72,9 @@ public class GameboardController {
                 choice = gameboardView.inputPrompt("Would you like to\n1. start with default map\n2. start by loading map", new String[]{"1", "2"});
                 String curdir = System.getProperty("user.dir");
                 if(choice.equals("1")) {
-                    if(!GameboardManager.loadMap(curdir + "/assets/maps/map1", gameboard))
+                    if(!GameboardManager.loadMap(curdir + "/assets/maps/map2", gameboard))
                         continue;
-                }
-                else{
+                } else{
                     String filename = gameboardView.promptFilename("Please input the json filename");
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/" + filename, gameboard)){
                         System.out.println("File not exist!");
@@ -94,7 +90,7 @@ public class GameboardController {
         }
 
         for (int i = 0; i < names.size(); i++) {
-            gameboard.addPlayer(new Player(i, names.get(i), 1500, 1));
+            gameboard.addPlayer(new Player(i+1, names.get(i), 1500, 1));
         }
         startGame();
         return true;
@@ -102,6 +98,7 @@ public class GameboardController {
     public void startGame() {
         this.gameboardView.displayMessage("Welcome to MonoPolyU, the game is starting...");
         Player currentPlayer;
+
         while (gameboard.checkGameStatus()) {
             currentPlayer = this.gameboard.getPlayerById(this.gameboard.getCurrentPlayerId());
             int currentPlayerInitialPosition = currentPlayer.getPosition();
@@ -110,12 +107,12 @@ public class GameboardController {
                 String[] options = {"0", "1", "2", "3"};
                 String option = gameboardView.inputPrompt(currentPlayer.getName() +
                         """
-                            's turn. Would you like to:
-                            "0" Roll the dice (required to proceed)
-                            "1" Check player(s) status
-                            "2" Print the current gameboard status
-                            "3" Check the next player
-                            "4" Save the current game
+                        's turn. Would you like to:
+                        "0" Roll the dice (required to proceed)
+                        "1" Check player(s) status
+                        "2" Print the current gameboard status
+                        "3" Check the next player
+                        "4" Save the current game
                         """, options);
                 switch (option) {
                     case "0":
@@ -150,7 +147,8 @@ public class GameboardController {
                         gameboardView.displayPlayer(gameboard.getPlayerById(nextPlayerId));
                     case "4":
                         // to be implemented
-                        String filename = this.gameboardView.getFilenameInput();
+                        String curdir = System.getProperty("user.dir");
+                        String filename =  curdir + this.gameboard.getGameID() + ".json";
                         GameboardManager.saveGame(gameboard, filename);
                         break;
                     default:
@@ -173,12 +171,8 @@ public class GameboardController {
                 } else {
                     currentPlayer.setInJailDuration(currentPlayer.getInJailDuration() - 1);
                 }
-            } else if (currentPlayerInitialPosition < currentPlayerCurrentPosition) {
-                if (currentGoPosition <= currentPlayerCurrentPosition && currentGoPosition > currentPlayerInitialPosition) {
-                    gameboard.getSquareByPosition(currentGoPosition).takeEffect(currentPlayer);
-                }
             } else {
-                if (currentGoPosition <= currentPlayerCurrentPosition || currentGoPosition > currentPlayerInitialPosition) {
+                if (currentGoPosition <= currentPlayerCurrentPosition && currentGoPosition > currentPlayerInitialPosition) {
                     gameboard.getSquareByPosition(currentGoPosition).takeEffect(currentPlayer);
                 }
             }

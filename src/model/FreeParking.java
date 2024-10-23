@@ -1,9 +1,6 @@
 package model;
 public class FreeParking extends Square {
-    public FreeParking(int id) {
-        super(id);
-    }
-    public FreeParking(int position, int id) {
+    public FreeParking(int position, String id) {
         super(position, id);
     }
     @Override

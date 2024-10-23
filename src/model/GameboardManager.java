@@ -1,6 +1,5 @@
 package model;
 
-import controller.Main;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,16 +8,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+/**
+ * load game and players to the passed reference of gameboard
+ * @param filepath filepath is the absolute path of the original game file (if any)
+ * @param gameboard gameboard is the instance of gameboard with players and squares
+ * @return true if the saving is successful, otherwise return false
+ */
 public class GameboardManager {
-    public static void saveGame(Gameboard gameboard, String filename) {
+    public static void saveGame(Gameboard gameboard, String filepath) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
-        if (!gameboard.getId().equals("0") ) {
-            json.append("\"id\": ").append(gameboard.getId()).append(",\n");
-        } else {
-            json.append("\"id\": ").append(Gameboard.generateId()).append(",\n");
-        }
+        json.append("\"gameid\": ").append(Gameboard.generateGameID()).append(",\n");
         json.append("\"players\": [\n");
         for (int i = 0; i < gameboard.getTotalPlayers(); ++i) {
             Player player = gameboard.getPlayerById(i + 1);
@@ -38,6 +38,8 @@ public class GameboardManager {
                 }
             }
             json.append("]\n");
+
+
             json.append("}");
             if (i < gameboard.getTotalPlayers() - 1) {
                 json.append(",\n");
@@ -45,31 +47,20 @@ public class GameboardManager {
         }
         json.append("\n],\n");
 
-        json.append("\"squares\": [\n");
-        for (int i = 0; i < gameboard.getTotalSquares(); ++i) {
-            Square square = gameboard.getAllSquares().get(i);
-            json.append("{\n");
-            json.append("\"id\": ").append(square.getId()).append(",\n");
-            json.append(square.typeDetailsJson());
-            json.append("}");
-            if (i < gameboard.getTotalSquares() - 1) {
-                json.append(",\n");
-            }
-        }
-        json.append("\n]\n");
+
+        json.append("\"mapid\": " + gameboard.getMapID() + "\n");
 
         json.append("}");
 
-        try (FileWriter writer = new FileWriter(filename + ".json")) {
+        try (FileWriter writer = new FileWriter((filepath.endsWith(".json") ? filepath : (filepath + ".json")))) {
             writer.write(json.toString());
-            System.out.println("Game saved successfully to " + filename + ".json");
+            System.out.println("Game saved successfully to " + filepath );
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to save game.");
         }
+
     }
-
-
     /**
      * load game and players to the passed reference of gameboard
      * @param filepath filepath is the absolute path of the map file
@@ -90,19 +81,27 @@ public class GameboardManager {
             System.out.println("Failed to load the map file: " + filepath);
             return false;
         }
+
+
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
+
+        String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
+        gameboard.setMapID(mapId);
+
 
         try {
             String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
             String[] squareObjects = squaresStr.split("\\},\\{");
             gameboard.getAllSquares().clear();
 
+            int position = 1;
+
             for (String squareObjStr : squareObjects) {
                 squareObjStr = squareObjStr.replaceAll("\\{|\\}", "");
 
-                int squareId = Integer.parseInt(squareObjStr.split("\"id\":")[1].split(",")[0]);
-                String type = squareObjStr.split("\"type\":\"")[1].split("\"")[0];
+                String idStr = squareObjStr.split("\"id\":\"")[1].split("\"")[0];
+                String type = idStr.substring(0, 1);
 
                 Square square = null;
 
@@ -112,28 +111,30 @@ public class GameboardManager {
                         String propertyName = detailsStr.split("\"name\":\"")[1].split("\"")[0];
                         int price = Integer.parseInt(detailsStr.split("\"price\":")[1].split(",")[0]);
                         int rent = Integer.parseInt(detailsStr.split("\"rent\":")[1].split(",")[0]);
-                        square = new Property(squareId, propertyName, price, rent);
+                        square = new Property(position, idStr, propertyName, price, rent);
                         break;
                     case "G":
-                        square = new Go(squareId);
+                        square = new Go(position, idStr);
+                        gameboard.setGoPosition(position);
                         break;
                     case "C":
-                        square = new Chance(squareId);
+                        square = new Chance(position, idStr);
                         break;
                     case "I":
-                        square = new IncomeTax(squareId);
+                        square = new IncomeTax(position, idStr);
                         break;
                     case "F":
-                        square = new FreeParking(squareId);
+                        square = new FreeParking(position, idStr);
                         break;
                     case "J":
-                        square = new GoJail(squareId);
+                        square = new GoJail(position, idStr);
                         break;
                     case "V":
-                        square = new InJailOrJustVisiting(squareId);
+                        square = new InJailOrJustVisiting(position, idStr);
                         break;
                 }
                 gameboard.addSquare(square);
+                position++;
             }
 
             System.out.println("Map loaded successfully from " + filepath);
@@ -152,8 +153,6 @@ public class GameboardManager {
      * @return true if the loading is successful, otherwise return false
      */
     public static boolean loadGame(String filepath, Gameboard gameboard) {
-
-
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
         {
@@ -161,7 +160,6 @@ public class GameboardManager {
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to load game.");
@@ -176,7 +174,8 @@ public class GameboardManager {
             String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
             String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
 
-            gameboard.setId(gameId);
+            gameboard.setGameID(gameId);
+            gameboard.setMapID(mapId);
 
             String curdir = System.getProperty("user.dir");
             if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) return false;
