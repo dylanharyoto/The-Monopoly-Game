@@ -1,6 +1,9 @@
 package model;
 
 
+import view.GameboardView;
+import view.InputView;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -54,10 +57,10 @@ public class GameboardManager {
 
         try (FileWriter writer = new FileWriter((filepath.endsWith(".json") ? filepath : (filepath + ".json")))) {
             writer.write(json.toString());
-            System.out.println("Game saved successfully to " + filepath );
+            InputView.displayMessage("Game saved successfully to " + filepath );
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to save game.");
+            InputView.displayMessage("Failed to save game.");
         }
 
     }
@@ -78,7 +81,7 @@ public class GameboardManager {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to load the map file: " + filepath);
+            InputView.displayMessage("Failed to load the map file: " + filepath);
             return false;
         }
 
@@ -137,10 +140,10 @@ public class GameboardManager {
                 position++;
             }
 
-            System.out.println("Map loaded successfully from " + filepath);
+            InputView.displayMessage("Map loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to interpret the map: " + filepath);
+            InputView.displayMessage("Failed to interpret the map: " + filepath);
         }
 
         return true;
@@ -162,7 +165,7 @@ public class GameboardManager {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Failed to load game.");
+            InputView.displayMessage("Failed to load game.");
             return false;
         }
 
@@ -205,10 +208,10 @@ public class GameboardManager {
             }
 
 
-            System.out.println("Game loaded successfully from " + filepath);
+            InputView.displayMessage("Game loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to load game from" + filepath);
+            InputView.displayMessage("Failed to load game from" + filepath);
         }
 
         return true;

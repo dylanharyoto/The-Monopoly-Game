@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import model.*;
@@ -44,39 +45,16 @@ public class GameboardView {
                                      |                     |                     |                     |                     |                    \s
                                      |                     |                     |                     |                     |                    \s""";
 
-    public String inputPrompt(String prompt, String[] options) {
-        String input;
-        while(true) {
-            System.out.println(prompt);
-            System.out.print("> ");
-            input = scanner.next();
-            for(String option : options) {
-                if(option.equals(input)) {
-                    return input;
-                }
-            }
-            System.out.println("Invalid answer! Please double check the available options and retype.");
-        }
-    }
+
     public String promptBuyProperty(Player player, String propertyName, int price) {
-        return inputPrompt("Hi " + player.getName() + ", would you like to buy " + propertyName + " for HKD " + price + "?\n1. Yes\n2. No", new String[]{"1", "2"});
-    }
-    public int promptGetPlayer(int totalPlayer) {
-        String[] playerIdOptions = new String[totalPlayer];
-        for (int i = 0; i < totalPlayer; i++) {
-            playerIdOptions[i] = String.valueOf(i + 1);
-        }
-        return Integer.parseInt(inputPrompt("Please enter the player ID", playerIdOptions));
-    }
-    public String promptFilename(String prompt) {
-        return inputPrompt(prompt, new String[]{""});
+        return InputView.inputPrompt("Hi " + player.getName() + ", would you like to buy " + propertyName + " for HKD " + price + "?\n1. Yes\n2. No", new String[]{"1", "2"});
     }
     public String getFilenameInput() {
         return "";
     }
     public void displayPlayers(ArrayList<Player> players) {
         if (players == null || players.isEmpty()) {
-            System.out.println("No players to display.");
+            InputView.displayMessage("No players to display.");
             return;
         }
         for (Player player : players) {
@@ -85,24 +63,21 @@ public class GameboardView {
     }
     public void displayPlayer(Player player) {
         if (player == null) {
-            System.out.println("No player to display.");
+            InputView.displayMessage("No player to display.");
             return;
         }
-        System.out.println(player.getName());
-        System.out.println("    Money: HKD " + player.getMoney());
-        System.out.println("    Position: " + player.getPosition());
-    }
-    public void displayMessage(String message) {
-        System.out.println(message);
+        InputView.displayMessage(player.getName());
+        InputView.displayMessage("    Money: HKD " + player.getMoney());
+        InputView.displayMessage("    Position: " + player.getPosition());
     }
     public void displayGameboard() {
-        System.out.println(this.boardString);
-
+        InputView.displayMessage(this.boardString);
+        
     }
     public void replaceBlockBySquare(Square square) {
-        int[] blockIndex = { 0, 22, 44, 66, 88, 110, 902, 1694, 2486, 3278, 4070, 4048, 4026, 4004, 3982, 3960, 3168, 2376, 1594, 792 };
+        int[] blockIndex = {0, 22, 44, 66, 88, 110, 902, 1694, 2486, 3278, 4070, 4048, 4026, 4004, 3982, 3960, 3168, 2376, 1584, 792 };
 
-        int position = blockIndex[square.getPosition()];
+        int position = blockIndex[square.getPosition()-1];
         int rowLength = 132;
         if (square instanceof Property) {
             position += rowLength;
@@ -143,6 +118,24 @@ public class GameboardView {
                     + boardString.substring(position + 21);
         }
     }
+
+    public void updateGameboard(Gameboard gameboard){
+        List<String>[] players = new ArrayList[20];
+        for(int i=0; i<20; i++){
+            players[i] = new ArrayList<>();
+        }
+        for(Player p: gameboard.getAllPlayers())
+            players[p.getPosition()-1].add("p"+p.getId());
+        for(int i=0; i<20; i++){
+            int[] blockIndex = {528, 550, 572, 594, 616, 638, 1430, 2222, 3014, 3806, 4598, 4576, 4554, 4532, 4510, 4488, 3696, 2904, 2112, 1320};
+            int position = blockIndex[i];
+            boardString = boardString.substring(0, position) + replaceLineByItem(String.join(",",players[i]))
+                    + boardString.substring(position + 21);
+        }
+    }
+
+    //private void
+
     private String replaceLineByItem(String item) {
         int itemLength = item.length();
         String emptyLine = "                     ";

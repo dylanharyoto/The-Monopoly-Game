@@ -86,8 +86,8 @@ public class Gameboard {
         return this.squares;
     }
     public Square getSquareByPosition(int position) {
-        if (position <= squares.size() && position >= 0)
-            return this.squares.get(position);
+        if (position <= squares.size() && position > 0)
+            return this.squares.get(position-1);
         else
             return null;
     }
