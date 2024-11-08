@@ -56,15 +56,15 @@ public class GameboardController {
                         continue;
                     }
                     break;
-                } else {
-                    for (String substringName : nameInput.split(";")) {
-                        if (substringName.length() > 10 || substringName.isEmpty())
-                            System.out.println("One of the name length isn't permitted.");
-                        else if (names.size() == playerNumber)
-                            System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
-                        else
-                            names.add(substringName.trim());
-                    }
+                } else if (nameInput.startsWith("add")){
+                    String name = gameboardView.inputPrompt("",new String[]{});
+                    if (name.length() > 10 || name.isEmpty())
+                        System.out.println("One of the name length isn't permitted.");
+                    else if (names.size() == playerNumber)
+                        System.out.println("Slots are taken, player " + name.trim() + " is ignored.");
+                    else
+                        names.add(name.trim());
+
                 }
 
             }
