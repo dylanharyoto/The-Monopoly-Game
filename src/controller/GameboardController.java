@@ -1,13 +1,10 @@
 package controller;
 
-import model.Gameboard;
-import model.GameboardManager;
-import model.Player;
-import model.Property;
+import model.*;
 import view.GameboardView;
+import view.InputView;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GameboardController {
@@ -21,72 +18,67 @@ public class GameboardController {
         boolean proceed = false;
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> names = new ArrayList<String>(0);
-        String choice = gameboardView.inputPrompt("Please enter the number of players (minimum 2, maximum 6)", new String[]{"2", "3", "4", "5", "6"});
+        String choice = InputView.inputPrompt("Please enter the number of players (minimum 2, maximum 6)", new String[]{"2", "3", "4", "5", "6"});
         int playerNumber = Integer.parseInt(choice);
         if (playerNumber >= 2 && playerNumber <= 6) {
             names = new ArrayList<String>(playerNumber);
-            gameboardView.inputPrompt("""
-            Enter player names separated by ';' (max 10 characters each).
-            To delete a name, type '!d#' (e.g., '!d2').
-            To change the number of players, type '!r'.""", new String[]{});
+            InputView.displayMessage("""
+            Here you can add or delete players by
+            Enter 'add xx' to add player, or
+            Enter 'delete xx' to delete player,
+            where xx is the name of player.
+            To change the number of players, type 'return'.""");
             while (!proceed) {
-                gameboardView.inputPrompt("When players are ready, type '!p' to proceed. Current players:", new String[]{});
+                InputView.displayMessage("When players are ready, type 'p' to proceed. Current players:");
                 if (names.isEmpty())
-                    gameboardView.inputPrompt("None", new String[]{});
+                    InputView.displayMessage("None");
                 for (int i = 0; i < names.size(); i++) {
-                    gameboardView.inputPrompt((i + 1) + ". " + names.get(i), new String[]{});
+                    InputView.displayMessage((i + 1) + ". " + names.get(i));
                 }
-                String nameInput = scanner.next();
-                if (nameInput.startsWith("!d")) {
-                    int deleteChoice = -1;
-                    try {
-                        deleteChoice = Integer.parseInt(nameInput.substring(2, 3));
-                        if (deleteChoice < 1 || deleteChoice > names.size())
-                            throw new NumberFormatException();
-                    } catch (InputMismatchException | NumberFormatException e) {
-                        // System.out.println("Your input is invalid!");
-                        continue;
-                    }
-                    names.remove(deleteChoice - 1);
-                } else if (nameInput.equals("!r")) {
+                String nameInput = InputView.inputPrompt("",new String[]{});
+                if (nameInput.startsWith("delete")) {
+                    String name = InputView.inputPrompt("",new String[]{});
+                    names.remove(name);
+                } else if (nameInput.equals("return")) {
                     break;
-                } else if (nameInput.equals("!p")) {
+                } else if (nameInput.equals("p")) {
                     if (names.size() != playerNumber) {
-                        // System.out.println("Oops...There's still empty slot");
+                        InputView.displayMessage("Oops...There's still empty slot");
                         continue;
                     }
                     break;
-                } else {
-                    for (String substringName : nameInput.split(";")) {
-                        if (substringName.length() > 10 || substringName.isEmpty())
-                            System.out.println("One of the name length isn't permitted.");
-                        else if (names.size() == playerNumber)
-                            System.out.println("Slots are taken, player " + substringName.trim() + " is ignored.");
-                        else
-                            names.add(substringName.trim());
-                    }
+                } else if (nameInput.startsWith("add")){
+                    String name = InputView.inputPrompt("",new String[]{});
+                    if (name.length() > 10 || name.isEmpty())
+                        InputView.displayMessage("One of the name length isn't permitted.");
+                    else if (names.size() == playerNumber)
+                        InputView.displayMessage("Slots are taken, player " + name.trim() + " is ignored.");
+                    else
+                        names.add(name.trim());
+
                 }
 
             }
             while(!proceed){
-                choice = gameboardView.inputPrompt("Would you like to\n1. start with default map\n2. start by loading map", new String[]{"1", "2"});
+                choice = InputView.inputPrompt("Would you like to\n1. start with default map\n2. start by loading map", new String[]{"1", "2"});
                 String curdir = System.getProperty("user.dir");
                 if(choice.equals("1")) {
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/map2", gameboard))
                         continue;
                 } else{
-                    String filename = gameboardView.promptFilename("Please input the json filename");
+                    String filename = InputView.promptFilename("Please input the json filename");
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/" + filename, gameboard)){
-                        System.out.println("File not exist!");
+                        InputView.displayMessage("File not exist!");
                         continue;
                     }
 
                 }
+                for(Square s: gameboard.getAllSquares()) gameboardView.replaceBlockBySquare(s);
+
                 proceed = true;
             }
-            playerNumber = names.size();
         } else {
-            System.out.println("This is not a valid number of players!");
+            InputView.displayMessage("This is not a valid number of players!");
         }
 
         for (int i = 0; i < names.size(); i++) {
@@ -96,7 +88,7 @@ public class GameboardController {
         return true;
     }
     public void startGame() {
-        this.gameboardView.displayMessage("Welcome to MonoPolyU, the game is starting...");
+        InputView.displayMessage("Welcome to MonoPolyU, the game is starting...");
         Player currentPlayer;
 
         while (gameboard.checkGameStatus()) {
@@ -105,7 +97,7 @@ public class GameboardController {
             boolean proceed = false;
             while(!proceed) {
                 String[] options = {"0", "1", "2", "3"};
-                String option = gameboardView.inputPrompt(currentPlayer.getName() +
+                String option = InputView.inputPrompt(currentPlayer.getName() +
                         """
                         's turn. Would you like to:
                         "0" Roll the dice (required to proceed)
@@ -117,11 +109,12 @@ public class GameboardController {
                 switch (option) {
                     case "0":
                         currentPlayer.rollDice();
+                        this.gameboard.getSquareByPosition(currentPlayer.getPosition()).takeEffect(currentPlayer);
                         proceed = true;
                         break;
                     case "1":
-                        String[] playerStatusOptions = {"1", "2"};
-                        String playerStatusOption = gameboardView.inputPrompt(
+                        String[] playerStatusOptions = {"1", "2", "0"};
+                        String playerStatusOption = InputView.inputPrompt(
                                 """
                                     Would you like to:
                                     "1" Check all players
@@ -129,16 +122,19 @@ public class GameboardController {
                                     "0" Go back to previous options
                                     """,
                                 playerStatusOptions);
-                        if(playerStatusOption.equals("1")) {
+                        if (playerStatusOption.equals("1")) {
                             gameboardView.displayPlayers(gameboard.getAllPlayers());
+                        } else if (playerStatusOption.equals("0")) {
+                            break;
                         } else {
-                            int playerId = gameboardView.promptGetPlayer(gameboard.getTotalPlayers());
+                            int playerId = InputView.promptGetPlayer(gameboard.getTotalPlayers());
                             gameboardView.displayPlayer(gameboard.getPlayerById(playerId));
                         }
                         // to be implemented (check player by name)
                         break;
                     case "2":
                         // to be implemented
+                        this.gameboardView.updateGameboard(gameboard);
                         this.gameboardView.displayGameboard();
                         break;
                     case "3":
@@ -152,7 +148,7 @@ public class GameboardController {
                         GameboardManager.saveGame(gameboard, filename);
                         break;
                     default:
-                        gameboardView.displayMessage("You must roll the dice (\"0\") before proceeding.");
+                        InputView.displayMessage("You must roll the dice (\"0\") before proceeding.");
                         break;
                 }
             }
@@ -160,7 +156,7 @@ public class GameboardController {
             int currentGoPosition = gameboard.getGoPosition();
             if (currentPlayerInitialPosition == currentPlayerCurrentPosition) {
                 String[] jailOptions = {"1", "2"};
-                String jailOption = gameboardView.inputPrompt("""
+                String jailOption = InputView.inputPrompt("""
                     You are currently in jail. Would you like to:
                     1. Pay HKD$150 to get out
                     2. Stay in jail
@@ -181,7 +177,7 @@ public class GameboardController {
                 for (Property property : currentPlayer.getProperties()) {
                     property.setOwner(null);
                 }
-                gameboardView.displayMessage(currentPlayer.getName() + " is out of the game.");
+                InputView.displayMessage(currentPlayer.getName() + " is out of the game.");
                 gameboard.removePlayer(currentPlayer);
             }
             gameboard.nextPlayer();
@@ -192,7 +188,7 @@ public class GameboardController {
         int[] winnersId = gameboard.getWinners();
 
         if (winnersId.length == 1) {
-            gameboardView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerById(winnersId[0]).getName());
+            InputView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerById(winnersId[0]).getName());
         } else {
             StringBuilder winnerNames = new StringBuilder("Game Finished! The winners are ");
             for (int i = 0; i < winnersId.length; i++) {
@@ -201,7 +197,7 @@ public class GameboardController {
                     winnerNames.append(", ");
                 }
             }
-            gameboardView.displayMessage(winnerNames.toString());
+            InputView.displayMessage(winnerNames.toString());
         }
     }
 }

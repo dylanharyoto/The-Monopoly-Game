@@ -1,4 +1,7 @@
 package model;
+
+import view.InputView;
+
 public class Property extends Square {
     private String name;
     private int price;
@@ -34,17 +37,16 @@ public class Property extends Square {
             player.decreaseMoney(this.rent);
             owner.increaseMoney(this.rent);
         }
-//        else if (owner == null) {
-//            Scanner scanner = new Scanner(System.in);
-//            System.out.println("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?");
-//            String answer = Main.inputPrompt("Please type \"1\" for yes and \"2\" for no.","1,2",scanner);
-//            if (answer.equals("1")) {
-//                player.decreaseMoney(this.price);
-//                player.addProperty(this);
-//                this.setOwner(player);
-//                System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
-//            }
-//        }
+        else if (owner == null) {
+            InputView.displayMessage("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?");
+            String answer = InputView.inputPrompt("Please type \"1\" for yes and \"2\" for no.",new String[]{"1","2"});
+            if (answer.equals("1")) {
+                player.decreaseMoney(this.price);
+                player.addProperty(this);
+                this.setOwner(player);
+                System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+            }
+        }
     }
     @Override
     public String typeDetailsJson() {
