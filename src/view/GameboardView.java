@@ -1,5 +1,6 @@
 package view;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -61,6 +62,7 @@ public class GameboardView {
     public String promptBuyProperty(Player player, String propertyName, int price) {
         return inputPrompt("Hi " + player.getName() + ", would you like to buy " + propertyName + " for HKD " + price + "?\n1. Yes\n2. No", new String[]{"1", "2"});
     }
+
     public int promptGetPlayer(int totalPlayer) {
         String[] playerIdOptions = new String[totalPlayer];
         for (int i = 0; i < totalPlayer; i++) {

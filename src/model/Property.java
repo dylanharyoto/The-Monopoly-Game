@@ -16,9 +16,23 @@ public class Property extends Square {
         this.price = price;
         this.rent = rent;
     }
+
+
     public String getName() {
         return this.name;
     }
+
+    public void setName(String newName) {
+        this.name = newName;
+    }
+    public void setPrice (int newPrice) {
+        this.price = newPrice;
+    }
+
+    public void setRent (int newRent) {
+        this.rent = newRent;
+    }
+
     public int getPrice() {
         return this.price;
     }
