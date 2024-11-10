@@ -1,5 +1,8 @@
 package view;
 
+import model.Player;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class InputView {
@@ -21,12 +24,14 @@ public class InputView {
         }
     }
 
-    public static int promptGetPlayer(int totalPlayer) {
+    public static int promptGetPlayer(ArrayList<Player> players, int totalPlayer) {
         String[] playerIdOptions = new String[totalPlayer];
+        InputView.displayMessage("Type the player ID (number on the left hand side of the player's name)");
         for (int i = 0; i < totalPlayer; i++) {
             playerIdOptions[i] = String.valueOf(i + 1);
+            InputView.displayMessage(i + 1 + ". " + players.get(i).getName());
         }
-        return Integer.parseInt(InputView.inputPrompt("Please enter the player ID", playerIdOptions));
+        return Integer.parseInt(InputView.inputPrompt("", playerIdOptions));
     }
 
     public static void displayMessage(String message) {
@@ -39,7 +44,7 @@ public class InputView {
             System.out.println(prompt);
             System.out.print("> ");
             input = scanner.next();
-        }while(input.contains("/"));
+        } while(input.contains("/"));
         return input;
     }
 

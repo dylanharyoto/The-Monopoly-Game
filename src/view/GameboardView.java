@@ -75,7 +75,7 @@ public class GameboardView {
         
     }
     public void replaceBlockBySquare(Square square) {
-        int[] blockIndex = {0, 22, 44, 66, 88, 110, 902, 1694, 2486, 3278, 4070, 4048, 4026, 4004, 3982, 3960, 3168, 2376, 1584, 792 };
+        int[] blockIndex = {4070, 4048, 4026, 4004, 3982, 3960, 3168, 2376, 1584, 792, 0, 22, 44, 66, 88, 110, 902, 1694, 2486, 3278};
 
         int position = blockIndex[square.getPosition()-1];
         int rowLength = 132;
@@ -127,7 +127,7 @@ public class GameboardView {
         for(Player p: gameboard.getAllPlayers())
             players[p.getPosition()-1].add("p"+p.getId());
         for(int i=0; i<20; i++){
-            int[] blockIndex = {528, 550, 572, 594, 616, 638, 1430, 2222, 3014, 3806, 4598, 4576, 4554, 4532, 4510, 4488, 3696, 2904, 2112, 1320};
+            int[] blockIndex = {4598, 4576, 4554, 4532, 4510, 4488, 3696, 2904, 2112, 1320, 528, 550, 572, 594, 616, 638, 1430, 2222, 3014, 3806};
             int position = blockIndex[i];
             boardString = boardString.substring(0, position) + replaceLineByItem(String.join(",",players[i]))
                     + boardString.substring(position + 21);

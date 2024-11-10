@@ -84,15 +84,10 @@ public class GameboardManager {
             InputView.displayMessage("Failed to load the map file: " + filepath);
             return false;
         }
-
-
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
-
         String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
         gameboard.setMapID(mapId);
-
-
         try {
             String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
             String[] squareObjects = squaresStr.split("\\},\\{");
@@ -140,7 +135,7 @@ public class GameboardManager {
                 position++;
             }
 
-            InputView.displayMessage("Map loaded successfully from " + filepath);
+            InputView.displayMessage("Map loaded successfully from " + filepath + ".");
         } catch (Exception e) {
             e.printStackTrace();
             InputView.displayMessage("Failed to interpret the map: " + filepath);

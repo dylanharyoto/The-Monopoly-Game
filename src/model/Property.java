@@ -38,13 +38,27 @@ public class Property extends Square {
             owner.increaseMoney(this.rent);
         }
         else if (owner == null) {
-            InputView.displayMessage("Hi " + player.getName() + ", would you like to buy " + this.getName() + "?");
-            String answer = InputView.inputPrompt("Please type \"1\" for yes and \"2\" for no.",new String[]{"1","2"});
-            if (answer.equals("1")) {
-                player.decreaseMoney(this.price);
-                player.addProperty(this);
-                this.setOwner(player);
-                System.out.println("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+            String answer = InputView.inputPrompt(
+    "Hi " + player.getName() + ", welcome to " + this.getName() + ".\n" +
+            "Would you like to:\n" +
+            "1. Buy " + this.getName() + "\n" +
+            "2. Pass " + this.getName() + "\n" +
+            "0. Leave the game", new String[]{"1", "2", "0"}
+            );
+            switch (answer) {
+                case "1" -> {
+                    player.decreaseMoney(this.price);
+                    player.addProperty(this);
+                    this.setOwner(player);
+                    InputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+                }
+                case "2" -> {
+                    InputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
+                }
+                case "0" -> {
+                    // to be implemented
+                    return;
+                }
             }
         }
     }
