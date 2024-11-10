@@ -28,6 +28,15 @@ public class Property extends Square {
     public Player getOwner() {
         return this.owner;
     }
+    public void setName(String newName) {
+        this.name = newName;
+    }
+    public void setPrice (int newPrice) {
+        this.price = newPrice;
+    }
+    public void setRent (int newRent) {
+        this.rent = newRent;
+    }
     @Override
     public void takeEffect(Player player) {
         InputView.displayMessage("Now, " + player.getName() + " reaches " + this.getName() + ".\n");
@@ -71,19 +80,5 @@ public class Property extends Square {
     public String typeDetailsJson() {
         return String.format("\"type\": \"P\",\n\"details\": {\n\"name\": \"%s\",\n\"price\": %d,\n\"rent\": %d\n}",
                 this.name, this.price, this.rent);
-    }
-    public boolean isAvailable() {
-        return this.owner == null;
-    }
-    public void buyProperty(Player player) {
-        if(this.owner != null) {
-            throw new IllegalStateException("This property is already owned.");
-        }
-        if(player.getMoney() < this.price) {
-            throw new IllegalStateException("Player does not have enough money to buy this property.");
-        }
-        player.decreaseMoney(this.price);
-        player.addProperty(this);
-        this.setOwner(player);
     }
 }
