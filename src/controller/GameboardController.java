@@ -45,12 +45,8 @@ public class GameboardController {
         int playerNumber = Integer.parseInt(choice);
         if (playerNumber >= 2 && playerNumber <= 6) {
             names = new ArrayList<String>(playerNumber);
-            while (!proceed) {
-                InputView.displayMessage("""
-                Type 'add [playerName]' to add player, or 'delete [playerName]' to delete player.
-                Type 'return' to change the number of players.
-                Type 'play' to proceed when players are ready.
-                Current players:""");
+            while (true) {
+                InputView.displayMessage("Current players:");
                 if (names.isEmpty()) {
                     InputView.displayMessage("None");
                 } else {
@@ -58,46 +54,35 @@ public class GameboardController {
                         InputView.displayMessage((i + 1) + ". " + names.get(i));
                     }
                 }
-
-                String nameInput = InputView.inputPrompt("", new String[]{});
-                if (nameInput.startsWith("delete")) {
-                    handleDelete(nameInput, names);
-                } else if (nameInput.equals("return")) {
-                    break;
-                } else if (nameInput.equals("play")) {
+                String option = InputView.inputPrompt("Would you like to \n1. Add more players\n2. Start the game", new String[]{"1", "2"});
+                if (option.equals("1")) {
+                    handleAdd(names, playerNumber);
+                } else if (option.equals("2")) {
                     if (names.size() != playerNumber) {
                         InputView.displayMessage("Oops...There's still an empty slot.\n");
                     } else {
                         break;
                     }
-                } else if (nameInput.startsWith("add")) {
-                    handleAdd(names, playerNumber);
-                } else {
-                    System.out.println("Invalid answer! Please double check the available options and retype.");
                 }
-
             }
-            while(!proceed){
+            while(true){
                 choice = InputView.inputPrompt("Would you like to\n1. Start with default map\n2. Start by loading a map", new String[]{"1", "2"});
                 String curdir = System.getProperty("user.dir");
                 if(choice.equals("1")) {
-                    if(!GameboardManager.loadMap(curdir + "/assets/maps/map2", gameboard))
+                    if(!GameboardManager.loadMap(curdir + "/assets/maps/defaultMap", gameboard))
                         continue;
-                } else{
+                } else if(choice.equals("2")) {
                     String filename = InputView.promptFilename("Please input the json filename");
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/" + filename, gameboard)){
                         InputView.displayMessage("File not exist!");
                         continue;
                     }
                 }
-                for(Square s: gameboard.getAllSquares()) gameboardView.replaceBlockBySquare(s);
-
-                proceed = true;
+                break;
             }
         } else {
             InputView.displayMessage("This is not a valid number of players!");
         }
-
         for (int i = 0; i < names.size(); i++) {
             gameboard.addPlayer(new Player(i+1, names.get(i), 1500, 1));
         }
@@ -105,6 +90,7 @@ public class GameboardController {
         return true;
     }
     public void startGame() {
+        for(Square s: gameboard.getAllSquares()) gameboardView.replaceBlockBySquare(s);
         InputView.displayMessage("Welcome to MonoPolyU, the game is starting...");
         Player currentPlayer;
         while (gameboard.checkGameStatus()) {
@@ -112,81 +98,74 @@ public class GameboardController {
             int currentPlayerInitialPosition = currentPlayer.getPosition();
             boolean proceed = false;
             while(!proceed) {
-                String[] options = {"0", "1", "2", "3"};
                 String option = InputView.inputPrompt(currentPlayer.getName() +
                         """
                         's turn. Would you like to:
-                        0. Roll the dice (required to proceed)
-                        1. Check player(s) status
-                        2. Print the current gameboard status
-                        3. Check the next player
-                        4. Save the current game""", options);
+                        1. Roll the dice (required to proceed)
+                        2. Check player(s) status
+                        3. Print the current gameboard status
+                        4. Check the next player
+                        5. Save the current game""", new String[]{"1", "2", "3", "4", "5"});
                 switch (option) {
-                    case "0":
+                    case "1":
                         currentPlayer.rollDice();
-                        this.gameboard.getSquareByPosition(currentPlayer.getPosition()).takeEffect(currentPlayer);
                         proceed = true;
                         break;
-                    case "1":
+                    case "2":
                         String playerStatusOption = InputView.inputPrompt(
                     """
                         Would you like to:
-                        1. Check all players
-                        2. Check a single player
-                        0. Go back to previous options
+                        1. Go back to previous options
+                        2. Check all players
+                        3. Check a single player
                         """,
-                        new String[]{"1", "2", "0"});
+                        new String[]{"1", "2", "3"});
                         switch (playerStatusOption) {
-                            case "1" -> {
+                            case "1" :
+                                break;
+                            case "2" :
                                 gameboardView.displayPlayers(gameboard.getAllPlayers());
-                            }
-                            case "2" -> {
+                                break;
+                            case "3" :
                                 int playerId = InputView.promptGetPlayer(gameboard.getAllPlayers(), gameboard.getTotalPlayers());
                                 gameboardView.displayPlayer(gameboard.getPlayerById(playerId));
-                            }
-                            case "0" -> {
                                 break;
-                            }
                         }
-                        // to be implemented (check player by name)
                         break;
-                    case "2":
-                        // to be implemented
+                    case "3":
                         this.gameboardView.updateGameboard(gameboard);
                         this.gameboardView.displayGameboard();
                         break;
-                    case "3":
-                        // to be implemented
+                    case "4":
                         int nextPlayerId = gameboard.getNextPlayerId();
                         gameboardView.displayPlayer(gameboard.getPlayerById(nextPlayerId));
-                    case "4":
-                        // to be implemented
+                        break;
+                    case "5":
                         String curdir = System.getProperty("user.dir");
                         String filename =  curdir + this.gameboard.getGameID() + ".json";
                         GameboardManager.saveGame(gameboard, filename);
                         break;
                     default:
-                        InputView.displayMessage("You must roll the dice (\"0\") before proceeding.");
+                        InputView.displayMessage("You must roll the dice (type \"1\") before proceeding.");
                         break;
                 }
             }
             int currentPlayerCurrentPosition = currentPlayer.getPosition();
             int currentGoPosition = gameboard.getGoPosition();
             if (currentPlayerInitialPosition == currentPlayerCurrentPosition) {
-                String[] jailOptions = {"1", "2"};
                 String jailOption = InputView.inputPrompt("""
                     You are currently in jail. Would you like to:
                     1. Pay HKD$150 to get out
                     2. Stay in jail
-                    """, jailOptions);
+                    """, new String[]{"1", "2"});
                 if (jailOption.equals("1")) {
                     currentPlayer.decreaseMoney(150);
                     currentPlayer.setInJailDuration(0);
-                } else {
-                    currentPlayer.setInJailDuration(currentPlayer.getInJailDuration() - 1);
+                } else if (jailOption.equals("2")) {
+                    //InputView.displayMessage("You have " + currentPlayer.getInJailDuration() + " rounds left in the jail.\n");
                 }
             } else {
-                if (currentGoPosition <= currentPlayerCurrentPosition && currentGoPosition > currentPlayerInitialPosition) {
+                if (8 >= currentPlayerCurrentPosition && 13 <= currentPlayerInitialPosition && currentPlayerCurrentPosition != 1) {
                     gameboard.getSquareByPosition(currentGoPosition).takeEffect(currentPlayer);
                 }
             }

@@ -1,4 +1,6 @@
 package model;
+import view.InputView;
+
 import java.util.Random;
 import java.util.ArrayList;
 public class Player {
@@ -21,11 +23,19 @@ public class Player {
         Random random = new Random();
         int dice1 = random.nextInt(4) + 1;
         int dice2 = random.nextInt(4) + 1;
+        System.out.println("dice 1: " + dice1 + "dice 2: " + dice2);
         int total = dice1 + dice2;
         if(this.inJailDuration > 0 && dice1 != dice2) {
             this.inJailDuration -= 1;
+            if (this.inJailDuration == 0) {
+                this.decreaseMoney(150);
+                InputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).\n");
+            }
             return;
-        };
+        }
+        else if (dice1 == dice2) {
+            this.inJailDuration = 0;
+        }
         int newPosition = (this.position + total - 1) % 20 + 1;
         setPosition(newPosition);
     }

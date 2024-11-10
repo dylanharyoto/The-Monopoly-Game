@@ -94,7 +94,6 @@ public class GameboardManager {
             gameboard.getAllSquares().clear();
 
             int position = 1;
-
             for (String squareObjStr : squareObjects) {
                 squareObjStr = squareObjStr.replaceAll("\\{|\\}", "");
 
@@ -170,7 +169,7 @@ public class GameboardManager {
 
         try {
             String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
-            String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
+            String mapId = jsonContent.split("\"mapid\":\"")[1].split("\"")[0];
 
             gameboard.setGameID(gameId);
             gameboard.setMapID(mapId);

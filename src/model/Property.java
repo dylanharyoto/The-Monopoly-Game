@@ -30,34 +30,39 @@ public class Property extends Square {
     }
     @Override
     public void takeEffect(Player player) {
+        InputView.displayMessage("Now, " + player.getName() + " reaches " + this.getName() + ".\n");
         if (this.owner != null && this.owner != player) {
             if(player.getMoney() < this.rent) {
-                throw new IllegalStateException("Player cannot pay rent. Insufficient funds.");
+                InputView.displayMessage(player.getName() + " do not have enough money to pay the rent for " + this.getName() + "!");
+            }
+            else {
+                InputView.displayMessage(player.getName() + " paid " + this.getRent() + " to the " + this.getOwner().getName() + " of " + this.getName() + "!");
             }
             player.decreaseMoney(this.rent);
             owner.increaseMoney(this.rent);
+
         }
         else if (owner == null) {
-            String answer = InputView.inputPrompt(
-    "Hi " + player.getName() + ", welcome to " + this.getName() + ".\n" +
-            "Would you like to:\n" +
-            "1. Buy " + this.getName() + "\n" +
-            "2. Pass " + this.getName() + "\n" +
-            "0. Leave the game", new String[]{"1", "2", "0"}
-            );
-            switch (answer) {
-                case "1" -> {
-                    player.decreaseMoney(this.price);
-                    player.addProperty(this);
-                    this.setOwner(player);
-                    InputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
-                }
-                case "2" -> {
-                    InputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
-                }
-                case "0" -> {
-                    // to be implemented
-                    return;
+            if (player.getMoney() < this.price) {
+                InputView.displayMessage(player.getName() + " does not have enough money to buy " + this.getName() + "!");
+            } else {
+                String answer = InputView.inputPrompt(
+                "Would you like to:\n" +
+                "1. Buy " + this.getName() + "\n" +
+                "2. Pass " + this.getName() + "\n", new String[]{"1", "2"}
+                );
+                switch (answer) {
+                    case "1":
+
+                        player.decreaseMoney(this.price);
+                        player.addProperty(this);
+                        this.setOwner(player);
+                        InputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+                        break;
+                    case "2":
+                        InputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
+                        break;
+
                 }
             }
         }

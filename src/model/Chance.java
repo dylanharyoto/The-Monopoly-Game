@@ -1,4 +1,6 @@
 package model;
+import view.InputView;
+
 import java.util.Random;
 public class Chance extends Square {
     private Random random = new Random();
@@ -7,11 +9,15 @@ public class Chance extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        int amount = (random.nextInt(50) + 1) * 10;
+        int amount;
         if (random.nextBoolean()) {
+            amount = random.nextInt(21) * 10;
             player.increaseMoney(amount);
+            InputView.displayMessage("Chance square offers " + player.getName() + " " + amount + "HKD.\n");
         } else {
-            player.decreaseMoney(Math.min(player.getMoney(), amount));
+            amount = random.nextInt(31) * 10;
+            player.decreaseMoney(amount);
+            InputView.displayMessage("Chance square deprives " + player.getName() + " " + amount + "HKD.\n");
         }
     }
     @Override

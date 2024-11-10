@@ -2,6 +2,10 @@
   "mapid": "map1",
   "squares": [
     {
+      "id": "G",
+      "details": {}
+    },
+    {
       "id": "P1",
       "details": {
         "name": "Central",
@@ -18,12 +22,20 @@
       }
     },
     {
+      "id": "I",
+      "details": {}
+    },
+    {
       "id": "P3",
       "details": {
         "name": "Stanley",
         "price": 600,
         "rent": 60
       }
+    },
+    {
+      "id": "V",
+      "details": {}
     },
     {
       "id": "P4",
@@ -42,6 +54,10 @@
       }
     },
     {
+      "id": "C1",
+      "details": {}
+    },
+    {
       "id": "P6",
       "details": {
         "name": "Tsing Yi",
@@ -50,12 +66,20 @@
       }
     },
     {
+      "id": "F",
+      "details": {}
+    },
+    {
       "id": "P7",
       "details": {
         "name": "Shatin",
         "price": 700,
         "rent": 75
       }
+    },
+    {
+      "id": "C2",
+      "details": {}
     },
     {
       "id": "P8",
@@ -74,6 +98,10 @@
       }
     },
     {
+      "id": "J",
+      "details": {}
+    },
+    {
       "id": "P10",
       "details": {
         "name": "Sai Kung",
@@ -90,6 +118,10 @@
       }
     },
     {
+      "id": "C3",
+      "details": {}
+    },
+    {
       "id": "P12",
       "details": {
         "name": "Tai O",
@@ -97,37 +129,5 @@
         "rent": 25
       }
     },
-    {
-      "id": "G",
-      "details": {}
-    },
-    {
-      "id": "C1",
-      "details": {}
-    },
-    {
-      "id": "C2",
-      "details": {}
-    },
-    {
-      "id": "C3",
-      "details": {}
-    },
-    {
-      "id": "I",
-      "details": {}
-    },
-    {
-      "id": "F",
-      "details": {}
-    },
-    {
-      "id": "J",
-      "details": {}
-    },
-    {
-      "id": "V",
-      "details": {}
-    }
   ]
 }
