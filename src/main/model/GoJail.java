@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import view.InputView;
+import main.view.InputView;
 
 public class GoJail extends Square {
     public GoJail(int position, String id) {

@@ -1,15 +1,13 @@
-package model;
+package main.model;
 
 
-import view.GameboardView;
-import view.InputView;
+import main.view.InputView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 /**
  * load game and players to the passed reference of gameboard

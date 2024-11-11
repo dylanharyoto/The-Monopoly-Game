@@ -1,6 +1,6 @@
-package view;
-import model.Property;
-import model.Player;
+package main.view;
+import main.model.Property;
+import main.model.Player;
 public class PlayerView {
     public void viewPlayer(Player player) {
         InputView.displayMessage("Player Information:");

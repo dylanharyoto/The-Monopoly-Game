@@ -1,5 +1,5 @@
-package model;
-import view.InputView;
+package main.model;
+import main.view.InputView;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class Player {
     }
     public void increaseMoney(int amount) {
         if(amount < 0) {
-            throw new IllegalArgumentException("Amount to increaae cannot be negative,");
+            throw new IllegalArgumentException("Amount to increase cannot be negative,");
         }
         this.money += amount;
     }

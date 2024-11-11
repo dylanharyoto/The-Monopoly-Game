@@ -1,12 +1,10 @@
-package controller;
+package main.controller;
 
-import model.*;
-import view.GameboardView;
-import view.InputView;
+import main.model.*;
+import main.view.GameboardView;
+import main.view.InputView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class GameboardController {
     private Gameboard gameboard;

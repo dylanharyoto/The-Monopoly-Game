@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import view.InputView;
+import main.view.InputView;
 
 public class InJailOrJustVisiting extends Square {
     public InJailOrJustVisiting(int position, String id) {
@@ -13,7 +13,6 @@ public class InJailOrJustVisiting extends Square {
         } else {
             InputView.displayMessage("Just Visiting (jail) square, nothing happens.\n");
         }
-        return;
     }
     @Override
     public String typeDetailsJson() {

@@ -1,7 +1,7 @@
-package view;
+package main.view;
 
-import model.Player;
-import model.Property;
+import main.model.Player;
+import main.model.Property;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,7 +11,18 @@ import java.util.regex.Pattern;
 public class InputView {
 
     private static Scanner scanner = new Scanner(System.in);
+
+    private static String SIMULATED_INPUT;
+
+    public static void setInput(String input) {
+        SIMULATED_INPUT = input;
+    }
+
     public static String inputPrompt(String prompt, String[] options) {
+        if (SIMULATED_INPUT != null) {
+            return SIMULATED_INPUT;
+        }
+
         String input;
         while(true) {
             System.out.println(prompt);

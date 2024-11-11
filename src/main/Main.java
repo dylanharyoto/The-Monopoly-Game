@@ -1,10 +1,10 @@
-import controller.GameboardController;
-import model.Gameboard;
-import model.GameboardManager;
-import view.GameboardView;
-import view.InputView;
+package main;
 
-import java.util.Scanner;
+import main.controller.GameboardController;
+import main.model.Gameboard;
+import main.model.GameboardManager;
+import main.view.GameboardView;
+import main.view.InputView;
 
 public class Main {
     public static void main(String[] args) {

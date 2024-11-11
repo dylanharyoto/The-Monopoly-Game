@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import view.InputView;
+import main.view.InputView;
 
 public class IncomeTax extends Square {
     public IncomeTax(int position, String id) {

@@ -1,10 +1,10 @@
-package view;
+package main.view;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import model.*;
+import main.model.*;
 
 public class GameboardView {
     private static final Scanner scanner = new Scanner(System.in);
