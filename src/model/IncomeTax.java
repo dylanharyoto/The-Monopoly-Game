@@ -22,7 +22,7 @@ public class IncomeTax extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"I\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 
 }

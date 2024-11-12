@@ -18,10 +18,11 @@ public class Gameboard {
         this.currentPlayerId = 1;
     }
     // Game ID
-    public static String generateGameID() {
+    public String generateGameID() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        return now.format(formatter);
+        this.gameID = now.format(formatter);
+        return gameID;
     }
     public String getGameID() {
         return gameID;

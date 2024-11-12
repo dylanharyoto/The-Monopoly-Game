@@ -142,7 +142,7 @@ public class GameboardController {
                         break;
                     case "5":
                         String curdir = System.getProperty("user.dir");
-                        String filename =  curdir + this.gameboard.getGameID() + ".json";
+                        String filename =  curdir + "/assets/games/" + this.gameboard.generateGameID() + ".json";
                         GameboardManager.saveGame(gameboard, filename);
                         break;
                     default:
@@ -161,9 +161,8 @@ public class GameboardController {
                 if (jailOption.equals("1")) {
                     currentPlayer.decreaseMoney(150);
                     currentPlayer.setInJailDuration(0);
-                } else if (jailOption.equals("2")) {
-                    //InputView.displayMessage("You have " + currentPlayer.getInJailDuration() + " rounds left in the jail.\n");
                 }
+//
             } else {
                 if (8 >= currentPlayerCurrentPosition && 13 <= currentPlayerInitialPosition && currentPlayerCurrentPosition != 1) {
                     gameboard.getSquareByPosition(currentGoPosition).takeEffect(currentPlayer);

@@ -14,6 +14,6 @@ public class GoJail extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"J\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 }

@@ -17,6 +17,6 @@ public class Go extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"G\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 }

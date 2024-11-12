@@ -11,17 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-/**
- * load game and players to the passed reference of gameboard
- * @param filepath filepath is the absolute path of the original game file (if any)
- * @param gameboard gameboard is the instance of gameboard with players and squares
- * @return true if the saving is successful, otherwise return false
- */
+
 public class GameboardManager {
     public static void saveGame(Gameboard gameboard, String filepath) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
-        json.append("\"gameid\": ").append(Gameboard.generateGameID()).append(",\n");
+        json.append("\"gameid\": ").append(gameboard.getGameID()).append(",\n");
         json.append("\"players\": [\n");
         for (int i = 0; i < gameboard.getTotalPlayers(); ++i) {
             Player player = gameboard.getPlayerById(i + 1);
@@ -51,7 +46,7 @@ public class GameboardManager {
         json.append("\n],\n");
 
 
-        json.append("\"mapid\": " + gameboard.getMapID() + "\n");
+        json.append("\"mapid\": \"" + gameboard.getMapID() + "\"\n");
 
         json.append("}");
 
@@ -284,10 +279,13 @@ public class GameboardManager {
             System.out.println("Failed to interpret the properties: " + filepath);
         }
 
+
+        boolean mapUpdated = false;
         // Cooperate with View part to prompt the designer to update the properties accordingly
         InputView.displayAllProperties(properties);
         while(true) {
             int choice = Integer.parseInt(InputView.inputPrompt("""
+                    
                     Would you like to change the name, price, or rent of current properties given indices?
                         1. Need to change
                         2. Print out the properties again
@@ -296,9 +294,9 @@ public class GameboardManager {
                     , new String[]{"1", "2", "3"}));
             if(choice == 1) {
                 int propertyIndex = Integer.parseInt(InputView.inputPrompt("""
-                    Please specify the index of the property which you want to change here (from 1 to 12, both inclusive)
+                    Please specify the index of the property which you want to change here (from 0 to 11, both inclusive)
                     """
-                        , new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+                        , new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}));
 
                 Property updatingProperty = (Property) properties.get(propertyIndex);
                 InputView.displayProperty(updatingProperty);
@@ -319,7 +317,7 @@ public class GameboardManager {
                         System.out.println("Successfully update the Name of the property!");
                         break;
                     case 2:
-                        int newPrice = InputView.updateInteger("Please input the new price of the property, the new name should be a positive integer. The new price is ");
+                        int newPrice = InputView.updateInteger("Please input the new price of the property, the new price should be a positive integer. The new price is ");
                         updatingProperty.setPrice(newPrice);
                         System.out.println("Successfully update the Price of the property!");
                         break;
@@ -331,7 +329,7 @@ public class GameboardManager {
                         break;
                 }
 
-
+                mapUpdated = true;
             }
             else if(choice == 2) {
                 InputView.displayAllProperties(properties);
@@ -345,34 +343,40 @@ public class GameboardManager {
         squares.addAll(properties);
         squares.addAll(functionalSquares);
 
+        if (mapUpdated) {
+            while (true) {
 
-        while (true) {
+                Scanner scanner = new Scanner(System.in);
+                String curdir = System.getProperty("user.dir");
 
-            Scanner scanner = new Scanner(System.in);
-            String curdir = System.getProperty("user.dir");
+                System.out.println("Please input the new map name here>");
 
-            System.out.println("Please input the json filename here>");
+                String mapid = scanner.next();
+                mapid = mapid.replace(".json", "");
 
-            String filename = scanner.next();
-            filename = filename.endsWith(".json") ? filename : filename + ".json";
-
-            if (saveMap(squares, curdir + "/assets/games/" + filename)){
-                return true;
+                if (saveMap(squares, mapid, curdir + "/assets/maps/" + mapid + ".json")){
+                    InputView.displayMessage("Thanks for designing a new map!");
+                    return true;
+                }
             }
         }
-
+        else {
+            // if updated and successfully saved, already reture true; if not updated then always return true
+            InputView.displayMessage("You didn't make any change to the default map.");
+            return true;
+        }
 
     }
 
-    public static boolean saveMap (ArrayList<Square> squares, String filename) {
+    public static boolean saveMap (ArrayList<Square> squares, String mapid, String filepath) {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
-
+        json.append("\"mapid\": \"").append(mapid).append("\",\n");
         json.append("\"squares\": [\n");
         for (int i = 0; i < squares.size(); i++) {
             Square square = squares.get(i);
             json.append("{\n");
-            json.append("\"id\": ").append(square.getId()).append(",\n");
+            json.append("\"id\": \"").append(square.getId()).append("\",\n");
             json.append(square.typeDetailsJson());
             json.append("}");
             if (i < squares.size() - 1) {
@@ -383,9 +387,9 @@ public class GameboardManager {
 
         json.append("}");
 
-        try (FileWriter writer = new FileWriter(filename + ".json")) {
+        try (FileWriter writer = new FileWriter(filepath)) {
             writer.write(json.toString());
-            System.out.println("Game saved successfully to " + filename + ".json");
+            System.out.println("Map saved successfully to " + filepath);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to save map.");

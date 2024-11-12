@@ -13,6 +13,6 @@ public class FreeParking extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"F\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 }

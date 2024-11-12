@@ -22,6 +22,6 @@ public class Chance extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"C\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 }

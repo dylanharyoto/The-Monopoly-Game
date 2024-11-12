@@ -13,10 +13,18 @@ public class Main {
         GameboardController gameboardController = new GameboardController(gameboard, gameboardView);
         String curdir = System.getProperty("user.dir");
         while(true) {
-            String choice = InputView.inputPrompt("Welcome to MonoPolyU!\nWould you like to\n1. Start new game\n2. Load existing game", new String[]{"1", "2"});
+            String choice = InputView.inputPrompt("""
+            Welcome to MonoPolyU!
+            Would you like to
+            1. Start new game
+            2. Load existing game
+            3. Design a new map
+            """, new String[]{"1", "2", "3"});
+
 
             if(choice.equals("1")) {
                 if(gameboardController.newGame()) {
+                    InputView.displayMessage("Thanks for playing!");
                     break;
                 };
             } else if(choice.equals("2")) {
@@ -24,10 +32,17 @@ public class Main {
                 filename = filename.endsWith(".json") ? filename : filename + ".json";
                 if(GameboardManager.loadGame(curdir + "/assets/games/" + filename, gameboard)) {
                     gameboardController.startGame();
+                    InputView.displayMessage("Thanks for playing!");
                     break;
                 }
             }
+            else  {
+                if(GameboardManager.designMap(curdir + "/assets/maps/" + "defaultMap.json")) {
+                    break;
+                }
+            }
+
         }
-        InputView.displayMessage("Thanks for playing!");
+
     }
 }

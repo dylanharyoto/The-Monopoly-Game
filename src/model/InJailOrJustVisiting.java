@@ -17,6 +17,6 @@ public class InJailOrJustVisiting extends Square {
     }
     @Override
     public String typeDetailsJson() {
-        return "\"type\": \"V\",\n\"details\": {}\n";
+        return "\"details\": {}\n";
     }
 }
