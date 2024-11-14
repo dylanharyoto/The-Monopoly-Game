@@ -44,14 +44,6 @@ public class GameboardView {
                                      |                     |                     |                     |                     |                    \s
                                      |                     |                     |                     |                     |                    \s
                                      |                     |                     |                     |                     |                    \s""";
-
-
-    public String promptBuyProperty(Player player, String propertyName, int price) {
-        return InputView.inputPrompt("Hi " + player.getName() + ", would you like to buy " + propertyName + " for HKD " + price + "?\n1. Yes\n2. No", new String[]{"1", "2"});
-    }
-    public String getFilenameInput() {
-        return "";
-    }
     public void displayPlayers(ArrayList<Player> players) {
         if (players == null || players.isEmpty()) {
             InputView.displayMessage("No players to display.");

@@ -95,7 +95,7 @@ public class InputView {
      * @param prompt The prompt for user to specify the format of input
      * @return a legal value as the update (positive integer)
      */
-    public static int updateInteger (String prompt) {
+    public static int updateInteger(String prompt) {
         String input;
 
         while (true) {

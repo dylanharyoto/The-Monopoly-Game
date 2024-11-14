@@ -162,7 +162,6 @@ public class GameboardController {
                     currentPlayer.decreaseMoney(150);
                     currentPlayer.setInJailDuration(0);
                 }
-//
             } else {
                 if (8 >= currentPlayerCurrentPosition && 13 <= currentPlayerInitialPosition && currentPlayerCurrentPosition != 1) {
                     gameboard.getSquareByPosition(currentGoPosition).takeEffect(currentPlayer);
