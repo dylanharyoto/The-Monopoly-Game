@@ -96,10 +96,7 @@ public class Gameboard {
     public boolean checkGameStatus() {
         return this.round < 100 && (players.size() > 1 && players.size() < 7);
     }
-    public int getRound() {
-        return this.round;
-    }
-    public int getCurrentPlayerId() {
+    public int getCurrentPlayerID() {
         return this.currentPlayerId;
     }
     public void setGoPosition(int position) {

@@ -8,10 +8,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class InputView {
-
+public class InputOutputView {
     private static Scanner scanner = new Scanner(System.in);
-    public static String inputPrompt(String prompt, String[] options) {
+    public static String promptInput(String prompt, String[] options) {
         String input;
         while(true) {
             System.out.println(prompt);
@@ -26,21 +25,15 @@ public class InputView {
             System.out.println("Invalid answer! Please double check the available options and retype.");
         }
     }
-
-    public static int promptGetPlayer(ArrayList<Player> players, int totalPlayer) {
+    public static int promptGetPlayerByID(ArrayList<Player> players, int totalPlayer) {
         String[] playerIdOptions = new String[totalPlayer];
-        InputView.displayMessage("Type the player ID (number on the left hand side of the player's name)");
+        InputOutputView.displayMessage("Type the player ID (number on the left of the player's name)");
         for (int i = 0; i < totalPlayer; i++) {
             playerIdOptions[i] = String.valueOf(i + 1);
-            InputView.displayMessage(i + 1 + ". " + players.get(i).getName());
+            InputOutputView.displayMessage(i + 1 + ". " + players.get(i).getName());
         }
-        return Integer.parseInt(InputView.inputPrompt("", playerIdOptions));
+        return Integer.parseInt(InputOutputView.promptInput("", playerIdOptions));
     }
-
-    public static void displayMessage(String message) {
-        System.out.println(message);
-    }
-
     public static String promptFilename(String prompt) {
         String input;
         do{
@@ -50,34 +43,31 @@ public class InputView {
         } while(input.contains("/"));
         return input;
     }
+    public static void displayMessage(String message) {
+        System.out.println(message);
+    }
     /**
      * @param properties means an ArrayList of properties to be printed out in order
      */
     public static void displayAllProperties(ArrayList <Property> properties) {
         for (int i = 0; i < properties.size(); i++) {
             Property property = properties.get(i);
-            System.out.println(i + "th property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
+            displayMessage("The " + i + "th property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
         }
     }
-
     /**
      * @param property means the property to be printed out
      */
     public static void displayProperty(Property property) {
-
-        System.out.println(" The property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
-
+        displayMessage("The property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
     }
-
-
     /**
      * @param prompt The prompt for user to specify the format of input
      * @return a legal value as the update (only contains 0-9 and English Alphabet)
      */
-    public static String updateName (String prompt) {
+    public static String promptString(String prompt) {
         String input;
         Pattern pattern = Pattern.compile("\\p{Alnum}+");
-
         while (true) {
             System.out.println(prompt);
             System.out.print("> ");
@@ -89,26 +79,21 @@ public class InputView {
             System.out.println("Invalid name! Please double check the format and retype.");
         }
     }
-
-
     /**
      * @param prompt The prompt for user to specify the format of input
      * @return a legal value as the update (positive integer)
      */
-    public static int updateInteger(String prompt) {
+    public static int promptInteger(String prompt) {
         String input;
-
         while (true) {
             System.out.println(prompt);
             System.out.print("> ");
             input = scanner.next();
-
             try {
                 int newValue = Integer.parseInt(input);
                 if(newValue <= 0) {
                     System.out.println("Invalid value! Please double check the format and retype a positive integer.");
-                }
-                else {
+                } else {
                     return newValue;
                 }
             }

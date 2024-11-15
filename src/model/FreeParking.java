@@ -1,6 +1,6 @@
 package model;
 
-import view.InputView;
+import view.InputOutputView;
 
 public class FreeParking extends Square {
     public FreeParking(int position, String id) {
@@ -8,7 +8,7 @@ public class FreeParking extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        InputView.displayMessage("Free Parking square, nothing happens.\n");
+        InputOutputView.displayMessage("Free Parking square, nothing happens.\n");
         return;
     }
     @Override

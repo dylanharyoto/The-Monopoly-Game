@@ -2,13 +2,12 @@ package controller;
 
 import model.*;
 import view.GameboardView;
-import view.InputView;
+import view.InputOutputView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class GameboardController {
@@ -20,11 +19,11 @@ public class GameboardController {
     }
 
     private static void handleAdd(ArrayList<String> names, int playerNumber) {
-        String name = InputView.inputPrompt("",new String[]{});
+        String name = InputOutputView.promptInput("",new String[]{});
         if (name.length() > 10 || name.isEmpty()) {
-            InputView.displayMessage("One of the name length isn't permitted.");
+            InputOutputView.displayMessage("One of the name length isn't permitted.");
         } else if (names.size() == playerNumber) {
-            InputView.displayMessage("Slots are taken, player '" + name.trim() + "' is ignored.");
+            InputOutputView.displayMessage("Slots are taken, player '" + name.trim() + "' is ignored.");
         } else {
             names.add(name.trim());
         }
@@ -33,47 +32,47 @@ public class GameboardController {
     public boolean newGame() {
         boolean proceed = false;
         ArrayList<String> names = new ArrayList<String>(0);
-        String choice = InputView.inputPrompt("Please enter the number of players (minimum 2, maximum 6)", new String[]{"2", "3", "4", "5", "6"});
+        String choice = InputOutputView.promptInput("Please enter the number of players (minimum 2, maximum 6)", new String[]{"2", "3", "4", "5", "6"});
         int playerNumber = Integer.parseInt(choice);
         if (playerNumber >= 2 && playerNumber <= 6) {
             names = new ArrayList<String>(playerNumber);
             while (true) {
-                InputView.displayMessage("Current players:");
+                InputOutputView.displayMessage("Current players:");
                 if (names.isEmpty()) {
-                    InputView.displayMessage("None");
+                    InputOutputView.displayMessage("None");
                 } else {
                     for (int i = 0; i < names.size(); i++) {
-                        InputView.displayMessage((i + 1) + ". " + names.get(i));
+                        InputOutputView.displayMessage((i + 1) + ". " + names.get(i));
                     }
                 }
-                String option = InputView.inputPrompt("Would you like to \n1. Add more players\n2. Start the game", new String[]{"1", "2"});
+                String option = InputOutputView.promptInput("Would you like to \n1. Add more players\n2. Start the game", new String[]{"1", "2"});
                 if (option.equals("1")) {
                     handleAdd(names, playerNumber);
                 } else if (option.equals("2")) {
                     if (names.size() != playerNumber) {
-                        InputView.displayMessage("Oops...There's still an empty slot.\n");
+                        InputOutputView.displayMessage("Oops...There's still an empty slot.\n");
                     } else {
                         break;
                     }
                 }
             }
             while(true){
-                choice = InputView.inputPrompt("Would you like to\n1. Start with default map\n2. Start by loading a map", new String[]{"1", "2"});
+                choice = InputOutputView.promptInput("Would you like to\n1. Start with default map\n2. Start by loading a map", new String[]{"1", "2"});
                 String curdir = System.getProperty("user.dir");
                 if(choice.equals("1")) {
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/defaultMap", gameboard))
                         continue;
                 } else if(choice.equals("2")) {
-                    String filename = InputView.promptFilename("Please input the json filename");
+                    String filename = InputOutputView.promptFilename("Please input the json filename");
                     if(!GameboardManager.loadMap(curdir + "/assets/maps/" + filename, gameboard)){
-                        InputView.displayMessage("File not exist!");
+                        InputOutputView.displayMessage("File not exist!");
                         continue;
                     }
                 }
                 break;
             }
         } else {
-            InputView.displayMessage("This is not a valid number of players!");
+            InputOutputView.displayMessage("This is not a valid number of players!");
         }
         for (int i = 0; i < names.size(); i++) {
             gameboard.addPlayer(new Player(i+1, names.get(i), 1500, 1));
@@ -83,14 +82,14 @@ public class GameboardController {
     }
     public void startGame() {
         for(Square s: gameboard.getAllSquares()) gameboardView.replaceBlockBySquare(s);
-        InputView.displayMessage("Welcome to MonoPolyU, the game is starting...");
+        InputOutputView.displayMessage("Welcome to MonoPolyU, the game is starting...");
         Player currentPlayer;
         while (gameboard.checkGameStatus()) {
-            currentPlayer = this.gameboard.getPlayerById(this.gameboard.getCurrentPlayerId());
+            currentPlayer = this.gameboard.getPlayerById(this.gameboard.getCurrentPlayerID());
             int currentPlayerInitialPosition = currentPlayer.getPosition();
             boolean proceed = false;
             while(!proceed) {
-                String option = InputView.inputPrompt(currentPlayer.getName() +
+                String option = InputOutputView.promptInput(currentPlayer.getName() +
                         """
                         's turn. Would you like to:
                         1. Roll the dice (required to proceed)
@@ -105,7 +104,7 @@ public class GameboardController {
                         proceed = true;
                         break;
                     case "2":
-                        String playerStatusOption = InputView.inputPrompt(
+                        String playerStatusOption = InputOutputView.promptInput(
                     """
                         Would you like to:
                         1. Go back to previous options
@@ -117,11 +116,11 @@ public class GameboardController {
                             case "1" :
                                 break;
                             case "2" :
-                                gameboardView.displayPlayers(gameboard.getAllPlayers());
+                                gameboardView.displayAllPlayers(gameboard.getAllPlayers());
                                 break;
                             case "3" :
-                                int playerId = InputView.promptGetPlayer(gameboard.getAllPlayers(), gameboard.getTotalPlayers());
-                                gameboardView.displayPlayer(gameboard.getPlayerById(playerId));
+                                int playerId = InputOutputView.promptGetPlayerByID(gameboard.getAllPlayers(), gameboard.getTotalPlayers());
+                                gameboardView.displayAPlayer(gameboard.getPlayerById(playerId));
                                 break;
                         }
                         break;
@@ -131,7 +130,7 @@ public class GameboardController {
                         break;
                     case "4":
                         int nextPlayerId = gameboard.getNextPlayerId();
-                        gameboardView.displayPlayer(gameboard.getPlayerById(nextPlayerId));
+                        gameboardView.displayAPlayer(gameboard.getPlayerById(nextPlayerId));
                         break;
                     case "5":
                         String curdir = System.getProperty("user.dir");
@@ -141,14 +140,14 @@ public class GameboardController {
                     case "6":
                         return;
                     default:
-                        InputView.displayMessage("You must roll the dice (type \"1\") before proceeding.");
+                        InputOutputView.displayMessage("You must roll the dice (type \"1\") before proceeding.");
                         break;
                 }
             }
             int currentPlayerCurrentPosition = currentPlayer.getPosition();
             int currentGoPosition = gameboard.getGoPosition();
             if (currentPlayerInitialPosition == currentPlayerCurrentPosition) {
-                String jailOption = InputView.inputPrompt("""
+                String jailOption = InputOutputView.promptInput("""
                     You are currently in jail. Would you like to:
                     1. Pay HKD$150 to get out
                     2. Stay in jail
@@ -167,7 +166,7 @@ public class GameboardController {
                 for (Property property : currentPlayer.getProperties()) {
                     property.setOwner(null);
                 }
-                InputView.displayMessage(currentPlayer.getName() + " is out of the game.");
+                InputOutputView.displayMessage(currentPlayer.getName() + " is out of the game.");
                 gameboard.removePlayer(currentPlayer);
             }
             gameboard.nextPlayer();
@@ -256,50 +255,49 @@ public class GameboardController {
 
         boolean mapUpdated = false;
         // Cooperate with View part to prompt the designer to update the properties accordingly
-        InputView.displayAllProperties(properties);
+        InputOutputView.displayAllProperties(properties);
         while(true) {
-            int choice = Integer.parseInt(InputView.inputPrompt("""
+            int choice = Integer.parseInt(InputOutputView.promptInput("""
                     
                     Would you like to change the name, price, or rent of current properties given indices?
-                        1. Need to change
-                        2. Print out the properties again
-                        3. No need to change now
+                    1. Need to change
+                    2. Print out the properties again
+                    3. No need to change now
                     """
                     , new String[]{"1", "2", "3"}));
             if(choice == 1) {
-                int propertyIndex = Integer.parseInt(InputView.inputPrompt("""
+                int propertyIndex = Integer.parseInt(InputOutputView.promptInput("""
                     Please specify the index of the property which you want to change here (from 0 to 11, both inclusive)
                     """
                         , new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}));
 
                 Property updatingProperty = (Property) squares.get(propertyIndices.get(propertyIndex));
-                InputView.displayProperty(updatingProperty);
+                InputOutputView.displayProperty(updatingProperty);
 
-                int attributeOption = Integer.parseInt(InputView.inputPrompt("""
-                    Which attribute you would like to change for this property? 
-                        1. Name
-                        2. Price
-                        3. Rent
-                    """
-                        , new String[]{"1", "2", "3"}));
+                int attributeOption = Integer.parseInt(InputOutputView.promptInput("""
+                    Which attribute you would like to change for this property?\s
+                    1. Name
+                    2. Price
+                    3. Rent
+                    """, new String[]{"1", "2", "3"}));
 
 
                 switch (attributeOption) {
                     case 1:
-                        String newName = InputView.updateName("Please input the new name of the property, the new name should only contain 0-9 and English letters. The new name is ");
+                        String newName = InputOutputView.promptString("Please input the new name of the property (0-9 long, English characters).");
                         updatingProperty.setName(newName);
-                        System.out.println("Successfully update the Name of the property!");
+                        System.out.println("Successfully updated the Name of the property!");
                         break;
                     case 2:
-                        int newPrice = InputView.updateInteger("Please input the new price of the property, the new price should be a positive integer. The new price is ");
+                        int newPrice = InputOutputView.promptInteger("Please input the new price of the property, (a positive integer).");
                         updatingProperty.setPrice(newPrice);
-                        System.out.println("Successfully update the Price of the property!");
+                        System.out.println("Successfully updated the Price of the property!");
                         break;
 
                     case 3:
-                        int newRent = InputView.updateInteger("Please input the new rent of the property, the new rent should be a positive integer. The new rent is ");
+                        int newRent = InputOutputView.promptInteger("Please input the new rent of the property, the new rent should be a positive integer. The new rent is ");
                         updatingProperty.setRent(newRent);
-                        System.out.println("Successfully update the Rent of the property!");
+                        System.out.println("Successfully updated the Rent of the property!");
                         break;
                 }
 
@@ -307,7 +305,7 @@ public class GameboardController {
                 properties.set(propertyIndex, updatingProperty);
             }
             else if(choice == 2) {
-                InputView.displayAllProperties(properties);
+                InputOutputView.displayAllProperties(properties);
             }
             else {
                 break;
@@ -328,14 +326,14 @@ public class GameboardController {
                 mapid = mapid.replace(".json", "");
 
                 if (GameboardManager.saveMap(squares, mapid, curdir + "/assets/maps/" + mapid + ".json")){
-                    InputView.displayMessage("Thanks for designing a new map!");
+                    InputOutputView.displayMessage("Thanks for designing a new map!");
                     return true;
                 }
             }
         }
         else {
             // if updated and successfully saved, already reture true; if not updated then always return true
-            InputView.displayMessage("You didn't make any change to the default map.");
+            InputOutputView.displayMessage("You didn't make any change to the default map.");
             return true;
         }
 
@@ -345,7 +343,7 @@ public class GameboardController {
         int[] winnersId = gameboard.getWinners();
 
         if (winnersId.length == 1) {
-            InputView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerById(winnersId[0]).getName());
+            InputOutputView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerById(winnersId[0]).getName());
         } else {
             StringBuilder winnerNames = new StringBuilder("Game Finished! The winners are ");
             for (int i = 0; i < winnersId.length; i++) {
@@ -354,7 +352,7 @@ public class GameboardController {
                     winnerNames.append(", ");
                 }
             }
-            InputView.displayMessage(winnerNames.toString());
+            InputOutputView.displayMessage(winnerNames.toString());
         }
     }
 }

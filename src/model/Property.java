@@ -1,6 +1,6 @@
 package model;
 
-import view.InputView;
+import view.InputOutputView;
 
 public class Property extends Square {
     private String name;
@@ -39,13 +39,13 @@ public class Property extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        InputView.displayMessage("Now, " + player.getName() + " reaches " + this.getName() + ".\n");
+        InputOutputView.displayMessage("Now, " + player.getName() + " reaches " + this.getName() + ".\n");
         if (this.owner != null && this.owner != player) {
             if(player.getMoney() < this.rent) {
-                InputView.displayMessage(player.getName() + " do not have enough money to pay the rent for " + this.getName() + "!");
+                InputOutputView.displayMessage(player.getName() + " do not have enough money to pay the rent for " + this.getName() + "!");
             }
             else {
-                InputView.displayMessage(player.getName() + " paid " + this.getRent() + " to the " + this.getOwner().getName() + " of " + this.getName() + "!");
+                InputOutputView.displayMessage(player.getName() + " paid " + this.getRent() + " to the " + this.getOwner().getName() + " of " + this.getName() + "!");
             }
             player.decreaseMoney(this.rent);
             owner.increaseMoney(this.rent);
@@ -53,9 +53,9 @@ public class Property extends Square {
         }
         else if (owner == null) {
             if (player.getMoney() < this.price) {
-                InputView.displayMessage(player.getName() + " does not have enough money to buy " + this.getName() + "!");
+                InputOutputView.displayMessage(player.getName() + " does not have enough money to buy " + this.getName() + "!");
             } else {
-                String answer = InputView.inputPrompt(
+                String answer = InputOutputView.promptInput(
                 "Would you like to:\n" +
                 "1. Buy " + this.getName() + "\n" +
                 "2. Pass " + this.getName() + "\n", new String[]{"1", "2"}
@@ -66,10 +66,10 @@ public class Property extends Square {
                         player.decreaseMoney(this.price);
                         player.addProperty(this);
                         this.setOwner(player);
-                        InputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
+                        InputOutputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
                         break;
                     case "2":
-                        InputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
+                        InputOutputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
                         break;
 
                 }

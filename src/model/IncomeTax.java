@@ -1,6 +1,6 @@
 package model;
 
-import view.InputView;
+import view.InputOutputView;
 
 public class IncomeTax extends Square {
     public IncomeTax(int position, String id) {
@@ -18,7 +18,7 @@ public class IncomeTax extends Square {
         int tax = (int) (currentMoney * 0.1);
         tax = (tax / 10) * 10;
         player.decreaseMoney(tax);
-        InputView.displayMessage("Tax square deprives " + player.getName() + " " + tax + "HKD (10% of the player's money).\n");
+        InputOutputView.displayMessage("Tax square deprives " + player.getName() + " " + tax + "HKD (10% of the player's money).\n");
     }
     @Override
     public String typeDetailsJson() {

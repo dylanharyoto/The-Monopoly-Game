@@ -1,6 +1,6 @@
 package model;
 
-import view.InputView;
+import view.InputOutputView;
 
 public class Go extends Square {
     private static final int BONUS = 1500;
@@ -12,7 +12,7 @@ public class Go extends Square {
         if(player == null) {
             throw new IllegalArgumentException("Player cannot be null.");
         }
-        InputView.displayMessage("Go square offers " + player.getName() + " 1500HKD.\n");
+        InputOutputView.displayMessage("Go square offers " + player.getName() + " 1500HKD.\n");
         player.increaseMoney(BONUS);
     }
     @Override

@@ -1,17 +1,13 @@
 package model;
 
 
-import view.GameboardView;
-import view.InputView;
+import view.InputOutputView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class GameboardManager {
     public static void saveGame(Gameboard gameboard, String filepath) {
@@ -54,10 +50,10 @@ public class GameboardManager {
 
         try (FileWriter writer = new FileWriter((filepath.endsWith(".json") ? filepath : (filepath + ".json")))) {
             writer.write(json.toString());
-            InputView.displayMessage("Game saved successfully to " + filepath );
+            InputOutputView.displayMessage("Game saved successfully to " + filepath );
         } catch (IOException e) {
             e.printStackTrace();
-            InputView.displayMessage("Failed to save game.");
+            InputOutputView.displayMessage("Failed to save game.");
         }
 
     }
@@ -78,7 +74,7 @@ public class GameboardManager {
 
         } catch (IOException e) {
             e.printStackTrace();
-            InputView.displayMessage("Failed to load the map file: " + filepath);
+            InputOutputView.displayMessage("Failed to load the map file: " + filepath);
             return false;
         }
         String jsonContent = contentBuilder.toString();
@@ -132,10 +128,10 @@ public class GameboardManager {
                 position++;
             }
 
-            InputView.displayMessage("Map loaded successfully from " + filepath + ".");
+            InputOutputView.displayMessage("Map loaded successfully from " + filepath + ".");
         } catch (Exception e) {
             e.printStackTrace();
-            InputView.displayMessage("Failed to interpret the map: " + filepath);
+            InputOutputView.displayMessage("Failed to interpret the map: " + filepath);
         }
 
         return true;
@@ -157,7 +153,7 @@ public class GameboardManager {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            InputView.displayMessage("Failed to load game.");
+            InputOutputView.displayMessage("Failed to load game.");
             return false;
         }
 
@@ -208,10 +204,10 @@ public class GameboardManager {
             }
 
 
-            InputView.displayMessage("Game loaded successfully from " + filepath);
+            InputOutputView.displayMessage("Game loaded successfully from " + filepath);
         } catch (Exception e) {
             e.printStackTrace();
-            InputView.displayMessage("Failed to load game from" + filepath);
+            InputOutputView.displayMessage("Failed to load game from" + filepath);
         }
 
         return true;

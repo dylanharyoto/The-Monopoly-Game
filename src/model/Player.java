@@ -1,5 +1,5 @@
 package model;
-import view.InputView;
+import view.InputOutputView;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class Player {
             this.inJailDuration -= 1;
             if (this.inJailDuration == 0) {
                 this.decreaseMoney(150);
-                InputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).\n");
+                InputOutputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).\n");
             }
             return;
         }
