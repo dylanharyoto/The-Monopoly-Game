@@ -1,0 +1,22 @@
+{
+"gameid": 20241115224649,
+"mapid": NewMap2,
+"players": [
+{
+"id": 1,
+"name": "A",
+"money": 200,
+"currentPosition": 6,
+"inJailDuration": 3,
+"properties": [5, 12]
+},
+{
+"id": 2,
+"name": "B",
+"money": 700,
+"currentPosition": 18,
+"inJailDuration": 0,
+"properties": [14, 18]
+}
+],
+}

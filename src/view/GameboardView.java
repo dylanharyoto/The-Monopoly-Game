@@ -61,6 +61,14 @@ public class GameboardView {
         InputView.displayMessage(player.getName());
         InputView.displayMessage("    Money: HKD " + player.getMoney());
         InputView.displayMessage("    Position: " + player.getPosition());
+        ArrayList <Property> properties = player.getProperties();
+        System.out.println("    Properties: ");
+        for (int i = 0; i < properties.size(); i++) {
+            Property property = properties.get(i);
+            System.out.println("    " + i + "th property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
+
+        }
+
     }
     public void displayGameboard() {
         InputView.displayMessage(this.boardString);

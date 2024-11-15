@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -17,6 +18,7 @@ public class GameboardManager {
         StringBuilder json = new StringBuilder();
         json.append("{\n");
         json.append("\"gameid\": ").append(gameboard.getGameID()).append(",\n");
+        json.append("\"mapid\": ").append(gameboard.getMapID()).append(",\n");
         json.append("\"players\": [\n");
         for (int i = 0; i < gameboard.getTotalPlayers(); ++i) {
             Player player = gameboard.getPlayerById(i + 1);
@@ -27,7 +29,7 @@ public class GameboardManager {
             json.append("\"name\": \"").append(player.getName()).append("\",\n");
             json.append("\"money\": ").append(player.getMoney()).append(",\n");
             json.append("\"currentPosition\": ").append(player.getPosition()).append(",\n");
-
+            json.append("\"inJailDuration\": ").append(player.getInJailDuration()).append(",\n");
             json.append("\"properties\": [");
             for (int j = 0; j < properties.size(); ++j) {
                 json.append(properties.get(j).getPosition());
@@ -46,7 +48,7 @@ public class GameboardManager {
         json.append("\n],\n");
 
 
-        json.append("\"mapid\": \"" + gameboard.getMapID() + "\"\n");
+
 
         json.append("}");
 
@@ -81,9 +83,10 @@ public class GameboardManager {
         }
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
-        String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0];
-        gameboard.setMapID(mapId);
         try {
+            String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0].replace("\"", "");
+            gameboard.setMapID(mapId);
+
             String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
             String[] squareObjects = squaresStr.split("\\},\\{");
             gameboard.getAllSquares().clear();
@@ -164,10 +167,10 @@ public class GameboardManager {
 
         try {
             String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
-            String mapId = jsonContent.split("\"mapid\":\"")[1].split("\"")[0];
+            String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0].replace("\"", "");
 
             gameboard.setGameID(gameId);
-            gameboard.setMapID(mapId);
+
 
             String curdir = System.getProperty("user.dir");
             if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) return false;
@@ -182,16 +185,24 @@ public class GameboardManager {
                 String playerName = playerObjStr.split("\"name\":\"")[1].split("\"")[0];
                 int playerMoney = Integer.parseInt(playerObjStr.split("\"money\":")[1].split(",")[0]);
                 int currentPosition = Integer.parseInt(playerObjStr.split("\"currentPosition\":")[1].split(",")[0]);
+                int inJailDuration = Integer.parseInt(playerObjStr.split("\"inJailDuration\":")[1].split(",")[0]);
 
                 Player player = new Player(playerId, playerName, playerMoney, currentPosition);
+                player.setInJailDuration(inJailDuration);
 
-                String propertiesStr = playerObjStr.split("\"properties\":\\[")[1].split("\\]")[0];
-                String[] propertyIds = propertiesStr.split(",");
-                for (String propPos : propertyIds) {
-                    int propertyPosition = Integer.parseInt(propPos.trim());
-                    Property property = (Property) gameboard.getSquareByPosition(propertyPosition);
-                    player.addProperty(property);
+                String[] propertyList = playerObjStr.split("\"properties\":\\[")[1].split("\\]");
+
+                String propertiesStr = propertyList.length == 0 ? "" : propertyList[0];
+
+                if (!propertiesStr.isEmpty()) {
+                    String[] propertyIds = propertiesStr.split(",");
+                    for (String propPos : propertyIds) {
+                        int propertyPosition = Integer.parseInt(propPos.trim());
+                        Property property = (Property) gameboard.getSquareByPosition(propertyPosition);
+                        player.addProperty(property);
+                    }
                 }
+
 
                 gameboard.addPlayer(player);
             }
@@ -204,168 +215,6 @@ public class GameboardManager {
         }
 
         return true;
-    }
-    /** change the rent or properties as the requirements of the oesigner, and save it as a new map file
-     * @param filepath  filepath is the absolute path of the default map file, the filename is in the format "<>timestamp</>_map.json"
-     * @param squares squares is an arraylist of loaded default squares
-     * @return if the design (i.e., change the rent of properties and save of the new map file) is successful, otherwise return false
-     */
-    public static boolean designMap (String filepath) {
-
-        // read from the default map file to load the original properties first
-        StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
-        {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Failed to load the map file: " + filepath);
-            return false;
-        }
-        String jsonContent = contentBuilder.toString();
-        jsonContent = jsonContent.replaceAll("\\s+", "");
-
-        ArrayList <Property> properties = new ArrayList<Property>();
-        ArrayList <Square> functionalSquares = new ArrayList<Square>();
-        try {
-            String squaresStr = jsonContent.split("\"squares\":\\[")[1].split("\\]")[0];
-            String[] squareObjects = squaresStr.split("\\},\\{");
-
-
-            int position = 1;
-            for (String squareObjStr : squareObjects) {
-                squareObjStr = squareObjStr.replaceAll("\\{|\\}", "");
-                String idStr = squareObjStr.split("\"id\":\"")[1].split("\"")[0];
-                String type = idStr.substring(0, 1);
-
-                switch (type) {
-                    case "P":
-                        String detailsStr = squareObjStr.split("\"details\":")[1];
-                        String propertyName = detailsStr.split("\"name\":\"")[1].split("\"")[0];
-                        int price = Integer.parseInt(detailsStr.split("\"price\":")[1].split(",")[0]);
-                        int rent = Integer.parseInt(detailsStr.split("\"rent\":")[1].split(",")[0]);
-                        properties.add(new Property(position, idStr, propertyName, price, rent));
-                        break;
-                    case "G":
-                        functionalSquares.add(new Go(position, idStr));
-                        break;
-                    case "C":
-                        functionalSquares.add(new Chance(position, idStr));
-                        break;
-                    case "I":
-                        functionalSquares.add(new IncomeTax(position, idStr));
-                        break;
-                    case "F":
-                        functionalSquares.add(new FreeParking(position, idStr));
-                        break;
-                    case "J":
-                        functionalSquares.add(new GoJail(position, idStr));
-                        break;
-                    case "V":
-                        functionalSquares.add(new InJailOrJustVisiting(position, idStr));
-                        break;
-                }
-                position++;
-
-            }
-
-            System.out.println("Properties loaded successfully from " + filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Failed to interpret the properties: " + filepath);
-        }
-
-
-        boolean mapUpdated = false;
-        // Cooperate with View part to prompt the designer to update the properties accordingly
-        InputView.displayAllProperties(properties);
-        while(true) {
-            int choice = Integer.parseInt(InputView.inputPrompt("""
-                    
-                    Would you like to change the name, price, or rent of current properties given indices?
-                        1. Need to change
-                        2. Print out the properties again
-                        3. No need to change now
-                    """
-                    , new String[]{"1", "2", "3"}));
-            if(choice == 1) {
-                int propertyIndex = Integer.parseInt(InputView.inputPrompt("""
-                    Please specify the index of the property which you want to change here (from 0 to 11, both inclusive)
-                    """
-                        , new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}));
-
-                Property updatingProperty = (Property) properties.get(propertyIndex);
-                InputView.displayProperty(updatingProperty);
-
-                int attributeOption = Integer.parseInt(InputView.inputPrompt("""
-                    Which attribute you would like to change for this property? 
-                        1. Name
-                        2. Price
-                        3. Rent
-                    """
-                        , new String[]{"1", "2", "3"}));
-
-
-                switch (attributeOption) {
-                    case 1:
-                        String newName = InputView.updateName("Please input the new name of the property, the new name should only contain 0-9 and English letters. The new name is ");
-                        updatingProperty.setName(newName);
-                        System.out.println("Successfully update the Name of the property!");
-                        break;
-                    case 2:
-                        int newPrice = InputView.updateInteger("Please input the new price of the property, the new price should be a positive integer. The new price is ");
-                        updatingProperty.setPrice(newPrice);
-                        System.out.println("Successfully update the Price of the property!");
-                        break;
-
-                    case 3:
-                        int newRent = InputView.updateInteger("Please input the new rent of the property, the new rent should be a positive integer. The new rent is ");
-                        updatingProperty.setRent(newRent);
-                        System.out.println("Successfully update the Rent of the property!");
-                        break;
-                }
-
-                mapUpdated = true;
-            }
-            else if(choice == 2) {
-                InputView.displayAllProperties(properties);
-            }
-            else {
-                break;
-            }
-        }
-
-        ArrayList <Square> squares = new ArrayList<>();
-        squares.addAll(properties);
-        squares.addAll(functionalSquares);
-
-        if (mapUpdated) {
-            while (true) {
-
-                Scanner scanner = new Scanner(System.in);
-                String curdir = System.getProperty("user.dir");
-
-                System.out.println("Please input the new map name here>");
-
-                String mapid = scanner.next();
-                mapid = mapid.replace(".json", "");
-
-                if (saveMap(squares, mapid, curdir + "/assets/maps/" + mapid + ".json")){
-                    InputView.displayMessage("Thanks for designing a new map!");
-                    return true;
-                }
-            }
-        }
-        else {
-            // if updated and successfully saved, already reture true; if not updated then always return true
-            InputView.displayMessage("You didn't make any change to the default map.");
-            return true;
-        }
-
     }
 
     public static boolean saveMap (ArrayList<Square> squares, String mapid, String filepath) {

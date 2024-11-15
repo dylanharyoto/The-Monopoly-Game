@@ -4,7 +4,6 @@ import model.GameboardManager;
 import view.GameboardView;
 import view.InputView;
 
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,10 +17,7 @@ public class Main {
             Would you like to
             1. Start new game
             2. Load existing game
-            3. Design a new map
-            """, new String[]{"1", "2", "3"});
-
-
+            3. Design a new map""", new String[]{"1", "2", "3"});
             if(choice.equals("1")) {
                 if(gameboardController.newGame()) {
                     InputView.displayMessage("Thanks for playing!");
@@ -35,9 +31,8 @@ public class Main {
                     InputView.displayMessage("Thanks for playing!");
                     break;
                 }
-            }
-            else  {
-                if(GameboardManager.designMap(curdir + "/assets/maps/" + "defaultMap.json")) {
+            } else  {
+                if(GameboardController.designMap(curdir + "/assets/maps/" + "defaultMap.json")) {
                     break;
                 }
             }
