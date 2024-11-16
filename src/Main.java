@@ -17,7 +17,7 @@ public class Main {
             Would you like to
             1. Start a new game
             2. Load an existing game
-            3. Design a new map""", new String[]{"1", "2", "3"});
+            3. Design a map""", new String[]{"1", "2", "3"});
             if(choice.equals("1")) {
                 if(gameboardController.newGame()) {
                     InputOutputView.displayMessage("Thanks for playing!");
@@ -28,11 +28,24 @@ public class Main {
                 filename = filename.endsWith(".json") ? filename : filename + ".json";
                 if(GameboardManager.loadGame(curdir + "/assets/games/" + filename, gameboard)) {
                     gameboardController.startGame();
-                    InputOutputView.displayMessage("Thanks for playing!");
+                    InputOutputView.displayMessage("[ENDED] Thanks for playing!");
                     break;
                 }
             } else  {
-                if(GameboardController.designMap(curdir + "/assets/maps/" + "defaultMap.json")) {
+                String designOption = InputOutputView.promptInput("""
+                Would you like to
+                1. Design from the default map
+                2. Design from other map""", new String[]{"1", "2"});
+                String filename = "";
+                switch (designOption) {
+                    case "1":
+                        filename = "defaultMap";
+                        break;
+                    case "2":
+                        filename = InputOutputView.promptFilename("Please input the JSON filename here");
+                        break;
+                }
+                if(GameboardController.designMap(curdir + "/assets/maps/" + filename)) {
                     break;
                 }
             }

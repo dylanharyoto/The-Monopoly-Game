@@ -54,7 +54,7 @@ public class InputOutputView {
     public static void displayAllProperties(ArrayList <Property> properties) {
         for (int i = 0; i < properties.size(); i++) {
             Property property = properties.get(i);
-            displayMessage("The " + i + "th property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
+            displayMessage(i + 1 + ". " + property.getName() + "\n|---Price: " + property.getPrice() + " | Rent: " + property.getRent());
         }
     }
     /**

@@ -189,14 +189,14 @@ public class GameboardController {
     public static boolean designMap(String filepath) {
         // read from the default map file to load the original properties first
         StringBuilder contentBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) )
+        filepath = (filepath.endsWith(".json") ? filepath : (filepath + ".json"));
+        try (BufferedReader reader = new BufferedReader(new FileReader(filepath)))
         {
             String line;
             while ((line = reader.readLine()) != null) {
                 contentBuilder.append(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The map failed to load from " + filepath + "!\n");
             return false;
         }
@@ -295,8 +295,20 @@ public class GameboardController {
         if (mapUpdated) {
             while (true) {
                 String curdir = System.getProperty("user.dir");
-                String mapid = InputOutputView.promptFilename("Please input the name of the new map");
-                mapid = mapid.endsWith(".json") ? mapid : mapid + ".json";
+                String saveOption = InputOutputView.promptInput("""
+                Would you like to
+                1. Overwrite the current map
+                2. Create a new map""", new String[]{"1", "2"});
+                String mapid = "";
+                switch (saveOption) {
+                    case "1":
+                        mapid = filepath.split("/")[filepath.split("/").length - 1];
+                        break;
+                    case "2":
+                        mapid = InputOutputView.promptFilename("Please input the name of the new map");
+                        mapid = mapid.endsWith(".json") ? mapid : mapid + ".json";
+                        break;
+                }
                 if (GameboardManager.saveMap(squares, mapid, curdir + "/assets/maps/" + mapid)){
                     InputOutputView.displayMessage("[SUCCESS] Thanks for designing a new map!\n");
                     return true;
