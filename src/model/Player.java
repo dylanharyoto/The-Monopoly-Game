@@ -3,6 +3,9 @@ import view.InputOutputView;
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Player {
     private int id;
     private String name;
@@ -19,20 +22,21 @@ public class Player {
         this.status = true;
         this.properties = new ArrayList<>();
     }
+
     public void rollDice() {
         Random random = new Random();
         int dice1 = random.nextInt(4) + 1;
         int dice2 = random.nextInt(4) + 1;
         int total = dice1 + dice2;
+        InputOutputView.displayMessage("DICE 1: " + dice1 + " | DICE 2: " + dice2);
         if(this.inJailDuration > 0 && dice1 != dice2) {
             this.inJailDuration -= 1;
             if (this.inJailDuration == 0) {
                 this.decreaseMoney(150);
-                InputOutputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).");
+                InputOutputView.displayMessage(this.getName() + " paid 150HKD to IN JAIL (because of no doubles throughout three throws).");
             }
             return;
-        }
-        else if (dice1 == dice2) {
+        } else if (dice1 == dice2) {
             this.inJailDuration = 0;
         }
         int newPosition = (this.position + total - 1) % 20 + 1;
