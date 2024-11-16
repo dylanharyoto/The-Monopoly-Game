@@ -122,7 +122,11 @@ public class GameboardManager {
      * @param gameboard gameboard is the instance of gameboard "template" without specified map and players
      * @return true if the loading is successful, otherwise return false
      */
-    public static boolean loadGame(String filepath, Gameboard gameboard) {
+    public static boolean loadGame(Gameboard gameboard) {
+        String filename = InputOutputView.promptFilename("Please input the JSON filename here");
+        filename = filename.endsWith(".json") ? filename : filename + ".json";
+        String curdir = System.getProperty("user.dir");
+        String filepath = curdir + "/assets/games/" + filename;
         StringBuilder contentBuilder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader( (filepath.endsWith(".json") ? filepath : (filepath + ".json")) )) ) {
             String line;
@@ -142,7 +146,6 @@ public class GameboardManager {
             String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
             String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0].replace("\"", "");
             gameboard.setGameID(gameId);
-            String curdir = System.getProperty("user.dir");
             if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) {
                 return false;
             }

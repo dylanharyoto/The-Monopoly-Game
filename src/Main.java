@@ -10,46 +10,31 @@ public class Main {
         Gameboard gameboard = new Gameboard();
         GameboardView gameboardView = new GameboardView();
         GameboardController gameboardController = new GameboardController(gameboard, gameboardView);
-        String curdir = System.getProperty("user.dir");
+        label:
         while(true) {
             String choice = InputOutputView.promptInput("""
             Welcome to MonoPolyU!
             Would you like to
             1. Start a new game
             2. Load an existing game
-            3. Design a map""", new String[]{"1", "2", "3"});
-            if(choice.equals("1")) {
-                if(gameboardController.newGame()) {
-                    InputOutputView.displayMessage("Thanks for playing!");
+            3. Design a map
+            4. Log Out""", new String[]{"1", "2", "3", "4"});
+            switch (choice) {
+                case "1":
+                    gameboardController.newGame();
                     break;
-                };
-            } else if(choice.equals("2")) {
-                String filename = InputOutputView.promptFilename("Please input the JSON filename here");
-                filename = filename.endsWith(".json") ? filename : filename + ".json";
-                if(GameboardManager.loadGame(curdir + "/assets/games/" + filename, gameboard)) {
-                    gameboardController.startGame();
-                    InputOutputView.displayMessage("[ENDED] Thanks for playing!");
+                case "2":
+                    if (GameboardManager.loadGame(gameboard)) {
+                        gameboardController.startGame();
+                    }
                     break;
-                }
-            } else  {
-                String designOption = InputOutputView.promptInput("""
-                Would you like to
-                1. Design from the default map
-                2. Design from other map""", new String[]{"1", "2"});
-                String filename = "";
-                switch (designOption) {
-                    case "1":
-                        filename = "defaultMap";
-                        break;
-                    case "2":
-                        filename = InputOutputView.promptFilename("Please input the JSON filename here");
-                        break;
-                }
-                if(GameboardController.designMap(curdir + "/assets/maps/" + filename)) {
+                case "3":
+                    GameboardController.designMap();
                     break;
-                }
+                case "4":
+                    InputOutputView.displayMessage("Thanks for coming to MonoPolyU!");
+                    break label;
             }
-
         }
 
     }

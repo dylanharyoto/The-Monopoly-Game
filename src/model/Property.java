@@ -56,7 +56,7 @@ public class Property extends Square {
                 String answer = InputOutputView.promptInput(
                 "Would you like to:\n" +
                 "1. Buy " + this.getName() + "\n" +
-                "2. Pass " + this.getName() + "\n", new String[]{"1", "2"}
+                "2. Pass " + this.getName(), new String[]{"1", "2"}
                 );
                 if (answer.equals("1")) {
                     player.decreaseMoney(this.price);

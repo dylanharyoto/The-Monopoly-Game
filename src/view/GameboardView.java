@@ -56,7 +56,7 @@ public class GameboardView {
             InputOutputView.displayMessage("No player to display.");
             return;
         }
-        InputOutputView.displayMessage(player.getName());
+        InputOutputView.displayMessage(player.getName() + " --> P" + player.getId());
         InputOutputView.displayMessage("|---Money: HKD " + player.getMoney());
         InputOutputView.displayMessage("|---Position: " + player.getPosition());
         InputOutputView.displayMessage("|---Properties: ");

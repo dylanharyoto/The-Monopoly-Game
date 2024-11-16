@@ -27,15 +27,6 @@ public class InputOutputView {
             System.out.println("Invalid answer! Please double check the available options and retype.");
         }
     }
-    public static int promptGetPlayerByID(ArrayList<Player> players, int totalPlayer) {
-        String[] playerIdOptions = new String[totalPlayer];
-        InputOutputView.displayMessage("Type the player ID (number on the left of the player's name)");
-        for (int i = 0; i < totalPlayer; i++) {
-            playerIdOptions[i] = String.valueOf(i + 1);
-            InputOutputView.displayMessage(i + 1 + ". " + players.get(i).getName());
-        }
-        return Integer.parseInt(InputOutputView.promptInput("", playerIdOptions));
-    }
     public static String promptFilename(String prompt) {
         String input;
         do{
@@ -54,14 +45,14 @@ public class InputOutputView {
     public static void displayAllProperties(ArrayList <Property> properties) {
         for (int i = 0; i < properties.size(); i++) {
             Property property = properties.get(i);
-            displayMessage(i + 1 + ". " + property.getName() + "\n|---Price: " + property.getPrice() + " | Rent: " + property.getRent());
+            displayMessage(i + ". " + property.getName() + "\n|---Price: " + property.getPrice() + " | Rent: " + property.getRent());
         }
     }
     /**
      * @param property means the property to be printed out
      */
     public static void displayProperty(Property property) {
-        displayMessage("The property's name is: " + property.getName() + ", price is: " + property.getPrice() + ", rent is " + property.getRent());
+        displayMessage("The property's name is " + property.getName() + ", price is " + property.getPrice() + ", and rent is " + property.getRent());
     }
     /**
      * @param prompt The prompt for user to specify the format of input

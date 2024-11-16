@@ -108,8 +108,14 @@ public class GameboardController {
                                 gameboardView.displayAllPlayers(gameboard.getAllPlayers());
                                 break;
                             case "3" :
-                                int playerId = InputOutputView.promptGetPlayerByID(gameboard.getAllPlayers(), gameboard.getAllPlayers().size());
-                                gameboardView.displayPlayer(gameboard.getPlayerByID(playerId));
+                                String[] playerIdOptions = new String[gameboard.getAllPlayers().size()];
+                                InputOutputView.displayMessage("Type the player ID (number on the left of the player's name)");
+                                for (int i = 0; i < gameboard.getAllPlayers().size(); i++) {
+                                    playerIdOptions[i] = String.valueOf(i + 1);
+                                    InputOutputView.displayMessage(i + 1 + ". " + gameboard.getAllPlayers().get(i).getName());
+                                }
+                                int playerID = Integer.parseInt(InputOutputView.promptInput("", playerIdOptions));
+                                gameboardView.displayPlayer(gameboard.getPlayerByID(playerID));
                                 break;
                         }
                         break;
@@ -186,7 +192,22 @@ public class GameboardController {
      * @param squares squares is an arraylist of loaded default squares
      * @return if the design (i.e., change the rent of properties and save of the new map file) is successful, otherwise return false
      */
-    public static boolean designMap(String filepath) {
+    public static boolean designMap() {
+        String designOption = InputOutputView.promptInput("""
+                Would you like to
+                1. Design from the default map
+                2. Design from other map""", new String[]{"1", "2"});
+        String curdir = System.getProperty("user.dir");
+        String filename = "";
+        switch (designOption) {
+            case "1":
+                filename = "defaultMap";
+                break;
+            case "2":
+                filename = InputOutputView.promptFilename("Please input the JSON filename here");
+                break;
+        }
+        String filepath = curdir + "/assets/maps/" + filename;
         // read from the default map file to load the original properties first
         StringBuilder contentBuilder = new StringBuilder();
         filepath = (filepath.endsWith(".json") ? filepath : (filepath + ".json"));
@@ -250,13 +271,13 @@ public class GameboardController {
         }
         boolean mapUpdated = false;
         // Cooperate with View part to prompt the designer to update the properties accordingly
-        InputOutputView.displayAllProperties(properties);
         while(true) {
+            InputOutputView.displayAllProperties(properties);
             int choice = Integer.parseInt(InputOutputView.promptInput("""
-            Would you like to change the name/price/rent of current properties given indices?
-            1. Need to change
-            2. Print out the properties again
-            3. No need to change""", new String[]{"1", "2", "3"}));
+            Would you like to?
+            1. Change the name/price/rent of current properties
+            2. Print out the properties
+            3. Finish changing""", new String[]{"1", "2", "3"}));
             if(choice == 1) {
                 int propertyIndex = Integer.parseInt(InputOutputView.promptInput("""
                 Please type the index of the property which you want to change (from 0 to 11, both inclusive)""", new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"}));
@@ -294,7 +315,6 @@ public class GameboardController {
         }
         if (mapUpdated) {
             while (true) {
-                String curdir = System.getProperty("user.dir");
                 String saveOption = InputOutputView.promptInput("""
                 Would you like to
                 1. Overwrite the current map

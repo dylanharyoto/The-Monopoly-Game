@@ -23,7 +23,6 @@ public class Player {
         Random random = new Random();
         int dice1 = random.nextInt(4) + 1;
         int dice2 = random.nextInt(4) + 1;
-        System.out.println("dice 1: " + dice1 + "dice 2: " + dice2);
         int total = dice1 + dice2;
         if(this.inJailDuration > 0 && dice1 != dice2) {
             this.inJailDuration -= 1;
@@ -47,14 +46,14 @@ public class Player {
     }
     public void decreaseMoney(int amount) {
         if(amount < 0) {
-            InputOutputView.displayMessage("Amount to decrease cannot be negative!");
+            InputOutputView.displayMessage("Amount to decrease cannot be negative!\n");
             return;
         }
         this.money -= amount;
     }
     public void increaseMoney(int amount) {
         if(amount < 0) {
-            InputOutputView.displayMessage("Amount to increase cannot be negative!");
+            InputOutputView.displayMessage("Amount to increase cannot be negative!\n");
             return;
         }
         this.money += amount;
@@ -64,7 +63,7 @@ public class Player {
     }
     public void setInJailDuration(int duration) {
         if(duration < 0) {
-            throw new IllegalArgumentException("Jail duration cannot be negative.");
+            throw new IllegalArgumentException("Jail duration cannot be negative!\n");
         }
         this.inJailDuration = duration;
     }
@@ -73,7 +72,7 @@ public class Player {
     }
     public void addProperty(Property property) {
         if(property == null) {
-            InputOutputView.displayMessage("Property cannot be null!");
+            InputOutputView.displayMessage("Property cannot be null!\n");
             return;
         }
         this.properties.add(property);
@@ -86,7 +85,7 @@ public class Player {
     }
     public void setPosition (int position) {
         if(position < 1 || position > 20) {
-            InputOutputView.displayMessage("Position must be between 1 and 20!");
+            InputOutputView.displayMessage("Position must be between 1 and 20!\n");
             return;
         }
         this.position = position;
