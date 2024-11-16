@@ -74,7 +74,7 @@ public class GameboardView {
             players[i] = new ArrayList<>();
         }
         for(Player player : gameboard.getAllPlayers()) {
-            players[player.getPosition() - 1].add("p" + player.getId());
+            players[player.getPosition() - 1].add("P" + player.getId());
         }
         for(int i = 0; i < 20; i++){
             int[] blockIndex = {4598, 4576, 4554, 4532, 4510, 4488, 3696, 2904, 2112, 1320, 528, 550, 572, 594, 616, 638, 1430, 2222, 3014, 3806};

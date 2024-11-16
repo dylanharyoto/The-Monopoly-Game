@@ -24,7 +24,7 @@ public class Main {
                     break;
                 };
             } else if(choice.equals("2")) {
-                String filename = InputOutputView.promptFilename("Please input the json filename here");
+                String filename = InputOutputView.promptFilename("Please input the JSON filename here");
                 filename = filename.endsWith(".json") ? filename : filename + ".json";
                 if(GameboardManager.loadGame(curdir + "/assets/games/" + filename, gameboard)) {
                     gameboardController.startGame();

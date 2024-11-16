@@ -16,7 +16,9 @@ public class InputOutputView {
             System.out.println(prompt);
             System.out.print("> ");
             input = scanner.next();
-            if(options.length == 0) return input;
+            if(options.length == 0) {
+                return input;
+            }
             for(String option : options) {
                 if(option.equals(input)) {
                     return input;
@@ -100,7 +102,6 @@ public class InputOutputView {
             catch (NumberFormatException e) {
                 System.out.println("Invalid value! Please double check the format and retype a positive integer.");
             }
-
         }
     }
 

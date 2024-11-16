@@ -44,7 +44,6 @@ public class GameboardManager {
             writer.write(json.toString());
             InputOutputView.displayMessage("[SUCCESS] The game was successfully saved to " + filepath + "!\n");
         } catch (IOException e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The game failed to save to " + filepath + "!\n");
         }
     }
@@ -63,7 +62,6 @@ public class GameboardManager {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The map failed to load from " + filepath + "!\n");
             return false;
         }
@@ -114,7 +112,6 @@ public class GameboardManager {
             }
             InputOutputView.displayMessage("[SUCCESS] The map was successfully loaded from " + filepath + "!\n");
         } catch (Exception e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The map failed to be interpreted from " + filepath);
         }
         return true;
@@ -133,7 +130,6 @@ public class GameboardManager {
                 contentBuilder.append(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The map failed to load from " + filepath + "!\n");
             return false;
         }
@@ -176,7 +172,6 @@ public class GameboardManager {
             }
             InputOutputView.displayMessage("[SUCCESS] The game was successfully loaded from " + filepath + "!\n");
         } catch (Exception e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The game failed to load from " + filepath + "!\n");
         }
         return true;
@@ -202,7 +197,6 @@ public class GameboardManager {
             writer.write(json.toString());
             InputOutputView.displayMessage("[SUCCESS] The map was successfully saved to " + filepath + "!\n");
         } catch (IOException e) {
-            e.printStackTrace();
             InputOutputView.displayMessage("[FAILURE] The game failed to save to " + filepath + "!\n");
         }
         return true;
