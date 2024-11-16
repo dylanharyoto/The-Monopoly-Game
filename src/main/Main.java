@@ -1,8 +1,10 @@
-import controller.GameboardController;
-import model.Gameboard;
-import model.GameboardManager;
-import view.GameboardView;
-import view.InputOutputView;
+package main;
+
+import main.controller.GameboardController;
+import main.model.Gameboard;
+import main.model.GameboardManager;
+import main.view.GameboardView;
+import main.view.InputOutputView;
 
 
 public class Main {

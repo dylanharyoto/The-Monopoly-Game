@@ -1,7 +1,7 @@
-package model;
+package main.model;
 
 
-import view.InputOutputView;
+import main.view.InputOutputView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

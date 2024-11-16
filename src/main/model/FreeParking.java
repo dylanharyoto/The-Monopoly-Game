@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import view.InputOutputView;
+import main.view.InputOutputView;
 
 public class FreeParking extends Square {
     public FreeParking(int position, String id) {

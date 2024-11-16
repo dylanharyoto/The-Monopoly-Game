@@ -1,10 +1,8 @@
-package model;
-import view.InputOutputView;
+package main.model;
+import main.view.InputOutputView;
 
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Player {
     private int id;

@@ -1,7 +1,6 @@
-package view;
+package main.view;
 
-import model.Player;
-import model.Property;
+import main.model.Property;
 
 import java.util.ArrayList;
 import java.util.Scanner;

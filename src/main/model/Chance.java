@@ -1,5 +1,5 @@
-package model;
-import view.InputOutputView;
+package main.model;
+import main.view.InputOutputView;
 
 import java.util.Random;
 public class Chance extends Square {

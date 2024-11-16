@@ -1,9 +1,9 @@
-package view;
+package main.view;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import model.*;
+import main.model.*;
 
 public class GameboardView {
     private String gameboardString = """

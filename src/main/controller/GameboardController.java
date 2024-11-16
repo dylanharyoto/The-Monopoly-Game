@@ -1,8 +1,8 @@
-package controller;
+package main.controller;
 
-import model.*;
-import view.GameboardView;
-import view.InputOutputView;
+import main.model.*;
+import main.view.GameboardView;
+import main.view.InputOutputView;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

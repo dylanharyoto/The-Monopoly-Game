@@ -1,6 +1,6 @@
-package model;
+package main.model;
 
-import view.InputOutputView;
+import main.view.InputOutputView;
 
 public class Go extends Square {
     private static final int BONUS = 1500;
