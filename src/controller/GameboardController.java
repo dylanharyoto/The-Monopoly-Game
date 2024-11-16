@@ -132,21 +132,20 @@ public class GameboardController {
         String filename = curdir + "/assets/games/" + gameboard.generateGameID() + ".json";
         GameboardManager.saveGame(gameboard, filename);
     }
-    private boolean handlePlayerOptions(Player currentPlayer) {
+    private int handlePlayerOptions(Player currentPlayer) {
         String option = InputOutputView.promptInput(currentPlayer.getName() +
-                """
-                's turn. Would you like to:
-                1. Roll the dice (required to proceed)
-                2. Check player(s) status
-                3. Print the current gameboard status
-                4. Check the next player
-                5. Save the current game
-                6. Close the current game""", new String[]{"1", "2", "3", "4", "5", "6"});
-
+        """
+        's turn. Would you like to:
+        1. Roll the dice (required to proceed)
+        2. Check player(s) status
+        3. Print the current gameboard status
+        4. Check the next player
+        5. Save the current game
+        6. Close the current game""", new String[]{"1", "2", "3", "4", "5", "6"});
         switch (option) {
             case "1":
                 currentPlayer.rollDice();
-                return true;
+                return 1;
             case "2":
                 checkPlayerStatus();
                 break;
@@ -160,12 +159,12 @@ public class GameboardController {
                 saveGame();
                 break;
             case "6":
-                return true;
+                return 2;
             default:
                 InputOutputView.displayMessage("You must roll the dice (type \"1\") before proceeding!\n");
                 break;
         }
-        return false;
+        return 0;
     }
     private void handlePlayerMovement(Player currentPlayer, int initialPosition, int currentPosition) {
         int currentGoPosition = gameboard.getGoPosition();
@@ -203,9 +202,12 @@ public class GameboardController {
         while (gameboard.checkGameStatus()) {
             Player currentPlayer = this.gameboard.getPlayerByID(this.gameboard.getCurrentPlayerID());
             int currentPlayerInitialPosition = currentPlayer.getPosition();
-            boolean proceed = false;
-            while (!proceed) {
-                proceed = handlePlayerOptions(currentPlayer);
+            int flag = 0;
+            while (flag == 0) {
+                flag = handlePlayerOptions(currentPlayer);
+            }
+            if (flag > 1) {
+                break;
             }
             int currentPlayerCurrentPosition = currentPlayer.getPosition();
             handlePlayerMovement(currentPlayer, currentPlayerInitialPosition, currentPlayerCurrentPosition);
@@ -219,7 +221,7 @@ public class GameboardController {
         if (winnersId.length == 1) {
             InputOutputView.displayMessage("[UPDATE] Game has ended! The winner is " + gameboard.getPlayerByID(winnersId[0]).getName());
         } else {
-            StringBuilder winnerNames = new StringBuilder("[UPDATE] Game has ended! The winners are ");
+            StringBuilder winnerNames = new StringBuilder("[UPDATE] Game has ended! The players still in the game are ");
             for (int i = 0; i < winnersId.length; i++) {
                 winnerNames.append(gameboard.getPlayerByID(winnersId[i]).getName());
                 if (i != winnersId.length - 1) {
@@ -234,7 +236,7 @@ public class GameboardController {
      * @param squares squares is an arraylist of loaded default squares
      * @return if the design (i.e., change the rent of properties and save of the new map file) is successful, otherwise return false
      */
-    public static boolean designMap() {
+    public static void designMap() {
         String designOption = InputOutputView.promptInput("""
                 Would you like to
                 1. Design from the default map
@@ -261,7 +263,7 @@ public class GameboardController {
             }
         } catch (IOException e) {
             InputOutputView.displayMessage("[FAILURE] The map failed to load from " + filepath + "!\n");
-            return false;
+            return;
         }
         String jsonContent = contentBuilder.toString();
         jsonContent = jsonContent.replaceAll("\\s+", "");
@@ -373,13 +375,12 @@ public class GameboardController {
                 }
                 if (GameboardManager.saveMap(squares, mapid, curdir + "/assets/maps/" + mapid)){
                     InputOutputView.displayMessage("[SUCCESS] Thanks for designing a new map!\n");
-                    return true;
+                    return;
                 }
             }
         } else {
             // if updated and successfully saved, already reture true; if not updated then always return true
             InputOutputView.displayMessage("You did not make any change to the default map!\n");
-            return true;
         }
     }
 }

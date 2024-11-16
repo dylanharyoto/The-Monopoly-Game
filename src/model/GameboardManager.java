@@ -15,6 +15,7 @@ public class GameboardManager {
         json.append("{\n");
         json.append("\"gameid\": ").append(gameboard.getGameID()).append(",\n");
         json.append("\"mapid\": ").append(gameboard.getMapID()).append(",\n");
+        json.append("\"roundNumber\": ").append(gameboard.getRoundNumber()).append(",\n");
         json.append("\"players\": [\n");
         for (int i = 0; i < gameboard.getAllPlayers().size(); ++i) {
             Player player = gameboard.getPlayerByID(i + 1);
@@ -145,7 +146,10 @@ public class GameboardManager {
         try {
             String gameId = jsonContent.split("\"gameid\":")[1].split(",")[0];
             String mapId = jsonContent.split("\"mapid\":")[1].split(",")[0].replace("\"", "");
+            int roundNumber = Integer.parseInt(jsonContent.split("\"roundNumber\":")[1].split(",")[0]);
             gameboard.setGameID(gameId);
+            gameboard.setRoundNumber(roundNumber);
+
             if (!loadMap(curdir + "/assets/maps/" + mapId, gameboard)) {
                 return false;
             }

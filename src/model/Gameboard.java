@@ -37,6 +37,10 @@ public class Gameboard {
     public String getMapID() {
         return mapID;
     }
+
+    public int getRoundNumber() {return round;}
+
+    public void setRoundNumber(int round) {this.round = round;}
     // Player
     public void addPlayer(Player player) {
         this.players.add(player);
