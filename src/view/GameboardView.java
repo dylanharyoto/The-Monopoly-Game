@@ -2,7 +2,6 @@ package view;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import model.*;
 
@@ -49,10 +48,10 @@ public class GameboardView {
             return;
         }
         for (Player player : players) {
-            displayAPlayer(player);
+            displayPlayer(player);
         }
     }
-    public void displayAPlayer(Player player) {
+    public void displayPlayer(Player player) {
         if (player == null) {
             InputOutputView.displayMessage("No player to display.");
             return;

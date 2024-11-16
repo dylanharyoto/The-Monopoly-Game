@@ -22,11 +22,11 @@ public class Property extends Square {
     public int getRent() {
         return this.rent;
     }
-    public void setOwner(Player player) {
-        this.owner = player;
-    }
     public Player getOwner() {
         return this.owner;
+    }
+    public void setOwner(Player player) {
+        this.owner = player;
     }
     public void setName(String newName) {
         this.name = newName;
@@ -39,46 +39,38 @@ public class Property extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        InputOutputView.displayMessage("Now, " + player.getName() + " reaches " + this.getName() + ".\n");
+        InputOutputView.displayMessage("[PROPERTY]");
+        InputOutputView.displayMessage(player.getName() + " reaches " + this.getName() + ".");
         if (this.owner != null && this.owner != player) {
             if(player.getMoney() < this.rent) {
-                InputOutputView.displayMessage(player.getName() + " do not have enough money to pay the rent for " + this.getName() + "!");
-            }
-            else {
-                InputOutputView.displayMessage(player.getName() + " paid " + this.getRent() + " to the " + this.getOwner().getName() + " of " + this.getName() + "!");
+                InputOutputView.displayMessage(player.getName() + " does not have enough money to pay the rent for " + this.getName() + "!\n");
+            } else {
+                InputOutputView.displayMessage(player.getName() + " paid " + this.getRent() + " of " + this.getName() + " to " + this.getOwner().getName() +  "!\n");
             }
             player.decreaseMoney(this.rent);
             owner.increaseMoney(this.rent);
-
-        }
-        else if (owner == null) {
+        } else if (owner == null) {
             if (player.getMoney() < this.price) {
-                InputOutputView.displayMessage(player.getName() + " does not have enough money to buy " + this.getName() + "!");
+                InputOutputView.displayMessage(player.getName() + " does not have enough money to buy " + this.getName() + "!\n");
             } else {
                 String answer = InputOutputView.promptInput(
                 "Would you like to:\n" +
                 "1. Buy " + this.getName() + "\n" +
                 "2. Pass " + this.getName() + "\n", new String[]{"1", "2"}
                 );
-                switch (answer) {
-                    case "1":
-
-                        player.decreaseMoney(this.price);
-                        player.addProperty(this);
-                        this.setOwner(player);
-                        InputOutputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!");
-                        break;
-                    case "2":
-                        InputOutputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!");
-                        break;
-
+                if (answer.equals("1")) {
+                    player.decreaseMoney(this.price);
+                    player.addProperty(this);
+                    this.setOwner(player);
+                    InputOutputView.displayMessage("Thanks for buying " + this.getName() + " for " + this.getPrice() + ", " + player.getName() + "!\n");
+                } else if (answer.equals("2")) {
+                    InputOutputView.displayMessage("Thanks for visiting " + this.getName() + ", " + player.getName() + "!\n");
                 }
             }
         }
     }
     @Override
-    public String typeDetailsJson() {
-        return String.format("\"details\": {\n\"name\": \"%s\",\n\"price\": %d,\n\"rent\": %d\n}",
-                this.name, this.price, this.rent);
+    public String detailsInJSON() {
+        return String.format("\"details\": {\n\"name\": \"%s\",\n\"price\": %d,\n\"rent\": %d\n}", this.name, this.price, this.rent);
     }
 }

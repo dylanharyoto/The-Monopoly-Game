@@ -8,15 +8,15 @@ public class InJailOrJustVisiting extends Square {
     }
     @Override
     public void takeEffect(Player player) {
+        InputOutputView.displayMessage("[IN JAIL/JUST VISITING]");
         if (player.getInJailDuration() > 0) {
-            InputOutputView.displayMessage(player.getName() + " needs to stay in the jail for " + player.getInJailDuration() + " more rounds.\n");
+            InputOutputView.displayMessage(player.getName() + " needs to stay in the jail for " + player.getInJailDuration() + " more rounds!\n");
         } else {
-            InputOutputView.displayMessage("Just Visiting (jail) square, nothing happens.\n");
+            InputOutputView.displayMessage("Just visiting, nothing happens!\n");
         }
-        return;
     }
     @Override
-    public String typeDetailsJson() {
+    public String detailsInJSON() {
         return "\"details\": {}\n";
     }
 }

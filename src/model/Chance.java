@@ -9,19 +9,20 @@ public class Chance extends Square {
     }
     @Override
     public void takeEffect(Player player) {
+        InputOutputView.displayMessage("[CHANCE]");
         int amount;
         if (random.nextBoolean()) {
             amount = random.nextInt(21) * 10;
             player.increaseMoney(amount);
-            InputOutputView.displayMessage("Chance square offers " + player.getName() + " " + amount + "HKD.\n");
+            InputOutputView.displayMessage(player.getName() + " gets " + amount + "HKD from CHANCE!\n");
         } else {
             amount = random.nextInt(31) * 10;
             player.decreaseMoney(amount);
-            InputOutputView.displayMessage("Chance square deprives " + player.getName() + " " + amount + "HKD.\n");
+            InputOutputView.displayMessage(player.getName() + " needs to pay " + amount + "HKD to CHANCE!\n");
         }
     }
     @Override
-    public String typeDetailsJson() {
+    public String detailsInJSON() {
         return "\"details\": {}\n";
     }
 }

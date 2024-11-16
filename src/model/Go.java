@@ -9,14 +9,15 @@ public class Go extends Square {
     }
     @Override
     public void takeEffect(Player player) {
+        InputOutputView.displayMessage("[GO]");
         if(player == null) {
             throw new IllegalArgumentException("Player cannot be null.");
         }
-        InputOutputView.displayMessage("Go square offers " + player.getName() + " 1500HKD.\n");
         player.increaseMoney(BONUS);
+        InputOutputView.displayMessage(player.getName() + " gets 1500HKD from GO!\n");
     }
     @Override
-    public String typeDetailsJson() {
+    public String detailsInJSON() {
         return "\"details\": {}\n";
     }
 }

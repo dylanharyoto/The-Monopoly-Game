@@ -8,11 +8,11 @@ public class FreeParking extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        InputOutputView.displayMessage("Free Parking square, nothing happens.\n");
-        return;
+        InputOutputView.displayMessage("[FREE PARKING]");
+        InputOutputView.displayMessage("Free parking, nothing happens!\n");
     }
     @Override
-    public String typeDetailsJson() {
+    public String detailsInJSON() {
         return "\"details\": {}\n";
     }
 }

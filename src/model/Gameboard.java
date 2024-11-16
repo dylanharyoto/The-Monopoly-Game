@@ -9,13 +9,13 @@ public class Gameboard {
     private ArrayList<Player> players;
     private ArrayList<Square> squares;
     private int round;
-    private int currentPlayerId; // when we load from / save to a gamefile, we should load from / save to this attribute to record the current player
+    private int currentPlayerID; // when we load from / save to a gamefile, we should load from / save to this attribute to record the current player
     private int goPosition;
     public Gameboard() {
         this.players = new ArrayList<Player>(6);
         this.squares = new ArrayList<Square>(20);
         this.round = 1;
-        this.currentPlayerId = 1;
+        this.currentPlayerID = 1;
     }
     // Game ID
     public String generateGameID() {
@@ -48,10 +48,7 @@ public class Gameboard {
     public ArrayList<Player> getAllPlayers() {
         return this.players;
     }
-    public int getTotalPlayers() {
-        return this.players.size();
-    }
-    public Player getPlayerById(int playerId) {
+    public Player getPlayerByID(int playerId) {
         for (Player player : players) {
             if (player.getId() == playerId) {
                 return player;
@@ -59,25 +56,25 @@ public class Gameboard {
         }
         return null;
     }
-    public int getNextPlayerId() {
+    public Player getNextPlayer() {
         if(this.players.isEmpty()) {
-            return -1;
+            return null;
         }
         int totalPlayers = this.players.size();
         int nextPlayerId;
         do {
-            nextPlayerId = (this.currentPlayerId + 1) % (totalPlayers + 1);
+            nextPlayerId = (this.currentPlayerID + 1) % (totalPlayers + 1);
             if (nextPlayerId == 0) {
                 nextPlayerId = 1;
             }
-        } while (this.getPlayerById(nextPlayerId).getMoney() < 0);
-        return nextPlayerId;
+        } while (this.getPlayerByID(nextPlayerId).getMoney() < 0);
+        return getPlayerByID(nextPlayerId);
     }
     public void nextPlayer() {
-        if (this.currentPlayerId > this.getNextPlayerId()) {
+        if (this.currentPlayerID > this.getNextPlayer().getId()) {
             this.round = this.round + 1;
         }
-        this.currentPlayerId = this.getNextPlayerId();
+        this.currentPlayerID = this.getNextPlayer().getId();
     }
     // Square
     public void addSquare(Square square) {
@@ -87,17 +84,24 @@ public class Gameboard {
         return this.squares;
     }
     public Square getSquareByPosition(int position) {
-        if (position <= squares.size() && position > 0)
-            return this.squares.get(position-1);
-        else
+        if (position <= squares.size() && position > 0) {
+            return this.squares.get(position - 1);
+        } else {
             return null;
+        }
     }
     // Additional
     public boolean checkGameStatus() {
-        return this.round < 100 && (players.size() > 1 && players.size() < 7);
+        int count = 0;
+        for (Player player : players) {
+            if(player.getStatus()) {
+                count += 1;
+            }
+        }
+        return this.round < 100 && (count > 1 && count < 7);
     }
     public int getCurrentPlayerID() {
-        return this.currentPlayerId;
+        return this.currentPlayerID;
     }
     public void setGoPosition(int position) {
         this.goPosition = position;

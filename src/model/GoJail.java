@@ -8,12 +8,13 @@ public class GoJail extends Square {
     }
     @Override
     public void takeEffect(Player player) {
-        InputOutputView.displayMessage("Go jail square sends " + player.getName() + " to jail.\n");
+        InputOutputView.displayMessage("[GO TO JAIL]");
         player.setInJailDuration(3);
         player.setPosition(6);
+        InputOutputView.displayMessage(player.getName() + " is sent to jail!\n");
     }
     @Override
-    public String typeDetailsJson() {
+    public String detailsInJSON() {
         return "\"details\": {}\n";
     }
 }

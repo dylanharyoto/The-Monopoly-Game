@@ -29,7 +29,7 @@ public class Player {
             this.inJailDuration -= 1;
             if (this.inJailDuration == 0) {
                 this.decreaseMoney(150);
-                InputOutputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).\n");
+                InputOutputView.displayMessage("InJail square deprives " + this.getName() + " 150HKD (because of no doubles throughout three throws).");
             }
             return;
         }
@@ -47,13 +47,15 @@ public class Player {
     }
     public void decreaseMoney(int amount) {
         if(amount < 0) {
-            throw new IllegalArgumentException("Amount to decrease cannot be negative,");
+            InputOutputView.displayMessage("Amount to decrease cannot be negative!");
+            return;
         }
         this.money -= amount;
     }
     public void increaseMoney(int amount) {
         if(amount < 0) {
-            throw new IllegalArgumentException("Amount to increaae cannot be negative,");
+            InputOutputView.displayMessage("Amount to increase cannot be negative!");
+            return;
         }
         this.money += amount;
     }
@@ -71,7 +73,8 @@ public class Player {
     }
     public void addProperty(Property property) {
         if(property == null) {
-            throw new IllegalArgumentException("Property cannot be null");
+            InputOutputView.displayMessage("Property cannot be null!");
+            return;
         }
         this.properties.add(property);
     }
@@ -83,7 +86,8 @@ public class Player {
     }
     public void setPosition (int position) {
         if(position < 1 || position > 20) {
-            throw new IllegalArgumentException("Position must be between 1 and 20");
+            InputOutputView.displayMessage("Position must be between 1 and 20!");
+            return;
         }
         this.position = position;
     }

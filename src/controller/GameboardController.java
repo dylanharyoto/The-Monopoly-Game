@@ -85,7 +85,7 @@ public class GameboardController {
         InputOutputView.displayMessage("Welcome to MonoPolyU, the game is starting...");
         Player currentPlayer;
         while (gameboard.checkGameStatus()) {
-            currentPlayer = this.gameboard.getPlayerById(this.gameboard.getCurrentPlayerID());
+            currentPlayer = this.gameboard.getPlayerByID(this.gameboard.getCurrentPlayerID());
             int currentPlayerInitialPosition = currentPlayer.getPosition();
             boolean proceed = false;
             while(!proceed) {
@@ -119,8 +119,8 @@ public class GameboardController {
                                 gameboardView.displayAllPlayers(gameboard.getAllPlayers());
                                 break;
                             case "3" :
-                                int playerId = InputOutputView.promptGetPlayerByID(gameboard.getAllPlayers(), gameboard.getTotalPlayers());
-                                gameboardView.displayAPlayer(gameboard.getPlayerById(playerId));
+                                int playerId = InputOutputView.promptGetPlayerByID(gameboard.getAllPlayers(), gameboard.getAllPlayers().size());
+                                gameboardView.displayPlayer(gameboard.getPlayerByID(playerId));
                                 break;
                         }
                         break;
@@ -129,8 +129,8 @@ public class GameboardController {
                         this.gameboardView.displayGameboard();
                         break;
                     case "4":
-                        int nextPlayerId = gameboard.getNextPlayerId();
-                        gameboardView.displayAPlayer(gameboard.getPlayerById(nextPlayerId));
+                        Player nextPlayer = gameboard.getNextPlayer();
+                        gameboardView.displayPlayer(nextPlayer);
                         break;
                     case "5":
                         String curdir = System.getProperty("user.dir");
@@ -343,11 +343,11 @@ public class GameboardController {
         int[] winnersId = gameboard.getWinners();
 
         if (winnersId.length == 1) {
-            InputOutputView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerById(winnersId[0]).getName());
+            InputOutputView.displayMessage("Game Finished! The winner is " + gameboard.getPlayerByID(winnersId[0]).getName());
         } else {
             StringBuilder winnerNames = new StringBuilder("Game Finished! The winners are ");
             for (int i = 0; i < winnersId.length; i++) {
-                winnerNames.append(gameboard.getPlayerById(winnersId[i]).getName());
+                winnerNames.append(gameboard.getPlayerByID(winnersId[i]).getName());
                 if (i != winnersId.length - 1) {
                     winnerNames.append(", ");
                 }
