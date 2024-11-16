@@ -9,7 +9,16 @@ import java.util.regex.Pattern;
 
 public class InputOutputView {
     private static Scanner scanner = new Scanner(System.in);
+    private static String SIMULATED_INPUT;
+
+    public static void setInput(String input) {
+        SIMULATED_INPUT = input;
+    }
+
     public static String promptInput(String prompt, String[] options) {
+        if (SIMULATED_INPUT != null) {
+            return SIMULATED_INPUT;
+        }
         String input;
         while(true) {
             System.out.println(prompt);

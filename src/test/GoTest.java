@@ -35,7 +35,7 @@ class GoTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Go square offers Alice 1500HKD."));
+        assertTrue(output.contains("Alice gets 1500HKD from GO!\n"));
     }
 
     @Test
@@ -50,7 +50,7 @@ class GoTest {
 
     @Test
     void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"G\",\n\"details\": {}\n";
+        String expectedJson = "\"details\": {}\n";
         assertEquals(expectedJson, goSquare.detailsInJSON());
     }
 

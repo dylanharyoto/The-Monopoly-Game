@@ -73,7 +73,7 @@ public class PropertyTestTwo {
         property.takeEffect(player);
 
         String output = outputStream.toString();
-        assertTrue(output.contains("Bob do not have enough money to pay the rent for Park Place!"));
+        assertTrue(output.contains("Bob does not have enough money to pay the rent for Park Place!"));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class PropertyTestTwo {
 
     @Test
     public void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"P\",\n\"details\": {\n\"name\": \"Park Place\",\n\"price\": 300,\n\"rent\": 50\n}";
+        String expectedJson = "\"details\": {\n\"name\": \"Park Place\",\n\"price\": 300,\n\"rent\": 50\n}";
         assertEquals(expectedJson, property.detailsInJSON());
     }
 

@@ -38,12 +38,12 @@ class GoJailTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Go jail square sends Alice to jail."));
+        assertTrue(output.contains("Alice is sent to jail!\n"));
     }
 
     @Test
     void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"J\",\n\"details\": {}\n";
+        String expectedJson = "\"details\": {}\n";
         assertEquals(expectedJson, goJailSquare.detailsInJSON());
     }
 

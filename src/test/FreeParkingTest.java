@@ -32,12 +32,12 @@ class FreeParkingTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Free Parking square, nothing happens."));
+        assertTrue(output.contains("Free parking, nothing happens!\n"));
     }
 
     @Test
     void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"F\",\n\"details\": {}\n";
+        String expectedJson ="\"details\": {}\n";
         assertEquals(expectedJson, freeParking.detailsInJSON());
     }
 

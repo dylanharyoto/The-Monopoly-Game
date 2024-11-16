@@ -65,7 +65,7 @@ public class Player {
     }
     public void setInJailDuration(int duration) {
         if(duration < 0) {
-            throw new IllegalArgumentException("Jail duration cannot be negative!\n");
+            InputOutputView.displayMessage("Jail duration cannot be negative!\n");
         }
         this.inJailDuration = duration;
     }

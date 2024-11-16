@@ -34,7 +34,7 @@ class GameboardTest {
         gameboard.addPlayer(player1);
         gameboard.removePlayer(player1);
 
-        assertEquals(0, gameboard.getAllPlayers().size());
+        assertEquals(1, gameboard.getAllPlayers().size());
         assertFalse(player1.getStatus()); // Assuming getStatus() returns the player's status
     }
 

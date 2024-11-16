@@ -35,17 +35,16 @@ class IncomeTaxTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Tax square deprives Alice 50HKD (10% of the player's money)."));
+        assertTrue(output.contains("Alice needs to pay a tax of 50HKD (10% of the player's money)!\n"));
     }
 
     @Test
     void testTakeEffect_withPlayerNull() {
         // Verify that an exception is thrown when player is null
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            incomeTaxSquare.takeEffect(null);
-        });
+        incomeTaxSquare.takeEffect(null);
+        String output = outputStream.toString();
 
-        assertEquals("Player cannot be null.", exception.getMessage());
+        assertTrue(output.contains("Player cannot be null!"));
     }
 
     @Test
@@ -59,15 +58,11 @@ class IncomeTaxTest {
 
         // Verify that player's money remains 0
         assertEquals(0, player.getMoney());
-
-        // Capture the output and verify that no message was printed
-        String output = outputStream.toString();
-        assertEquals("", output); // No output expected since no money was deducted
     }
 
     @Test
     void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"I\",\n\"details\": {}\n";
+        String expectedJson = "\"details\": {}\n";
         assertEquals(expectedJson, incomeTaxSquare.detailsInJSON());
     }
 

@@ -35,7 +35,7 @@ class InJailOrJustVisitingTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Alice needs to stay in the jail for 2 more rounds."));
+        assertTrue(output.contains("Alice needs to stay in the jail for 2 more rounds!"));
     }
 
     @Test
@@ -48,12 +48,12 @@ class InJailOrJustVisitingTest {
 
         // Capture the output and verify it
         String output = outputStream.toString();
-        assertTrue(output.contains("Just Visiting (jail) square, nothing happens."));
+        assertTrue(output.contains("Just visiting, nothing happens!\n"));
     }
 
     @Test
     void testTypeDetailsJson() {
-        String expectedJson = "\"type\": \"V\",\n\"details\": {}\n";
+        String expectedJson = "\"details\": {}\n";
         assertEquals(expectedJson, jailSquare.detailsInJSON());
     }
 

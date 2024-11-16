@@ -1,16 +1,25 @@
 package main.model;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTestTwo {
     private Player player;
+    private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
 
     @BeforeEach
     public void setUp() {
         player = new Player(1, "John", 1000, 1);
+        System.setOut(new PrintStream(outputStream));
+
     }
 
     @Test
@@ -54,18 +63,16 @@ public class PlayerTestTwo {
 
     @Test
     public void testDecreaseMoney_throwsExceptionForNegativeAmount() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            player.decreaseMoney(-100);
-        });
-        assertEquals("Amount to decrease cannot be negative,", exception.getMessage());
+        player.decreaseMoney(-100);
+        String output = outputStream.toString();
+        assertTrue(output.contains("Amount to decrease cannot be negative!\n"));
     }
 
     @Test
     public void testIncreaseMoney_throwsExceptionForNegativeAmount() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            player.increaseMoney(-100);
-        });
-        assertEquals("Amount to increase cannot be negative,", exception.getMessage());
+        player.increaseMoney(-100);
+        String output = outputStream.toString();
+        assertTrue(output.contains("Amount to increase cannot be negative!\n"));
     }
 
     @Test
@@ -76,10 +83,9 @@ public class PlayerTestTwo {
 
     @Test
     public void testSetInJailDuration_throwsExceptionForNegativeDuration() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            player.setInJailDuration(-1);
-        });
-        assertEquals("Jail duration cannot be negative.", exception.getMessage());
+        player.setInJailDuration(-1);
+        String output = outputStream.toString();
+        assertTrue(output.contains("Jail duration cannot be negative!\n"));
     }
 
     @Test
@@ -91,10 +97,9 @@ public class PlayerTestTwo {
 
     @Test
     public void testAddProperty_throwsExceptionForNullProperty() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            player.addProperty(null);
-        });
-        assertEquals("Property cannot be null", exception.getMessage());
+        player.addProperty(null);
+        String output = outputStream.toString();
+        assertTrue(output.contains("Property cannot be null!\n"));
     }
 
     @Test
@@ -105,10 +110,9 @@ public class PlayerTestTwo {
 
     @Test
     public void testSetPosition_throwsExceptionForInvalidPosition() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            player.setPosition(21);
-        });
-        assertEquals("Position must be between 1 and 20", exception.getMessage());
+        player.setPosition(21);
+        String output = outputStream.toString();
+        assertTrue(output.contains("Position must be between 1 and 20!\n"));
     }
 
     @Test
@@ -128,5 +132,11 @@ public class PlayerTestTwo {
     public void testSetStatus(){
         player.setStatus(false);
         assertFalse(player.getStatus());
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // Restore original System.out
+        System.setOut(originalOut);
     }
 }
