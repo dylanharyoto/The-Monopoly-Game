@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.util.UUID;
+
 public class GameboardController {
     private Gameboard gameboard;
     private GameboardView gameboardView;
@@ -21,6 +23,18 @@ public class GameboardController {
         String choice = InputOutputView.promptInput(
                 "Please enter the number of players (minimum " + min + ", maximum " + max + ")",
                 new String[]{"2", "3", "4", "5", "6"}
+        );
+        return Integer.parseInt(choice);
+    }
+
+    private int getNameingOption () {
+        String choice = InputOutputView.promptInput(
+                """
+                Please decide your naming option for players:
+                1. Input to name each player
+                2. Randomly generate name for each player
+                """,
+                new String[]{"1", "2"}
         );
         return Integer.parseInt(choice);
     }
@@ -41,8 +55,24 @@ public class GameboardController {
             String name = InputOutputView.promptInput("Please type the name of the " + (names.size() + 1) + "th player (minimum 1, maximum 9 characters)", new String[]{});
             if (name.length() > 10 || name.isEmpty()) {
                 InputOutputView.displayMessage("The name must have a minimum of 1 character and a maximum of 9 characters!");
-            } else {
+            }
+            else if (names.contains(name.trim())) {
+                InputOutputView.displayMessage("The name has been used by another player. Please type in a different name!");
+            }
+            else {
                 names.add(name.trim());
+            }
+        }
+        displayCurrentPlayers(names);
+        return names;
+    }
+
+    private ArrayList<String> generateRandomNames (int numberOfPlayers) {
+        ArrayList<String> names = new ArrayList<>(numberOfPlayers);
+        while (names.size() < numberOfPlayers) {
+            String name = UUID.randomUUID().toString().substring(0, 7); // return a 6-character string
+            if (!names.contains(name)) {
+                names.add(name);
             }
         }
         displayCurrentPlayers(names);
@@ -84,7 +114,14 @@ public class GameboardController {
         final int MAX_PLAYERS = 6;
         final int STARTING_MONEY = 1500;
         int numberOfPlayers = getNumberOfPlayers(MIN_PLAYERS, MAX_PLAYERS);
-        ArrayList<String> playerNames = collectPlayerNames(numberOfPlayers);
+        ArrayList<String> playerNames;
+        if (getNameingOption() == 1) {
+            playerNames = collectPlayerNames(numberOfPlayers);
+        }
+        else {
+            playerNames = generateRandomNames(numberOfPlayers);
+        }
+
         if (!chooseAndLoadMap()) {
             return;
         }
@@ -218,10 +255,10 @@ public class GameboardController {
     }
     public void endGame() {
         int[] winnersId = gameboard.getWinners();
-        if (winnersId.length == 1) {
+        if (winnersId.length <= 1) {
             InputOutputView.displayMessage("[UPDATE] Game has ended! The winner is " + gameboard.getPlayerByID(winnersId[0]).getName());
         } else {
-            StringBuilder winnerNames = new StringBuilder("[UPDATE] Game has ended! The players still in the game are ");
+            StringBuilder winnerNames = new StringBuilder("[UPDATE] Game has ended! The winners are ");
             for (int i = 0; i < winnersId.length; i++) {
                 winnerNames.append(gameboard.getPlayerByID(winnersId[i]).getName());
                 if (i != winnersId.length - 1) {

@@ -3,6 +3,8 @@ import java.util.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
+
 public class Gameboard {
     private String gameID = ""; // null means this is a new game without loading process
     private String mapID = "";  // null means this is a new map without loading process
@@ -114,9 +116,23 @@ public class Gameboard {
         return this.goPosition;
     }
     public int[] getWinners() {
-        return this.getAllPlayers().stream()
-            .filter(Player::getStatus)
-            .mapToInt(Player::getId)
-            .toArray();
+
+        Player maxMoneyPlayer = this.getAllPlayers()
+                .stream()
+                .filter(Player::getStatus)
+                .max(Comparator.comparing(Player::getMoney))
+                .get();
+
+
+
+        int[]winnerIds = this.getAllPlayers()
+                .stream()
+                .filter(player -> player.getMoney() == maxMoneyPlayer.getMoney())
+                .mapToInt(Player::getId)
+                .toArray();
+
+
+        return winnerIds;
+
     }
 }

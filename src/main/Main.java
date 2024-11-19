@@ -9,11 +9,11 @@ import main.view.InputOutputView;
 
 public class Main {
     public static void main(String[] args) {
-        Gameboard gameboard = new Gameboard();
-        GameboardView gameboardView = new GameboardView();
-        GameboardController gameboardController = new GameboardController(gameboard, gameboardView);
-        label:
+
         while(true) {
+            Gameboard gameboard = new Gameboard();
+            GameboardView gameboardView = new GameboardView();
+            GameboardController gameboardController = new GameboardController(gameboard, gameboardView);
             String choice = InputOutputView.promptInput("""
             Welcome to MonoPolyU!
             Would you like to
@@ -35,7 +35,7 @@ public class Main {
                     break;
                 case "4":
                     InputOutputView.displayMessage("Thanks for coming to MonoPolyU!");
-                    break label;
+                    return;
             }
         }
 
