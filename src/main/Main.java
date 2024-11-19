@@ -3,12 +3,17 @@ package main;
 import main.controller.GameboardController;
 import main.model.Gameboard;
 import main.model.GameboardManager;
+import main.model.Player;
 import main.view.GameboardView;
 import main.view.InputOutputView;
+
+import java.io.PrintStream;
 
 
 public class Main {
     public static void main(String[] args) {
+
+
         Gameboard gameboard = new Gameboard();
         GameboardView gameboardView = new GameboardView();
         GameboardController gameboardController = new GameboardController(gameboard, gameboardView);
@@ -38,6 +43,10 @@ public class Main {
                     break label;
             }
         }
+
+
+        //InputOutputView.setInput("1\n1\n0\n1\nNew Name\n3\n1\n4"); // Change name of property at index 0
+
 
     }
 }
