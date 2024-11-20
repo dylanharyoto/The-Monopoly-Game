@@ -1,5 +1,9 @@
-package main.model;
+package test;
 
+import main.model.GoJail;
+import main.model.Player;
+import main.model.Property;
+import main.model.Square;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +13,7 @@ import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PlayerTestTwo {
+public class PlayerTest {
     private Player player;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

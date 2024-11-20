@@ -1,11 +1,11 @@
-
+package test;
 import main.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-public class ChanceTestTwo {
+class ChanceTest {
     private Random mockRandom;
     private Player player;
 

@@ -1,3 +1,4 @@
+package test;
 import main.model.*;
 import main.view.GameboardView;
 import org.junit.jupiter.api.BeforeEach;

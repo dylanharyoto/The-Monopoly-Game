@@ -3,8 +3,11 @@ package main;
 import main.controller.GameboardController;
 import main.model.Gameboard;
 import main.model.GameboardManager;
+import main.model.Player;
 import main.view.GameboardView;
 import main.view.InputOutputView;
+
+import java.io.PrintStream;
 
 
 public class Main {

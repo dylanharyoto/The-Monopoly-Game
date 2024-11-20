@@ -1,3 +1,4 @@
+package test;
 import main.model.Property;
 import main.view.InputOutputView;
 import org.junit.jupiter.api.BeforeEach;

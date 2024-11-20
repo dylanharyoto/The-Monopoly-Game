@@ -1,3 +1,4 @@
+package test;
 import main.model.*;
 import org.junit.jupiter.api.*;
 

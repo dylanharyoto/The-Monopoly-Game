@@ -16,14 +16,19 @@ public class InputOutputView {
     }
 
     public static String promptInput(String prompt, String[] options) {
-        if (SIMULATED_INPUT != null) {
-            return SIMULATED_INPUT;
-        }
         String input;
         while(true) {
             System.out.println(prompt);
             System.out.print("> ");
-            input = scanner.next();
+            if (SIMULATED_INPUT != null) {
+                input = SIMULATED_INPUT.split("\n")[0];
+                if(SIMULATED_INPUT.contains("\n")) {
+                    SIMULATED_INPUT = SIMULATED_INPUT.substring(SIMULATED_INPUT.indexOf("\n")+1, SIMULATED_INPUT.length());
+                }
+            }
+            else {
+                input = scanner.next();
+            }
             if(options.length == 0) {
                 return input;
             }
@@ -36,12 +41,21 @@ public class InputOutputView {
         }
     }
     public static String promptFilename(String prompt) {
-        String input;
-        do{
+
+        String input = "/";
+        while(input.contains("/")) {
             System.out.println(prompt);
             System.out.print("> ");
-            input = scanner.next();
-        } while(input.contains("/"));
+            if (SIMULATED_INPUT != null) {
+                input = SIMULATED_INPUT.split("\n")[0];
+                if(SIMULATED_INPUT.contains("\n")) {
+                    SIMULATED_INPUT = SIMULATED_INPUT.substring(SIMULATED_INPUT.indexOf("\n")+1, SIMULATED_INPUT.length());
+                }
+            }
+            else {
+                input = scanner.next();
+            }
+        }
         return input;
     }
     public static void displayMessage(String message) {
@@ -69,16 +83,25 @@ public class InputOutputView {
     public static String promptString(String prompt) {
         String input;
         Pattern pattern = Pattern.compile("\\p{Alnum}+");
-        while (true) {
+        while(true) {
             System.out.println(prompt);
             System.out.print("> ");
-            input = scanner.next();
+            if (SIMULATED_INPUT != null) {
+                input = SIMULATED_INPUT.split("\n")[0];
+                if(SIMULATED_INPUT.contains("\n")) {
+                    SIMULATED_INPUT = SIMULATED_INPUT.substring(SIMULATED_INPUT.indexOf("\n")+1, SIMULATED_INPUT.length());
+                }
+            }
+            else {
+                input = scanner.next();
+            }
             Matcher matcher = pattern.matcher(input);
             if (matcher.matches()) {
                 return input;
             }
-            System.out.println("Invalid name! Please double check the format and retype.");
+            System.out.println("Invalid answer! Please double check the available options and retype.");
         }
+
     }
     /**
      * @param prompt The prompt for user to specify the format of input
@@ -86,19 +109,26 @@ public class InputOutputView {
      */
     public static int promptInteger(String prompt) {
         String input;
-        while (true) {
+        while(true) {
             System.out.println(prompt);
             System.out.print("> ");
-            input = scanner.next();
+            if (SIMULATED_INPUT != null) {
+                input = SIMULATED_INPUT.split("\n")[0];
+                if(SIMULATED_INPUT.contains("\n")) {
+                    SIMULATED_INPUT = SIMULATED_INPUT.substring(SIMULATED_INPUT.indexOf("\n")+1, SIMULATED_INPUT.length());
+                }
+
+            } else {
+                input = scanner.next();
+            }
             try {
                 int newValue = Integer.parseInt(input);
-                if(newValue <= 0) {
+                if (newValue <= 0) {
                     System.out.println("Invalid value! Please double check the format and retype a positive integer.");
                 } else {
                     return newValue;
                 }
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Invalid value! Please double check the format and retype a positive integer.");
             }
         }

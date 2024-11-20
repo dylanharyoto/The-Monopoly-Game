@@ -1,4 +1,5 @@
-package main.model;
+package test;
+
 
 import main.model.*;
 import org.junit.jupiter.api.AfterEach;

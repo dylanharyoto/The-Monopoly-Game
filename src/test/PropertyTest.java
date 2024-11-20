@@ -1,3 +1,4 @@
+package test;
 import main.model.*;
 import main.view.*;
 import org.junit.jupiter.api.AfterEach;
@@ -8,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class PropertyTestTwo {
+public class PropertyTest {
     private Property property;
     private Player owner;
     private Player player;
@@ -57,6 +58,19 @@ public class PropertyTestTwo {
     public void testSetPrice() {
         property.setPrice(400);
         assertEquals(400, property.getPrice());
+    }
+
+    @Test
+    public void testSetPosition(){
+        property.setPosition(1);
+        assertEquals(1, property.getPosition());
+        boolean flag = true;
+        try{
+            property.setPosition(-1);
+        }catch(IllegalArgumentException e){
+            flag = false;
+        }
+        assertFalse(flag);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package test.controller;
+package test;
 
 import main.controller.GameboardController;
 import main.model.*;
@@ -31,7 +31,7 @@ class GameboardControllerTest {
     @Test
     void testNewGame_SuccessfulFlow() {
         // Simulate user inputs
-        InputOutputView.setInput("3\nAlice\nBob\nCharlie\n1\n6"); // 3 players, names and default map
+        InputOutputView.setInput("3\n1\nAlice\nBob\nCharlie\n1\n6"); // 3 players, names and default map
 
         // Start the new game
         gameboardController.newGame();
@@ -46,7 +46,7 @@ class GameboardControllerTest {
     @Test
     void testNewGame_InvalidPlayerName() {
         // Simulate user inputs: 2 players, invalid name for the second player
-        InputOutputView.setInput("2\nAlice\n\nBob\n1"); // Second name is empty
+        InputOutputView.setInput("2\n1\nAlice\n\nBob\n1"); // Second name is empty
 
         // Start the new game
         gameboardController.newGame();
@@ -60,7 +60,7 @@ class GameboardControllerTest {
     @Test
     void testChooseAndLoadMap_FileNotFound() {
         // Simulate user inputs: choose to load a map but provide an invalid filename
-        InputOutputView.setInput("2\n\na\nb\n2\ninvalid_map.json\n3"); // Invalid map file
+        InputOutputView.setInput("2\n1\na\nb\n2\ninvalid_map.json\n3"); // Invalid map file
 
         // Start the new game
         gameboardController.newGame();
@@ -73,7 +73,7 @@ class GameboardControllerTest {
     @Test
     void testNewGame_ValidMapSelection() {
         // Simulate user inputs: valid map selection
-        InputOutputView.setInput("2\nAlice\nBob\n1"); // 2 players and choose map 1
+        InputOutputView.setInput("2\n1\nAlice\nBob\n1"); // 2 players and choose map 1
 
         // Start the new game
         gameboardController.newGame();
@@ -105,21 +105,47 @@ class GameboardControllerTest {
         Player alice = new Player(1, "Alice", 0, 1);
         alice.setStatus(false);
         gameboard.addPlayer(alice); // Alice bankrupt
-        gameboard.addPlayer(new Player(2, "Bob", 1, 1)); // Bob alive
+        gameboard.addPlayer(new Player(2, "Bob", 1500, 1)); // Bob alive
         gameboard.addPlayer(new Player(3, "Charlie", 1500, 1)); // Charlie still in the game
 
         // Call endGame to finalize the game
         gameboardController.endGame();
 
         // Check the output for the multiple winners message
-        String expectedOutput = "[UPDATE] Game has ended! The players still in the game are Bob, Charlie";
+        String expectedOutput = "[UPDATE] Game has ended! The winners are Bob, Charlie";
+        assertTrue(outputStreamCaptor.toString().trim().contains(expectedOutput));
+    }
+
+    @Test
+    void test_DisplayNext() {
+
+        InputOutputView.setInput("2\n2\n3\n4"); // 3 players, names and default map
+
+        // Start the new game
+        gameboardController.newGame();
+
+        // Check the output for the multiple winners message
+        String expectedOutput = "Current players:\n1.";
+        assertTrue(outputStreamCaptor.toString().trim().contains(expectedOutput));
+    }
+
+    @Test
+    void test_RandomName() {
+
+        InputOutputView.setInput("2\n1\nBob\nCharlie\n1\n4\n6"); // 3 players, names and default map
+
+        // Start the new game
+        gameboardController.newGame();
+
+        // Check the output for the multiple winners message
+        String expectedOutput = "Money: HKD";
         assertTrue(outputStreamCaptor.toString().trim().contains(expectedOutput));
     }
 
     @Test
     void testNewGame_OptionSelection() {
         // Simulate user inputs for all options
-        String inputs = "2\nAlice\nBob\n1\n6"; // Choose to load a map, player names, then select a map option
+        String inputs = "2\n1\nAlice\nBob\n1\n6"; // Choose to load a map, player names, then select a map option
         InputOutputView.setInput(inputs);
 
         // Start the new game
@@ -236,7 +262,7 @@ class GameboardControllerTest {
 
     @Test
     void testDisplayBoard() {
-        InputOutputView.setInput("2\nBob\nCharlie\n1\n3\n6");
+        InputOutputView.setInput("2\n1\nBob\nCharlie\n1\n3\n6");
 
         gameboardController.newGame();
         assertTrue(outputStreamCaptor.toString().contains("MONOPOLY"));
@@ -256,7 +282,7 @@ class GameboardControllerTest {
     @Test
     void testNewGame() {
         // Simulate player input for a new game
-        InputOutputView.setInput("3\nAlice\nBob\nCharlie\n1\n6"); // 3 players, names, and choose default map
+        InputOutputView.setInput("3\n1\nAlice\nBob\nCharlie\n1\n6"); // 3 players, names, and choose default map
 
         // Start a new game
         gameboardController.newGame();
