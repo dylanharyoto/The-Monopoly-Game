@@ -28,6 +28,7 @@ public class InputOutputView {
             }
             else {
                 input = scanner.next();
+                scanner.nextLine();
             }
             if(options.length == 0) {
                 return input;
@@ -54,6 +55,7 @@ public class InputOutputView {
             }
             else {
                 input = scanner.next();
+                scanner.nextLine();
             }
         }
         return input;
@@ -94,12 +96,13 @@ public class InputOutputView {
             }
             else {
                 input = scanner.next();
+                scanner.nextLine();
             }
             Matcher matcher = pattern.matcher(input);
             if (matcher.matches()) {
                 return input;
             }
-            System.out.println("Invalid answer! Please double check the available options and retype.");
+            System.out.println("Invalid answer! Please double check the format and retype a legal name.");
         }
 
     }
@@ -120,6 +123,7 @@ public class InputOutputView {
 
             } else {
                 input = scanner.next();
+                scanner.nextLine();
             }
             try {
                 int newValue = Integer.parseInt(input);
