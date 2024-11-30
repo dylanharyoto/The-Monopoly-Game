@@ -1,0 +1,121 @@
+{
+"mapid": "map2.json",
+"squares": [
+{
+"id": "G",
+"details": {}
+},
+{
+"id": "P1",
+"details": {
+"name": "Central",
+"price": 800,
+"rent": 90
+}},
+{
+"id": "P2",
+"details": {
+"name": "WanChai",
+"price": 700,
+"rent": 65
+}},
+{
+"id": "I",
+"details": {}
+},
+{
+"id": "P3",
+"details": {
+"name": "Stanley",
+"price": 600,
+"rent": 60
+}},
+{
+"id": "V",
+"details": {}
+},
+{
+"id": "P4",
+"details": {
+"name": "ShekO",
+"price": 400,
+"rent": 10
+}},
+{
+"id": "P5",
+"details": {
+"name": "MongKok",
+"price": 500,
+"rent": 40
+}},
+{
+"id": "C1",
+"details": {}
+},
+{
+"id": "P6",
+"details": {
+"name": "TsingYi",
+"price": 400,
+"rent": 15
+}},
+{
+"id": "F",
+"details": {}
+},
+{
+"id": "P7",
+"details": {
+"name": "Shatin",
+"price": 700,
+"rent": 75
+}},
+{
+"id": "C2",
+"details": {}
+},
+{
+"id": "P8",
+"details": {
+"name": "TuenMun",
+"price": 400,
+"rent": 20
+}},
+{
+"id": "P9",
+"details": {
+"name": "TaiPo",
+"price": 500,
+"rent": 25
+}},
+{
+"id": "J",
+"details": {}
+},
+{
+"id": "P10",
+"details": {
+"name": "SaiKung",
+"price": 400,
+"rent": 10
+}},
+{
+"id": "P11",
+"details": {
+"name": "YuenLong",
+"price": 400,
+"rent": 25
+}},
+{
+"id": "C3",
+"details": {}
+},
+{
+"id": "P12",
+"details": {
+"name": "TaiO",
+"price": 600,
+"rent": 25
+}}
+]
+}

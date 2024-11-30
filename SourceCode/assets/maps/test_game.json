@@ -1,0 +1,15 @@
+{
+"gameid": 1,
+"mapid": "defaultMap",
+"roundNumber": 1,
+"players": [
+{
+"id": 1,
+"name": "Alice",
+"money": 1500,
+"currentPosition": 1,
+"inJailDuration": 0,
+"properties": []
+}
+],
+}
