@@ -1,4 +1,4 @@
-# Monopoly Game
+# The Monopoly Game
 
 ## Overview
 
